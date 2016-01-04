@@ -1,0 +1,27 @@
+<!--
+* {Purpose} – Displays the top index filter option (just a single letter) for enhanced list
+*
+* @author	Shah Kadirmohideen
+* @version	2012-01-20
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2012-01-20	Shah Kadirmohideen		Created
+* =============================================================================
+-->  
+<apex:component >
+		<apex:attribute name="letter" description="Letter which is displayed on the user interface"  type="String" required="true"/>
+		<apex:attribute name="rerenderPanel" description="Component Id which will be rerendered upon action"  type="String" required="true"/>
+		<apex:attribute name="clickAction" description="Action method which will be executed upon clicking a letter"  type="ContactNet.CNEnhancedListHandler" required="true"/>
+
+    	<apex:outputText value="{!letter}" styleClass="{!IF(letter='All', 'listItemSelected listItemLast', 'listItemSelected')}" rendered="{!clickAction.sStartsWith==letter}"/>
+        <apex:commandLink action="{!clickAction.filterPage}"  rerender="{!rerenderPanel}" styleClass="{!IF(letter='All', 'listItem listItemLast', 'listItem')}" 
+        					rendered="{!clickAction.sStartsWith<>letter}" onmouseup="makeCursorWait()" oncomplete="makeCursorAuto()">
+            <apex:outputText value="{!letter}" styleClass="listItemPad"/>
+            <apex:param name="indexLetter" value="{!letter}"/>
+        </apex:commandLink>
+
+</apex:component>

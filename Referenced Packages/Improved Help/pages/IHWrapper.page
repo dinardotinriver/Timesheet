@@ -1,0 +1,171 @@
+<!--
+============================================================================================== 
+PAGE DESIGNED TO FACILITATE INTER-BROWSER WINDOW COMMUNICATION, PARTICULARLY FROM THE VF TO SF 
+DOMAINS: AS SUCH COMMS ARE NOT POSSIBLE (ACROSS DOMAINS) DIRECTLY, THIS VF PAGE EMBEDS AN IFRAME
+TO SF, WITH WHICH IT CAN COMMUNICATE, THEN BUBBLES ANY MESSAGE RECIEVED BACK TO ITS "OPENER" 
+(ANOTHER VF WINDOW).
+
+THIS MODE OF USE REQUIRES THE ADDRESS TO WHICH THE IFRAME SHOULD BE DIRECTED (GoTo), IE:
+
+    [SF base URL]/Apex/IHWrapper?GoTo=[SF page URL]
+
+CAN ALSO BE USED AS A STRAIGHT REDIRECTION PAGE (REFRESHING TO A NEW URL RATHER THAN DIRECTING
+IFRAME TO THIS). THIS MODE OF USE REQUIRES THE ADDRESS TO DIRECT TO (IHContext), IE:
+
+    [SF base URL]/Apex/IHWrapper?IHContext=[SF page URL]
+
+CAN ALSO BE USED TO LAUNCH A GUIDE WINDOW. THIS MODE REQUIRES GUIDE WINDOW URL, IE:
+
+    [SF base URL]/Apex/IHWrapper?GoToRL=[Guide URL]
+ 
+Martin Little for Improved Apps
+July 2013
+Copyright (c.) Improved Apps Limited 2013. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+ 
+ <apex:page standardStylesheets="false" showHeader="false" sidebar="false" 
+                title="{!BrandingLocalisations['ProductName']}"
+                controller="iahelp.ControllerHelpContent"
+                action="{!initialiseLocalisations}">
+
+    <head>
+    
+        <script type="text/javascript">
+            function initialise() {
+            
+                // Try context / straight redirect first
+                if ('{!JSENCODE(IHContext)}' != '') {
+					document.location = '{!JSENCODE(IHContext)}';
+                    return;
+                }
+                
+                
+                // Try Guide URL next
+                if ('{!JSENCODE(GoToRL)}' != '') {
+                    
+                    // Note window sizing information for Guides (set by RL Viewer in Guides mode
+                    // with co-ordinates variables and retrieval defined in jsSettings
+                    // which is included via IHHook
+                    getGuideCoords();
+                                        
+                    DoDialogue('{!JSENCODE(GoToRL)}', guideX, guideY, guideW, guideH, '_Guide');
+                    document.location = '{!JSENCODE(TRootLink)}/apex/iahelp__IHMessage?Diags={!GlobalLocalisations['MessageGuideInNewWindow']}';
+                    return;
+                }
+                
+                // If other modes specified, continue with standard GoTo / wrapper to iframe:
+                // Set the URL of our wrapped iframe to that requested in the call to this page 
+                // ("GoTo" query parameter)
+
+                var U;
+                var srch;
+                var RLT;                
+                
+                var cxtSupplied = document.createElement('a');
+                cxtSupplied.href = unescape('{!JSENCODE(GoToURL)}');
+                
+                // We need the unescaped host name plus the escaped query string                
+                srch = cxtSupplied.search + cxtSupplied.hash;
+                if (srch.indexOf('?IHVIP=') != -1) {
+                    srch = srch.replace('?IHVIP=', '');
+                    srch = escape(srch);
+                    srch = srch.split('%25').join('%');
+                    srch = '?IHVIP=' + srch;
+                } else {
+
+                    // Note reading list type (e.g., linear or not)
+                    srch = srch.replace('?RLType=', '');                    
+                    RLT = srch.substring(0,1);
+                    
+                    // Now cut the AwaitVIP parameter (the "&AwaitVIP" part)
+                    srch = srch.substring(11);      
+                    
+                    // Now escape the actual Await VIP parameter
+                    srch = escape(srch);
+                    srch = srch.split('%2520').join('+');
+                    
+                    // Finally, add the type and await parts back together
+                    srch = '?RLType=' + RLT + '&AwaitVIP=' + srch;                  
+                }
+                
+                U = cxtSupplied.protocol + '//' + cxtSupplied.host + cxtSupplied.pathname + srch;
+                document.getElementById('StepFrm').src = U;
+
+                // Set (and record in message) initial iframe size...
+                resizeFrame();              
+                
+                //...and ensure we continue to do so any time step window is resized
+                $IAIHj(window).resize(function() {
+                    resizeFrame();
+                }); 
+
+                
+                return;
+            }
+            
+                        
+            // Bubble any messages (from page showing in iframe) back to our owning window
+            window.onmessage = function (e) {               
+                var d = new Date();
+                document.getElementById('Diags').innerHTML += ' ... ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ': ' + e.data;
+                
+                // We don't want to pass win resize messages, as we'll pass these
+                // ourself on resize of our own window...
+                if (e.data.substring(0,7) != 'GSSize=') {
+                    window.opener.postMessage(e.data, '*');
+                }
+                
+                return;
+            }
+
+        
+            // Show messaging DIV / diagnostics area
+            function showDiags(elem) {
+                
+                if (elem.style.height != '25px') {
+                    elem.style.height = '25px';
+                } else {
+                    elem.style.height = '1px';
+                }
+                
+                resizeFrame();
+                                
+                return;
+            }
+            
+            
+            // Size iframe as our window is resized
+            function resizeFrame() {
+                $IAIHj('#StepFrm').css('width', window.innerWidth);             
+                $IAIHj('#StepFrm').css('height', window.innerHeight - $IAIHj('#Diags').height());
+                
+                // Also, advise owning window of this
+                var CoOrds;
+                
+                // In Mac, we need to take the "toolbar / menubar" into account:
+                // NB: FireFox does this itself - so if FireFox, ignore
+                if (navigator.appVersion.indexOf("Mac") != -1 && navigator.userAgent.toLowerCase().indexOf('firefox') == -1) {
+                    CoOrds = window.screenX + ':' + (window.screenY - 22) + ':' + window.outerWidth + ':' + window.outerHeight;
+                } else {
+                    CoOrds = window.screenX + ':' + window.screenY + ':' + window.outerWidth + ':' + window.outerHeight;
+                }
+                 
+                document.getElementById('Diags').innerHTML = 'GSSize=' + CoOrds;            
+                window.opener.postMessage('GSSize=' + CoOrds, '*');         
+            }
+            
+                    
+        </script>
+    </head>
+
+
+    <body style="margin: 0px; padding: 0px;" onload="javascript:initialise();">
+        <apex:include pageName="iahelp__IHHook"/>           
+        
+        <div id="Diags" style="width: 100%; height: 1px; cursor: pointer; background-color: #ffffff; overflow: hidden;" onclick="javascript:showDiags(this);"></div>
+        <iframe id="StepFrm" style="width: 100%;" src="" frameborder="0"></iframe>
+    </body>
+
+</apex:page>

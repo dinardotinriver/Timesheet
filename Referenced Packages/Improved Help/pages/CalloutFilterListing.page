@@ -1,0 +1,186 @@
+<!--
+============================================================================================== 
+PAGE PRESENTING A FILTERABLE LIST OF TOPICS RELATED TO THE SELECTED ONE. FILTERING
+IS DESIGNED (USING JQUERY MOBILE) TO ALLOW RAPID SEARCHING THROUGH AVAILABLE DATA FOR 
+THE INFORMATION MOST SUITED TO USER'S SITUATION
+REQUIRES INFORMATION ABOUT HOW THE PRECIS TIP SHOULD LOOK (elemType)
+PLUS EITHER A HELP TOPIC (HTID) OR HELPED ELEMENT ID (ElemID) PLUS HELPED PAGE
+LAYOUT IDENTIFIER (HPL), I.E:
+
+    [SF base URL]/Apex/[VF Page Name]?HTID=[topic id]
+    ...OR...
+    [SF base URL]/Apex/[VF Page Name]?ElemID=[helped element id]&HPL=[helped page layout identifier]
+
+elemType is passed directly back to the DIV on this page used to show the tip, so should
+match a style name defined in the IH CSS.
+
+Martin Little for Improved Apps
+September 2015
+Copyright (c.) Improved Apps Limited 2015. All Rights Reserved.
+============================================================================================== 
+ -->
+ 
+<apex:page controller="iahelp.ControllerHelpContent" standardStylesheets="False" showHeader="False" sidebar="false" action="{!getHelp}">
+
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.iahelp__IHResources, '/css/help_customer.css')}" />          
+        <apex:stylesheet value="{!URLFOR($Resource.iahelp__IHResources, '/css/help_main.css')}" />
+
+		<apex:includeScript value="/support/console/28.0/integration.js"/>        	    
+	    <apex:includeScript value="{!URLFOR($Resource.iahelp__IHResources, '/js/jsQAMenu.js')}"/>  	    
+		<apex:includeScript value="{!URLFOR($Resource.iahelp__IHResources, '/js/jsCommunities.js')}"/>  	    
+        
+        <apex:stylesheet value="{!URLFOR($Resource.iahelp__IHResources, '/lib/jquery/jquery.mobile.structure-1.4.5.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.iahelp__IHResources, '/lib/jquery/jQ142.js')}"  />
+        <apex:includeScript value="{!URLFOR($Resource.iahelp__IHResources, '/lib/jquery/jQM142Min.js')}"  />
+        
+        <style>
+        	body				{background-color: #fff !important;}
+        	.IHFilterableList 	{height: Calc(90vh - 90px); width: 100%; overflow-y: auto;}
+        	.IHHiddenList 		{height: 0px; width: 100%; overflow-y: auto;}
+        	.IHSmallLink		{text-align: right; font-size: 0.8em; padding-right: 20px;}
+        
+			<!-- Start mobile-ui styles -->
+			.ui-btn                           {font-size: 12px; font-family: Arial, Helvetica, sans-serif;}
+			.ui-input-search                  {margin: 6px 0 0 0; padding: 0; background: white; border: 1px solid silver; border-radius: 4px;}
+			.ui-input-search input            {padding: 1px 5px; font-size: 0.9em;}
+			<!-- End mobile-ui styles -->
+        
+        </style>
+        
+        <script>
+        	function initialise() {
+	        	document.getElementById('filterBasic-input').focus();
+        	}
+        </script>
+    </head>
+    
+    
+    <body data-role="page" class="Dialogue {!CustomStyle}{!IF(isIH1UX==true, ' IH1UX', '')}{!IF(CalloutMode==true, ' CalloutMode', '')}" onload='javascript:initialise();'>
+        <apex:form >
+        	
+        	<div class='Callout Bubble {!TCSSClass}' style='width: Calc(100% - 10px); height: Calc(100% - 10px); margin-left: 5px;'>
+        		<div class="CalloutContent" style="padding: 10px;">
+
+<!--   
+===============================================
+TOPIC HEADER AREA
+===============================================
+ -->            
+
+					<!-- Share, Like and other tools -->
+					<c:IHTopicUtils theTopic="{!Hlp}" theHElem="{!HE}" GlobalLocalisations="{!GlobalLocalisations}" isConsolePage="{!IsConsolePage}" isIH1UX="{!isIH1UX}" /> 
+
+        		
+		    		<div class="IH-H4" style="display: {!IF(TSummary != '' && TSummary != null, 'block', 'none')}; padding-top: 3px;">
+			            <apex:outputText value="{!TName}" escape="false" />
+		    		</div>
+		    		<div>
+		    			{!TSummary}
+		    		</div>
+		
+
+		            <!-- Provide link "back" to any topic we're related TO -->
+	                <apex:repeat var="Rel" value="{!Relations}" >
+	                	<li style="display: {!IF(Rel.HR.RelatedHelpTopic__c == Hlp.Id, 'block', 'none')}; padding: 0px; margin-top: 10px; background-color: inherit;">
+
+                			<a style="text-decoration: none;" href='javascript:void(0);' onclick="javascript:document.location='{!$Page.CalloutFilterListing}?HTID={!Rel.HR.ReferringTopic__c}';" title="{!GlobalLocalisations['TipGoto']}: {!Rel.Name}">
+                				<div class="IHIcon16 IHIconNavPrevious" style="float: left; padding-right: 5px;"></div>
+	                			<span style="color: red;">
+	                				<apex:outputText value="{!Rel.Name}" />
+	                			</span>
+                			</a>
+	                	</li>
+	                </apex:repeat>
+	                
+<!--   
+===============================================
+FILTERING TOOL
+===============================================
+ -->            	                
+	                <!-- Search tool - but only if there's a listing to search! -->
+	                <div style="display: {!IF(Relations.size > 1, 'block', 'none')};">
+			            <form class="ui-filterable">
+			                <input id="filterBasic-input" data-type="search" title="{!GlobalLocalisations['TipInputTextbox']}"/>
+			            </form>
+	                </div>
+
+<!--   
+===============================================
+LEAF TOPIC DETAILS
+===============================================
+ -->            
+		        	<!-- If there is no list to show, display "leaf" topic details -->
+		        	<div class="{!IF(Relations.size == 1, 'IHFilterableList', 'IHHiddenList')}" style="display: {!IF(Relations.size == 1, 'block', 'none')};" >
+						<div class="IH1ListItem">
+	                		<div class="IH1ListItemFirstLine" style="white-space: normal;">
+				        		<apex:outputText escape="false" value="{!TDescription}" />
+		
+								<!-- Leaf details include (almost) "standard" read more link for current topic -->
+		                        <div class="IHSmallLink">
+		                            <apex:outputLink styleClass="{!IF((isAuthor || isAdministrator) && Hlp.iahelp__ShowReadMoreLink__c == false, 'Authoring', '')}" 
+		                                            title="{!JSENCODE(TMoreLinkTitle)}" 
+		                                            value="{!JSENCODE(TMoreLinkHref)}" 
+		                                            onclick="{!IF(TMoreLinkOnclick != '', 'openPrimaryTab(' + Q + JSENCODE(TMoreLinkOnclick) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+		                                            target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+		
+		                                <div class='MoreLink'>
+		                                    <apex:outputText escape="true" value="{!TMoreLinkText}" />
+		                                </div>
+		                            </apex:outputLink>                        
+		                        </div>  
+	                		</div>
+						</div>
+		        	</div>
+
+		        	
+<!--   
+===============================================
+FILTERABLE LIST OF RELATED TOPICS
+===============================================
+ -->            
+               		<!-- Only show onward links to topics related FROM current one -->
+		        	<div class="{!IF(Relations.size > 1, 'IHFilterableList', 'IHHiddenList')}">
+			            <ul data-role="listview" data-filter="true" data-input="#filterBasic-input" class="Tree">
+			                <apex:repeat var="Rel" value="{!Relations}" >
+			                	<li style="padding: 0px; background-color: inherit; border: none;">
+			                		
+			                		<div class="IH1ListItem" style="display: {!IF(Rel.HR.RelatedHelpTopic__c != Hlp.Id, 'block', 'none')};">			                		
+				                		<div class="IH1ListItemFirstLine" style="width: 100%; white-space: normal;">
+				                			<a href='javascript:void(0);' onclick="javascript:document.location='{!$Page.CalloutFilterListing}?HTID={!Rel.HR.RelatedHelpTopic__c}';" title="{!GlobalLocalisations['TipGoto']}: {!Rel.Name}">
+					                			<apex:outputText value="{!Rel.Name}"/>
+				                			</a>
+				                			<div>
+					                			<apex:outputText value="{!Rel.Summary}" />
+				                			</div>
+				                			
+				                			<!-- 
+				                			Read more link for Rels is slightly simpler / less sophisticated in its display logic
+				                			but does respect underlying related topic's "Show Read More Link" setting
+				                			 -->
+					                        <div class="IHSmallLink">                            
+					                            <apex:outputLink rendered="{!IF(isAuthor || isAdministrator || Rel.HR.RelatedHelpTopic__r.iahelp__ShowReadMoreLink__c == true, true, false)}"
+					                            				title="{!GlobalLocalisations['TipReadMoreLinkUsers']}"
+					                            				value="{!Rel.ItemURL}"
+					                                            onclick="{!IF(TMoreLinkOnclick != '', 'openPrimaryTab(' + Q + JSENCODE(Rel.ItemURL) + Q + ', ' + Q + JSENCODE(TName) + Q + ');', '')}" 
+					                                            target="{!IF(TMoreLinkHref != '#', '_HelpTopic', '')}" >
+					                                <div class='MoreLink'>
+					                                    <apex:outputText escape="true" value="{!GlobalLocalisations['AdviceLabelReadMoreLink']}" />
+					                                </div>                            
+					                            </apex:outputLink>                    
+					                        </div>  
+				                			
+				                		</div>
+			                		</div>
+			                	</li>
+			                </apex:repeat>
+			            </ul>           
+		        	</div>
+		        	
+        		</div>        		
+        	</div>
+        	            
+        </apex:form>
+    </body>
+
+</apex:page>

@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsEditLineItems)}
+{!INCLUDE($SControl.aptsIncludeDate)}
+
+<script language="javascript" type="text/javascript"> 
+
+var cEDIT_RULE_CONDITION = "Editing rule conditions...Please Wait";
+var cERROR_EDIT_RULE_CONDITION = "ERROR editing rule conditions:\n";
+
+function initPage() {
+	window.setTimeout("doInit();",gTimeout);
+}
+
+function doInit() {
+	//set grid specific properties
+	gObjectId = "{!Agreement_Rule__c.Id}";
+	gObjectIdURL = "/"+gObjectId;
+	gTable = "Apttus__Agreement_Rule_Condition__c";
+	gTitlePl = "Rule Conditions";
+	gTitle = "Rule Condition";
+	
+	cEDIT_LINEITEM = cEDIT_RULE_CONDITION;
+	cERROR_EDIT_LINEITEM = cERROR_EDIT_RULE_CONDITION;
+	
+	//get selected ids
+	gRecordIds = {!GETRECORDIDS($ObjectType.Agreement_Rule_Condition__c)};
+	
+	//specify editable columns
+	addEditColumn("Apttus__Order__c");
+	addEditColumn("Apttus__Object__c");
+	addEditColumn("Apttus__Field__c");
+	addEditColumn("Apttus__Operator__c");
+	addEditColumn("Apttus__Value__c");
+	addEditColumn("Apttus__Join__c");
+	
+	//specify parent reference field
+	setAgreementRefField("Apttus__Agreement_Rule__c");
+	
+	buildPage();
+}
+
+function doCancel() {
+	navigateTo(gObjectIdURL);
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

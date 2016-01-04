@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/11.1/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+
+<script language="javascript" type="text/javascript"> 
+<!--
+/**
+	=================================================================================================
+	Send To Other Party
+	Sends contract to other party via email authoring page.
+	This link is conditionally shown only when the status category is "In Signatures".
+	=================================================================================================
+*/
+var gTargetStatusCategoryField = "Apttus__Status_Category__c";
+var gTargetStatusCategory = "In Signatures";
+var gTargetStatusField = "Apttus__Status__c";
+var gTargetStatus = "Other Party Signatures";
+
+var cERROR_UPDATE_STATUS = "ERROR updating agreement status:\n";
+
+function initPage() {
+	showMsgProgress("Sending Agreement To Other Party...Please Wait");
+	sendToOtherParty();
+}
+
+function sendToOtherParty() {
+	updateStatusCategory();
+	createActivityLogEntry();
+	navigateTo("/email/author/emailauthor.jsp?retURL=%2F{!APTS_Agreement__c.Id}&p3_lkid={!APTS_Agreement__c.Id}");
+}
+
+function updateStatusCategory() {
+	try {
+		var contract = new sforce.SObject(gAgreementObjName);
+		contract.Id = gContractId;
+		contract.set(gTargetStatusCategoryField, gTargetStatusCategory);
+		contract.set(gTargetStatusField, gTargetStatus);
+		
+		var opsDate = "{!APTS_Agreement__c.Other_Party_Sent_Date__c}";
+		if (opsDate=="" || opsDate==null) {
+			contract.set("Apttus__Other_Party_Sent_Date__c", new Date());
+		}
+
+		gNumApiCalls++;
+		var result = sforce.connection.update([contract]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_UPDATE_STATUS, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_UPDATE_STATUS + ex);
+	}
+}
+
+function createActivityLogEntry() {
+	try {	
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Agreement {!APTS_Agreement__c.Contract_Number__c} Sent To Other Party";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Sent To Other Party";
+		task.WhatId = gContractId;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+		navigateTo(gContractIdURL);
+	}
+}
+//-->
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+ 
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

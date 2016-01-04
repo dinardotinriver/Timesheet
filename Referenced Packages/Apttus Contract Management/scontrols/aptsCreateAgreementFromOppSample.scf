@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	Create Agreement From Opportunity
+	Creates a new agreement from an Opportunity in Salesforce.  The Scontrol prompts the
+	user for an agreement record type using a custom record type selection UI, creates a new
+	agreement, and then copies appropriate fields from the Opportunity into the new agreement.
+	=================================================================================================
+*/
+var gOppId = "{!Opportunity.Id}";
+var gOppName = "{!Opportunity.Name}";
+var gOppAccountId = "{!Opportunity.AccountId}";
+var gOppAccountName = "{!Opportunity.Account}";
+var gOppAmount = "{!Opportunity.Amount}";
+var gOppCloseDate = "{!Opportunity.CloseDate}";
+var gOppOwnerId = "{!Opportunity.OwnerId}";
+var gOppIdURL = "/{!Opportunity.Id}";
+
+function initPage() {
+	window.setTimeout("doInit();", 50);
+}
+
+function doInit() {
+	gHasRecordTypes = hasCustomField("RecordTypeId", gAgreementObjName);
+	if (gHasRecordTypes==true) {
+		var cancelURL = gOppIdURL;
+		var retURL = gOppIdURL;
+		var entity = gOppId;
+		var save = "1";
+		var saveNewURL = gOpportunityObj + gEditMode + "?retURL=" + gOpportunityObj + gViewMode;
+		
+		//show custom recordtypeselect.jsp page
+		selectRecordType("doCreateAgreementFromOpp()","doCancel()",cancelURL,retURL,entity,save,saveNewURL);
+	} else {
+		doCreateAgreementFromOpp();
+	}
+}
+
+function doCreateAgreementFromOpp() {
+	newAgreement();
+}
+
+function doCancel() {
+	navigateTo(gOppIdURL);
+}
+ 
+function doCommit(id) {
+	createAgreementFromOpp(id);
+}
+
+function doRollback(id) {
+	doCancel();
+}
+
+function createAgreementFromOpp(id) {
+	try {
+		//create agreement object
+		var sObj = new sforce.SObject(gAgreementObjName);
+		sObj.Id = id;
+		
+		//set agreement fields
+		//sObj.Apttus__Description__c = document.getElementById("gOppDescription").innerHTML;
+		sObj.Apttus__Description__c = document.dummy.gOppDescriptionTA.value;
+		sObj.Apttus__Account__c = gOppAccountId;
+		sObj.Apttus__Related_Opportunity__c = gOppId;
+		sObj.OwnerId = gOppOwnerId;
+		
+		//check opportunity amount
+		if (gOppAmount!=null && gOppAmount!="") {
+			var oppAmountNum = gOppAmount;
+			if (typeof(gOppAmount)=="string") {
+				oppAmountNum = convertStringToFloat(gOppAmount);
+			} else if (typeof(gOppAmount)=="number") {
+			}
+			sObj.Apttus__Total_Contract_Value__c = oppAmountNum;
+		}
+		//sObj.Product_Image_URL__c = qli.Product_Image_URL__c;
+				
+		//CurrencyIsoCode is not a valid opportunity merge field
+		//contract.CurrencyIsoCode = gOppCurrencyIsoCode;
+		
+		//copy opportunity line items to agreement line items
+		var fieldList = getFieldList("OpportunityLineItem");
+		var q = "select "+fieldList+" from OpportunityLineItem where OpportunityId = '"+gOppId+"'";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		for (var i=0; i<records.length; i++) {
+			var qli = records[i];
+			var ali = new sforce.SObject(gObjectDetailType);
+			
+			ali.Service_Start_Date__c = qli.Service_Date__c;
+			ali.Service_End_Date__c = qli.Service_Date__c;
+			ali.Quantity__c = qli.Qty_Ordered__c;
+			
+			//get product info
+			var ids = new Array(1);
+			ids[0] = qli.Product2__c;
+			var pfieldList = getFieldList("Product2");
+			var presult = sforce.connection.retrieve(pfieldList,"Product2",ids);
+			if (presult[0]==null) {
+				erroralert(cERROR_NEW_OBJECT,presult);
+				return;
+			}
+			ali.Product__c = qli.Product2__c;
+			ali.Product_Family__c = presult[0].Family;
+			ali.Product_Description__c = presult[0].Description;
+			ali.Product_Code__c = presult[0].ProductCode;
+			
+			ali.Net_Extended_Price__c = qli.Extended_Price__c;
+			ali.List_Price__c = qli.Unit_Price__c;
+			ali.Discount__c = qli.Sales_Discount__c;
+			ali.Discount_Amount__c = qli.Sales_Discount__c;
+			ali.Description__c = qli.Description__c;
+			ali.Agreement__c = gObjectId;
+			ali.Product_Image_URL__c = qli.Product_Image_URL__c;
+
+			var result = sforce.connection.create([ali]);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_NEW_OBJECT,result[0]);
+				return;
+			}
+		}
+
+		//update the agreement and open in edit mode
+		var result = sforce.connection.update([sObj]);
+		if (result[0].getBoolean("success")) {
+			createActivityLogEntry(id);
+			editAgreement(id);
+			
+		} else {
+			erroralert(cERROR_CREATE_FROM_OPPORTUNITY, result[0]);
+			navigateToHome();
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_FROM_OPPORTUNITY + ex);
+		navigateToHome();
+	}
+}
+
+function createActivityLogEntry(id) {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Created Agreement From Opportunity '" + gOppName + "'"
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Created Agreement From Opportunity";
+		task.WhatId = id;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+<div id="gOppDescription" style="position:absolute; visibility:hidden">{!Opportunity.Description}</div>
+<form name="dummy" method="post">
+<textarea id="gOppDescriptionTA" name="gOppDescriptionTA" style="visibility:hidden">
+{!Opportunity.Description}
+</textarea>
+</form>
+
+</body>
+</html>

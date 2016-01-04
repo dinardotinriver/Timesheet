@@ -1,0 +1,5 @@
+<apex:component >
+    <c:REMOTE_DocumentGenerator />
+    <c:COMMON_Salesforce1JobMessages />
+    <c:COMMON_Salesforce1Messages />
+</apex:component>

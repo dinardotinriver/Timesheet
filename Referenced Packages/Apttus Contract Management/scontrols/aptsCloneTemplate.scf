@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeWizard)}
+
+<script language="javascript" type="text/javascript"> 
+
+var cCLONE_TEMPLATE = "Cloning template...Please Wait";
+var cERROR_CLONE_TEMPLATE = "ERROR cloning template:\n";
+
+function initPage() {
+	showMsgProgress(cCLONE_TEMPLATE);
+	window.setTimeout("clone();",gTimeout);
+}
+
+function clone() {
+	try {
+		//clone the template
+		var cloneId = cloneObject(gTemplateObjName, gTemplateObjId);
+		var fieldList = getFieldList(gTemplateObjName);
+		var result = sforce.connection.retrieve(fieldList,gTemplateObjName,[cloneId]);
+		if (result[0] == null) {
+			alert(cERROR_CLONE_TEMPLATE + result);
+			navigateTo(gTemplateObjIdURL);
+		}
+		
+  		var clone = new sforce.SObject(gTemplateObjName);
+	    clone.Id = cloneId;
+	    clone.Name = result[0].Name + " Copy";
+	    	    
+		var result = sforce.connection.update([clone]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CLONE_TEMPLATE, result[0]);
+			navigateTo(gTemplateObjIdURL);
+		}
+
+		//make a note in the original template
+		createActivityLogEntry(cloneId);
+		
+		//open the template in edit mode
+		if (!gDebug) {
+			navigateTo("/" + cloneId + "/e?retURL=%2F" + cloneId);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CLONE_TEMPLATE,ex);
+		navigateTo(gTemplateObjIdURL);
+	}
+}
+
+/**
+    clients should provide an implementation for this method to perform special processing
+    on attachments before copying them in base64 binary format to Salesforce. for example,
+    word document attachments for agreement and template objects should have the object id
+    of the cloned Salesforce object saved in the document properties so the Author tool
+    will know what agreement or template object owns the document in Salesforce...
+*/
+/*function preprocessAttachment(sObj,sObjType,sObjId) {
+    if (gDebug) writeDebugLn("<br><br>preprocessAttachment:<br>sObjType="+sObjType+"<br>sObjId="+sObjId);
+    var body = sObj.Body;
+    
+    try {
+        initWizardSilent();
+        if (gMMObjInstalled) {
+            var fnExt = getFileNameExtension(sObj.Name);    
+            if ((fnExt.toLowerCase()=="doc" || fnExt.toLowerCase()=="docx")) {
+                var fnPath = gMMObj.GetTempFilePath(sObj.Name)
+                if (gDebug) writeDebugLn("<br>sObjType="+sObjType+"<br>sObjId="+sObjId+"<br>sObj="+sObj+"<br>fnPath="+fnPath);
+                
+                var dBody = gMMObj.Base64Decode(fnPath,sObj.Body);
+                var ok = gMMObj.StoreId(fnPath,sObjType,sObjId);
+                var eBody = gMMObj.Base64Encode(fnPath);
+                
+                gMMObj.DeleteFile(fnPath);
+                body = eBody;
+            }
+        }
+    }
+    catch(ex) {
+        erroralert(cERROR_CLONE_ATTACHMENT,ex);
+        
+        if (gMMObjInstalled) {
+            gMMObj.DeleteFile(fnPath);
+        }
+    }
+    finally {
+        return body;
+	}
+}*/
+
+function createActivityLogEntry(id) {
+	try {
+		var task = new sforce.SObject("Task");
+		task.Description = "Cloned From {!APTS_Template__c.Name}";
+		task.ActivityDate = new Date();
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = task.Description;
+		task.WhatId = id;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

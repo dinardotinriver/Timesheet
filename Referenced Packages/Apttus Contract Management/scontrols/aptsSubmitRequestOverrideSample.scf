@@ -1,0 +1,48 @@
+function preSubmitRequest() {
+}
+
+function postSubmitRequest() {
+}
+
+function preSelectAutoSubmitRequestMode() {
+}
+
+function postSelectAutoSubmitRequestMode() {
+	return false;
+}
+
+function preSelectAgreementTemplate() {
+	cDEFAULT_AGREEMENT_TEMPLATE = "Agreement Fields";
+}
+
+function postSelectAgreementTemplate() {
+}
+
+function preSelectAgreementType() {
+	cDEFAULT_AGREEMENT_TYPE = "";
+	cAUTO_UPDATE_AGREEMENT_TYPE = false;
+}
+
+function postSelectAgreementType() {
+}
+
+function preSelectEmailTemplate() {
+	cDEFAULT_EMAIL_TEMPLATE = "Apttus Contract Activation Notice";
+}
+
+function postSelectEmailTemplate() {
+}
+
+function preSendNotification(ids) {
+	return ids;
+}
+
+function postSendNotification() {
+}
+
+function preSelectQueue() {
+	cDEFAULT_QUEUE = "Default Queue Name";
+}
+
+function postSelectQueue() {
+}

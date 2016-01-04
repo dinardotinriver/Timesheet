@@ -1,0 +1,42 @@
+<apex:page controller="Chatify.ChatifyController">
+    <apex:PageBlock title="Chatify Initial Setup">
+        <apex:PageBlockSection >
+            <p style="font-size:13px">Here you can initialize Chatify with the base supported Standard Objects.  
+            This will insert basic records in the Chatify Settings object.  
+            You can edit these settings for each object individualy after.
+            </p>
+            
+            <p style="font-size:13px">If you would like to add other Standard Objects or Custom Objects, you may do so by following the directions on the 'Add Object' tab.
+            </p>
+            <p style="font-size:13px">Below, please select the objects that you would like Chatify to create posts for.  Click Submit when you are done.
+            </p>
+            <hr/>
+        </apex:PageBlockSection>
+        <apex:form >
+            <apex:PageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <!--
+                    <c:MultiselectPicklist leftLabel="Supported Objects"
+                        leftOptions="{!suportedObjects}"
+                        rightLabel="Selected Objects"
+                        rightOptions="{!selectedObjects}"
+                        size="10"
+                        width="160px"/>
+                        -->
+                                  <c:MultiselectPicklist leftLabel="Supported Objects"
+                        leftOptions="{!suportedObjects}"
+                        rightLabel="Selected Objects"
+                        rightOptions="{!selectedObjects}"
+                        size="10"
+                        width="160px"/>    
+                        
+                </apex:pageBlockSectionItem>
+            </apex:PageBlockSection>
+            <apex:PageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:commandButton action="{!submit}" value="Submit" style="height:40px; width:100px"/>
+                </apex:pageBlockSectionItem>
+            </apex:PageBlockSection>
+        </apex:form>
+    </apex:PageBlock>
+</apex:page>

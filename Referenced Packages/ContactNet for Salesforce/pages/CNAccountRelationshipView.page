@@ -1,0 +1,387 @@
+<!--
+* {Purpose} – Displays colleagues & contacts relationship information for any company. This VF page
+* 		can be placed directly on any account page layout to make it functional.
+*
+* @author	Shah Kadirmohideen
+* @version	2011-11-10
+*/
+   
+/**  
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2011-11-10	Shah Kadirmohideen		Created      
+* 2011-11-22	Mike Eaton				Added comment block and pageBlockSection
+* 2012-01-02	Shah Kadirmohideen		Renamed variable 'CNRelationship.toContact' as 'CNRelationship.contact'
+* 2012-01-09	Shah Kadirmohideen		Fixed issue - pipe symbol displayed on inner relationship table even though there were no data following that symbol.
+* 2012-01-20	Shah Kadirmohideen		Incorporated enhanced list (go to list) functionality related changes. 
+* 2012-07-12	Shah Kadirmohideen		Added support for calendar icon display
+* 2012-10-05	Shah Kadirmohideen		Added escape parameter to apex:pageMessages tag      
+* =============================================================================
+--> 
+<apex:page standardController="Account" extensions="ContactNet.CNAccountRelationshipViewController" showHeader="{!IF(IsEnhancedList, true, false)}"  
+				sidebar="{!IF(IsEnhancedList, true, false)}" id="thePage" action="{!loadRelationships}">
+
+<apex:stylesheet value="{!$Resource.ContactNet__CN_CSS}"/> 
+<apex:includeScript value="{!$Resource.ContactNet__CN_JS}"/>
+
+<script language="javascript">
+
+var previousOnload = window.onload;
+window.onload = function() {
+    if (previousOnload) { 
+         previousOnload();
+    }
+	resizeWindow('Colleague');
+	resizeWindow('Contact');
+}
+ 
+</script>
+
+<apex:outputPanel rendered="{!IsEnhancedList}">
+  <apex:sectionHeader title="Relationships from ContactNet" subtitle="{!oAcct.Name}"/>
+  <a href="/{!oAcct.Id}" style="text-decoration: none; color:blue;">Account: {!oAcct.Name}</a>
+  <br/><br/>
+</apex:outputPanel>
+
+
+<apex:form id="theForm">
+
+<c:CNDisplayPageLoadingMessage renderPage="{!showPageLoadingMsg}" pageLoadingMessage="Loading Colleagues & Contacts from ContactNet..." 
+					vfPageName="CNAccountRelationshipView" recordId="{!Account.Id}" rendered="{!IsEnhancedList==false}"/>
+
+<apex:pageBlock id="theBlock" mode="mainDetail" rendered="{!showPageLoadingMsg==false}">
+<apex:pageMessages escape="false"/>
+
+ 
+<apex:tabPanel tabClass="tabHeaderStyle" contentClass="tabBodyStyle" value="{!sSelectedTab}" id="theTabPanel" rendered="{!errorsFound==false}" headerSpacing="2" switchType="client" activeTabClass="selectedTab">
+<!-- ***************  TAB ONE - RELATIONSHIPS -->
+<apex:tab label="Colleagues {!colleaguePaginator.RecordsCountOnTabName}" name="colTab" id="tabOne" ontabenter="resizeWindowToMostRecentHeight('Colleague')"> 
+  
+<apex:outputPanel rendered="{!colleaguePaginator.relationships.size==0 && errorsFound==false && IsEnhancedList==false}" id="colMsgPanel">
+<apex:pageMessage summary="No colleague relationship is found for this account." severity="info" strength="2" />
+</apex:outputPanel>
+
+<apex:outputPanel rendered="{!DisplayColleagueTable}" id="colMainPanel">
+
+<c:CNIndexFilter clickAction="{!colleaguePaginator.oEListHandler}" paginationLocation="top" rendered="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}" 
+								sortedColumnAPIName="{!colleaguePaginator.oEListHandler.sSortBy}"/>
+<apex:pageBlockTable value="{!colleaguePaginator.relationships}" var="relationship" width="100%" cellpadding="2px" 
+						style="border-width: 1px; border-style: solid; border-color:#B4B0B0;" id="relTableId"  
+						headerClass="tableHeader" columns="8">
+     <apex:column rendered="{!relationship.display}" width="110px" >
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Details" columnAPIName="Raw_Score__c" isSortable="{!IsEnhancedList}" 
+										rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<c:CNDisplayIcons score="{!relationship.normalizedScore}" isEmailSource="{!relationship.IsEmailSource}" isAddressBookSource="{!relationship.IsAddressBookSource}" 
+						isPhoneSource="{!relationship.IsPhoneSource}" isCRMSource="{!relationship.IsCRMSource}" isBillingSource="{!relationship.IsBillingSource}"
+						isCalendarSource="{!relationship.IsCalendarSource}"/>
+     		<apex:facet name="footer">
+     			<apex:outputText value="No records to display." rendered="{!IsEnhancedList && colleaguePaginator.relationships.size==0}"/> 
+     		</apex:facet>
+     </apex:column>  
+       
+     <apex:column rendered="{!relationship.display}" headerValue="" id="relActionColId">
+	     	<apex:commandLink action="{!loadContactsForSingleColleague}" rerender="colOuterTempPanelId" 
+	     				onclick="showInnerTable('relTableId', '{!relationship.hiddenRowIndex}', this, 'colHiddenRelIconId', null); resizeWindow('Colleague');"
+	     				id="colVisRelIconId"> 
+	     		<apex:param name="colleagueCNID" value="{!relationship.colleague.CNID}"/>
+	     		<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Relationship_Icon}" title="Show {!relationship.colleague.RelationshipTitle}" width="16" height="16" />
+	     	</apex:commandLink>
+	     	<apex:outputPanel style="display:none" id="colHiddenRelIconId">
+		     	<a href="javascript:void(0)" onclick="showInnerTable('relTableId', '{!relationship.hiddenRowIndex}', null, null, 'colRelImageId'); resizeWindow('Colleague');" >
+		     		<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Relationship_Icon}" title="Hide {!relationship.colleague.RelationshipTitle}" width="16" height="16" id="colRelImageId"/>
+		     	</a>  
+	     	</apex:outputPanel>
+     </apex:column>
+ 
+     <apex:column rendered="{!relationship.display}">
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Name" columnAPIName="Fullname__c" isSortable="{!IsEnhancedList}" 
+											rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<apex:outputText value="{!relationship.colleague.fullNamePrepared}"/>
+     </apex:column>                
+
+     <apex:column rendered="{!relationship.display}" >
+		<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Title" columnAPIName="Title__c" isSortable="{!IsEnhancedList}" 
+											rerenderPanel="{!$Component.theBlock}"/>
+		</apex:facet>
+		<apex:outputText value="{!relationship.colleague.title}"/>&nbsp;
+     </apex:column>                
+
+	 <apex:column rendered="{!relationship.display}">
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Phone" columnAPIName="First_Phone__c" isSortable="{!IsEnhancedList}" 
+												rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<c:CNExpandCollapse collapseData="{!relationship.colleague.collapsedPhones}" expandData="{!relationship.colleague.expandedPhones}" 
+								isEmail="false" uniqueId="relPhone{!relationship.colleague.CNID}" tabName="Colleague"/>
+	 </apex:column>   
+
+     <apex:column rendered="{!relationship.display}">
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Department" columnAPIName="Department__c" isSortable="{!IsEnhancedList}" 
+									rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+     		<apex:outputText value="{!relationship.colleague.department}"/>&nbsp;
+     </apex:column>                
+     
+     <apex:column rendered="{!relationship.display}">
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Location" columnAPIName="Working_Location__c" 
+										isSortable="{!IsEnhancedList}"  rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+     		<apex:outputText value="{!relationship.colleague.workingLocation}"/>&nbsp;
+     </apex:column>                
+	   
+     <apex:column rendered="{!relationship.display}" >
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!colleaguePaginator.oEListHandler}" columnHeaderLabel="Email" columnAPIName="First_Email__c" isSortable="{!IsEnhancedList}" 
+										rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<c:CNExpandCollapse collapseData="{!relationship.colleague.collapsedEmails}" expandData="{!relationship.colleague.expandedEmails}" 
+								isEmail="true" uniqueId="relEmail{!relationship.colleague.CNID}" tabName="Colleague"/>
+     </apex:column>    
+  	 
+     <apex:column headerValue="" rendered="{!relationship.display==false}" colspan="8" style="background-color:#EBE8E8; display:none;" id="hiddenRow">
+     	<div style="border-width: 0px; border-style: solid; border-color:#B4B0B0; display:block">
+	     	<div style="background-color: #C6C2C2; padding:3px">
+	     		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   			<apex:outputText value="{!relationship.colleague.RelationshipTitle} »" style="font-weight:bold;"/> &nbsp;
+	   			<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Async_Loading_Icon}" width="16" height="16"/>
+	     	</div>
+	     </div>
+	</apex:column>
+     
+</apex:pageBlockTable>
+<c:CNIndexFilter clickAction="{!colleaguePaginator.oEListHandler}" paginationLocation="bottom" rendered="{!IsEnhancedList}" 
+			rerenderPanel="{!$Component.theBlock}" feedbackToEmail="{!appSetting.ContactNet__Feedback_Notification_Email__c}" 
+			feedbackSubject="{!appSetting.ContactNet__Feedback_Notification_Subject__c}" 
+			sortedColumnAPIName="{!colleaguePaginator.oEListHandler.sSortBy}"/>
+
+		<apex:outputPanel style="display:none" id="colOuterTempPanelId">
+		     	<div style="border-width: 0px; border-style: solid; border-color:#B4B0B0; display:block">
+		     	<div style="background-color: #C6C2C2; padding:3px">
+		     		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		   			<apex:outputText value="{!hiddenColleagueRelationshipExpanded.colleague.RelationshipTitle} »" style="font-weight:bold;"/>
+		     	</div>
+		     	<div style="background-color: #FFFCFC;">
+		     		<!-- hidden table goes here -->
+					<table width="100%" class="innerTableStyle">
+						<apex:repeat value="{!relationshipsForColleague}" var="innerRelationship">
+							<tr>
+								<td width="50px">&nbsp;
+								</td><td nowrap="nowrap" width="120px" >
+									<c:CNDisplayIcons score="{!innerRelationship.normalizedScore}" isEmailSource="{!innerRelationship.IsEmailSource}" 
+												isAddressBookSource="{!innerRelationship.IsAddressBookSource}" isPhoneSource="{!innerRelationship.IsPhoneSource}"
+												 isCRMSource="{!innerRelationship.IsCRMSource}" isBillingSource="{!innerRelationship.IsBillingSource}"
+												 isCalendarSource="{!innerRelationship.IsCalendarSource}"/>
+							   </td><td>
+							   
+						 	<apex:outputText value="{!innerRelationship.contact.fullNamePrepared}" rendered="{!innerRelationship.contact.isNamePresent==true}"/>
+						 	<apex:outputPanel rendered="{!innerRelationship.contact.IsNamePresent==false}">
+						 		<apex:outputLink value="mailto:{!innerRelationship.contact.firstEmail}" >{!innerRelationship.contact.firstEmail}</apex:outputLink>
+						 	</apex:outputPanel>  
+						 	<apex:outputPanel rendered="{!innerRelationship.contact.isTitleEmpty == false}">
+						 		<font color="#A4A0A0">|</font>&nbsp;{!innerRelationship.contact.title}
+						 	</apex:outputPanel>
+						 	<apex:outputPanel rendered="{!innerRelationship.contact.IsNamePresent}">
+						 		<font color="#A4A0A0">|</font>&nbsp;<apex:outputLink value="mailto:{!innerRelationship.contact.firstEmail}" >{!innerRelationship.contact.firstEmail}</apex:outputLink>
+						 	</apex:outputPanel>  
+						 	<apex:outputPanel rendered="{!innerRelationship.contact.FirstPhoneNumber != null}">
+						 		<font color="#A4A0A0">|</font>&nbsp;{!innerRelationship.contact.FirstPhoneNumber}  
+						 	</apex:outputPanel>
+						 </td></tr>
+					</apex:repeat>
+			</table>     		
+		     	</div>	
+		     	</div>	
+		     	<script language="javascript">
+		     		displayInnerTable('{!hiddenColleagueRelationshipExpanded.index}', 'relTableId', 'colOuterTempPanelId');
+		     		resizeWindow('Colleague');
+		     	</script>
+		</apex:outputPanel>
+  
+		<c:CNPaginationFooter tabName="Colleague" isDownloadMode="{!isDownloadMode}" paginator="{!colleaguePaginator}" rerenderId="colMainPanel" 
+					feedbackToEmail="{!appSetting.ContactNet__Feedback_Notification_Email__c}" feedbackSubject="{!appSetting.ContactNet__Feedback_Notification_Subject__c}" 
+					id="colleaguePaginationFooterId" rendered="{!IsEnhancedList==false}" gotoListURL="/apex/CNAccountRelationshipView?id={!oAcct.Id}&mode=elist&t=colTab"/>		
+
+</apex:outputPanel>
+
+</apex:tab>
+
+
+<!-- ***************  TAB TWO - CONTACTS -->
+
+<apex:tab label="Contacts {!contactPaginator.RecordsCountOnTabName}" name="contTab" id="tabTwo" ontabenter="resizeWindowToMostRecentHeight('Contact')"> 
+
+<apex:outputPanel rendered="{!contactPaginator.relationships.size==0 && errorsFound==false && IsEnhancedList==false}" id="contMsgPanel">
+<apex:pageMessage summary="No contact relationship is found for this account." severity="info" strength="2" />
+</apex:outputPanel>
+  
+<apex:outputPanel rendered="{!DisplayContactTable}" id="contMainPanel">
+
+<c:CNIndexFilter clickAction="{!contactPaginator.oEListHandler}" paginationLocation="top" rendered="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"
+																sortedColumnAPIName="{!contactPaginator.oEListHandler.sSortBy}"/>
+<apex:pageBlockTable value="{!contactPaginator.relationships}" var="relationship" width="100%" cellpadding="2px" 
+																columns="{!IF(contactPaginator.DisplayLastUpdateDate,8,7)}" 
+																style="border-width: 1px; border-style: solid; border-color:#B4B0B0;" id="contTableId"  
+						headerClass="tableHeader">
+     <apex:column rendered="{!relationship.display}" width="5%" styleClass="actionColumn">
+			<apex:facet name="header">
+				Action
+			</apex:facet>
+     		<c:CNFindContact searchCriteria="{!relationship.contact.FirstEmail}" useGlobalSearch="{!IF(useGlobalSearch==true, true, false)}"/>   
+     		<font color="#A4A0A0">|</font>
+     		
+     		<c:CNAddContact firstName="{!relationship.contact.firstName}" lastName="{!relationship.contact.lastName}" title="{!relationship.contact.title}"
+                    phone="{!relationship.contact.firstPhoneNumber}" mobile="{!relationship.contact.MobilePhoneNumber}" email="{!relationship.contact.firstEmail}" 
+                    accountId="{!oAcct.Id}" />
+     		<apex:facet name="footer">
+     			<apex:outputText value="No records to display." rendered="{!IsEnhancedList && contactPaginator.relationships.size==0}"/> 
+     		</apex:facet>
+     </apex:column>                
+
+     <apex:column rendered="{!relationship.display}" width="110px" >
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!contactPaginator.oEListHandler}" columnHeaderLabel="Details" columnAPIName="Raw_Score__c" isSortable="{!IsEnhancedList}" 
+													rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<c:CNDisplayIcons score="{!relationship.normalizedScore}" isEmailSource="{!relationship.IsEmailSource}" isAddressBookSource="{!relationship.IsAddressBookSource}" 
+						isPhoneSource="{!relationship.IsPhoneSource}" isCRMSource="{!relationship.IsCRMSource}" isBillingSource="{!relationship.IsBillingSource}"
+						isCalendarSource="{!relationship.IsCalendarSource}"/>
+     </apex:column>  
+     
+     <apex:column rendered="{!relationship.display}" headerValue="" id="contActionColId">
+	     	<apex:commandLink action="{!loadColleaguesForSingleContact}" rerender="contOuterTempPanelId" 
+	     				 onclick="showInnerTable('contTableId', '{!relationship.hiddenRowIndex}', this, 'contHiddenRelIconId', null); resizeWindow('Contact');"
+	     				 id="contVisRelIconId"> 
+	     		<apex:param name="contactCNID" value="{!relationship.contact.CNID}"/>
+	     		<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Relationship_Icon}" title="Show {!relationship.contact.RelationshipTitle}" width="16" height="16" />
+	     	</apex:commandLink>  
+	     	<apex:outputPanel style="display:none" id="contHiddenRelIconId">
+		     	<a href="javascript:void(0)" onclick="showInnerTable('contTableId', '{!relationship.hiddenRowIndex}', null, null, 'contRelImageId'); resizeWindow('Contact');"
+		     															 id="actionLink2">
+		     		<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Relationship_Icon}" title="Hide {!relationship.contact.RelationshipTitle}" width="16" height="16" id="contRelImageId"/>
+		     	</a>
+	     	</apex:outputPanel>
+     </apex:column>
+
+     <apex:column rendered="{!relationship.display}">
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!contactPaginator.oEListHandler}" columnHeaderLabel="Name" columnAPIName="Fullname__c" isSortable="{!IsEnhancedList}" 
+																					rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+     		<apex:outputText value="{!relationship.contact.FullNameOrEmail}"/>
+     </apex:column>                
+
+     <apex:column rendered="{!relationship.display}" >
+		<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!contactPaginator.oEListHandler}" columnHeaderLabel="Title" columnAPIName="Title__c" isSortable="{!IsEnhancedList}"
+																				 rerenderPanel="{!$Component.theBlock}"/>
+		</apex:facet>
+		<apex:outputText value="{!relationship.contact.title}"/>&nbsp;
+     </apex:column>                
+   
+	 <apex:column rendered="{!relationship.display}" > 
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!contactPaginator.oEListHandler}" columnHeaderLabel="Phone" columnAPIName="First_Phone__c" isSortable="{!IsEnhancedList}" 
+																					rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<c:CNExpandCollapse collapseData="{!relationship.contact.collapsedPhones}" expandData="{!relationship.contact.expandedPhones}" 
+								isEmail="false" uniqueId="contPhone{!relationship.contact.CNID}" tabName="Contact"/>
+	 </apex:column>   
+	  
+	   
+     <apex:column rendered="{!relationship.display}" >
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!contactPaginator.oEListHandler}" columnHeaderLabel="Email" columnAPIName="First_Email__c" isSortable="{!IsEnhancedList}" 
+																					rerenderPanel="{!$Component.theBlock}"/>
+			</apex:facet>
+			<c:CNExpandCollapse collapseData="{!relationship.contact.collapsedEmails}" expandData="{!relationship.contact.expandedEmails}" 
+								isEmail="true" uniqueId="contEmail{!relationship.contact.CNID}" tabName="Contact"/>
+     </apex:column> 
+        
+     
+  	 <apex:column rendered="{!relationship.isDisplayLastUpdateDate}" > 
+			<apex:facet name="header">
+				<c:CNSortableHeaderFacet clickAction="{!contactPaginator.oEListHandler}" columnHeaderLabel="Last Update" columnAPIName="Last_Modification_Time__c" 
+															isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}" rendered="{!relationship.isDisplayLastUpdateDate}"/>
+			</apex:facet>
+			<apex:outputText value="{!relationship.contact.LastModificationTimeFormatted}" rendered="{!relationship.isDisplayLastUpdateDate}"/>&nbsp;
+     </apex:column>      
+  	 
+     <apex:column headerValue="" rendered="{!relationship.display==false}" colspan="{!IF(contactPaginator.displayLastUpdateDate, 8, 7)}" 
+     																	style="background-color:#EBE8E8; display:none;" id="hiddenRow">
+     	<div style="border-width: 0px; border-style: solid; border-color:#B4B0B0; display:block">
+	     	<div style="background-color: #C6C2C2; padding:3px">
+	     		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   			<apex:outputText value="{!relationship.contact.RelationshipTitle} »" style="font-weight:bold;"/> &nbsp;
+	   			<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Async_Loading_Icon}" width="16" height="16"/>
+	     	</div>
+	     </div>
+	</apex:column>
+  	     
+     
+</apex:pageBlockTable>
+<c:CNIndexFilter clickAction="{!contactPaginator.oEListHandler}" paginationLocation="bottom" rendered="{!IsEnhancedList}" 
+			rerenderPanel="{!$Component.theBlock}" feedbackToEmail="{!appSetting.ContactNet__Feedback_Notification_Email__c}" 
+			feedbackSubject="{!appSetting.ContactNet__Feedback_Notification_Subject__c}" sortedColumnAPIName="{!contactPaginator.oEListHandler.sSortBy}"/>
+
+		<apex:outputPanel style="display:none" id="contOuterTempPanelId">
+		     	<div style="border-width: 0px; border-style: solid; border-color:#B4B0B0; display:block">
+		     	<div style="background-color: #C6C2C2; padding:3px">
+		     		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		   			<apex:outputText value="{!hiddenContactRelationshipExpanded.contact.RelationshipTitle} »" style="font-weight:bold;"/>
+		     	</div>
+		     	<div style="background-color: #FFFCFC;">
+		     		<!-- hidden table goes here -->
+					<table width="100%" class="innerTableStyle">
+						<apex:repeat value="{!relationshipsForContact}" var="innerRelationshipCont">
+							<tr>
+								<td width="50px">&nbsp;  
+								</td><td nowrap="nowrap" width="120px" >
+									<c:CNDisplayIcons score="{!innerRelationshipCont.normalizedScore}" isEmailSource="{!innerRelationshipCont.IsEmailSource}" 
+												isAddressBookSource="{!innerRelationshipCont.IsAddressBookSource}" isPhoneSource="{!innerRelationshipCont.IsPhoneSource}"
+												 isCRMSource="{!innerRelationshipCont.IsCRMSource}" isBillingSource="{!innerRelationshipCont.IsBillingSource}"
+												 isCalendarSource="{!innerRelationshipCont.IsCalendarSource}"/>
+							   </td><td>
+						 	<apex:outputText value="{!innerRelationshipCont.colleague.fullNamePrepared}" rendered="{!innerRelationshipCont.colleague.isNamePresent==true}"/>
+						 	<apex:outputPanel rendered="{!innerRelationshipCont.colleague.IsNamePresent==false}">
+						 		<apex:outputLink value="mailto:{!innerRelationshipCont.colleague.firstEmail}" >{!innerRelationshipCont.colleague.firstEmail}</apex:outputLink>
+						 	</apex:outputPanel>  
+						 	<apex:outputPanel rendered="{!innerRelationshipCont.colleague.isTitleEmpty == false}">
+						 		<font color="#A4A0A0">|</font>&nbsp;{!innerRelationshipCont.colleague.title}
+						 	</apex:outputPanel>
+						 	<apex:outputPanel rendered="{!innerRelationshipCont.colleague.IsNamePresent}">
+						 		<font color="#A4A0A0">|</font>&nbsp;<apex:outputLink value="mailto:{!innerRelationshipCont.colleague.firstEmail}" >{!innerRelationshipCont.colleague.firstEmail}</apex:outputLink>
+						 	</apex:outputPanel>
+						 	<apex:outputPanel rendered="{!innerRelationshipCont.colleague.FirstPhoneNumber != null}">
+						 		<font color="#A4A0A0">|</font>&nbsp;{!innerRelationshipCont.colleague.FirstPhoneNumber}  
+						 	</apex:outputPanel>
+						 </td></tr>
+					</apex:repeat>
+			</table>     		
+		     	</div>	  
+		     	</div>	
+		     	<script language="javascript">
+		     		displayInnerTable('{!hiddenContactRelationshipExpanded.index}', 'contTableId', 'contOuterTempPanelId');
+		     		resizeWindow('Contact');
+		     	</script>
+		</apex:outputPanel>
+
+		<c:CNPaginationFooter tabName="Contact" isDownloadMode="{!isDownloadMode}" paginator="{!contactPaginator}" rerenderId="contMainPanel" 
+					feedbackToEmail="{!appSetting.ContactNet__Feedback_Notification_Email__c}" feedbackSubject="{!appSetting.ContactNet__Feedback_Notification_Subject__c}" 
+					id="contactPaginationFooterId" rendered="{!IsEnhancedList==false}" gotoListURL="/apex/CNAccountRelationshipView?id={!oAcct.Id}&mode=elist&t=contTab"/>		
+
+</apex:outputPanel>
+</apex:tab>
+
+</apex:tabPanel>
+</apex:pageBlock>
+
+</apex:form>  
+</apex:page>

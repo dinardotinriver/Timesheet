@@ -1,0 +1,181 @@
+<apex:component controller="TH1.DOCEDT_CO_DraftEditor">
+    <apex:includeScript value="/support/console/28.0/integration.js"/>
+    <apex:outputPanel id="draftEditorPanel" >
+        <link rel="stylesheet"
+            href="{!URLFOR($Resource.ThunderheadResources, 'styles/thunderhead_style.css')}"
+            type="text/css" />
+
+        <style>
+
+      .draftEditorContainer {
+          display: none;
+      }
+
+      #vf_container {
+          float: left;
+          width: 100%;
+          background-color: white;
+      }
+
+      #header {
+          float: left;
+          width: 100%;
+          margin-bottom: 5px;
+      }
+
+      #title {
+          width: 30%;
+          float: left;
+          font-size: 16px;
+          font-weight: bold;
+      }
+
+      #title img {
+          vertical-align: bottom;
+          margin-right: 5px;
+      }
+
+      .draftEditorContainer .buttons {
+          width: 45%;
+          margin-top: 5px;
+          float: left;
+          display: none;
+      }
+
+      #draft-editor-approval-list {
+        overflow-y: auto;
+        max-height: 250px;
+      }
+
+      #draftEditor {
+          float: left;
+          width: 100%;
+      }
+
+      .draftEditorContainer .loading {
+            border: 0px;
+          float: right;
+          margin-right: 30px;
+          margin-top: 5px;
+          display: none;
+      }
+
+      #saved_bar {
+          height: 45px;
+          background-color: #EEE;
+          color: black;
+          border: 2px solid gray;
+          text-align: center;
+          padding: 10px;
+          font-size: 10pt;
+          position: absolute;
+          top: 0;
+          z-index: 999999;
+          margin: 0;
+          font-weight: bold;
+          left: 25%;
+          width: 600px;
+          border-bottom-right-radius: 5px;
+          border-bottom-left-radius: 5px;
+          border-top: none;
+      }
+
+      #reload_button {
+          display: none;
+          margin-left: 150px;
+          width: 30%;
+          margin-top: 5px;
+          float: left;
+      }
+
+      textarea {
+          resize: none
+      }
+
+      #dropdown_button_email_drop_down, #runMuttonButton
+          {
+          height: 24px;
+          margin-bottom: 1px;
+          vertical-align: middle;
+      }
+
+      #runMuttonButton {
+          padding: 4px 26px 4px 8px;
+      }
+
+      .salesforceBtn {
+          height: 24px !important;
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+      }
+
+      #th_btn_approval_submit {
+        display: none;
+      }
+        </style>
+
+        <apex:stylesheet value="{!URLFOR($Resource.TH1__ThunderheadResources, 'styles/sw-ext.css')}" />
+
+        <c:COMMON_JQueryLib />
+        <c:COMMON_JQueryUILib />
+        <c:COMMON_ExtJSLib />
+        <c:COMMON_Bootstrap />
+        <c:COMMON_MustacheLib />
+        <c:COMMON_UnderscoreJSLib />
+        <c:COMMON_Json2Lib />
+
+        <script type="text/javascript" src="{!JSENCODE(DraftEditorAPIUrl)}"></script>
+
+        <c:REMOTE_DocumentGenerator />
+        <c:REMOTE_Drafts />
+        <c:EMAIL_Dialog />
+        <c:DOCUMENT_Dialog />
+        <c:DOCEDT_ChatterDropDown />
+        <script type="text/javascript">
+        $(function() {
+            Thunderhead.SF.require('docedt/chatter-dropdown')
+                    .done(function(ChatterDropdown) {
+                ChatterDropdown.init('dropdown_button_chatter_drop_down', 'chatter-dropdown-area', 'Chatter');
+            });
+        });
+        </script>
+
+        <c:COMMON_Mask />
+        <span id="draft-editor-dialog" class="wrap-bootstrap"></span>
+        <div id="errorMessages"></div>
+        <span id="draftEditorContainer" class="draftEditorContainer">
+                <!--  Draft editor panel -->
+                <div id="draft_container">
+                    <div id="vf_container">
+                        <div id="draft-editor-approval-list"></div>
+                        <div id="header">
+                            <span id="title">
+                                <img src="{!URLFOR($Resource.ThunderheadResources, 'images/document_icon.png')}" /><span id="draftTitle"></span>
+                            </span>
+                            <div class="buttons">
+                                <span id="nav_buttons">
+                                    <input id="th_btn_delete" type="button" value="Delete" class="btn salesforceBtn deleteBtn" />
+                                    <input id="th_btn_saveclose" type="button" value="Close" title = "Save & close" class="skywalker_button skywalker_blue" />
+                                    <input id="th_btn_revise" type="button" value="Revise" class="skywalker_button skywalker_orange" />
+                                    <input id="th_btn_save" type="button" value="Save" class="skywalker_button skywalker_blue" />
+                                    <input id="th_btn_approval_submit" type="button" value="Submit for Approval" class="skywalker_button skywalker_orange" />
+                                    <input id="th_btn_generate" type="button" value="Generate" class="skywalker_button skywalker_orange" />
+                                    <input id="th_btn_collaborate" type="button" value="Collaborate" class="skywalker_button skywalker_orange" />
+                                    <input id="th_btn_document_properties" type="button" value="Document Properties" class="btn salesforceBtn th_btn_document_properties" />
+                                    <input id="th_btn_email_properties" type="button" value="Email Properties" class="btn salesforceBtn th_btn_email_properties" />
+                                    <span id="dropdown_button_chatter_drop_down" />
+                                </span>
+
+                            </div>
+                            <div id="reload_button">
+                                <input id="th_btn_reload" type="button" value="Reload" class="btn salesforceBtn"/>
+                            </div>
+                            <img class="loading" src="/img/loading.gif" />
+                        </div>
+                    </div>
+                    <span id="chatter-dropdown-area" />
+                </div>
+        </span>
+        <div id="draftEditor" style="padding: 0;" />
+    </apex:outputPanel>
+</apex:component>

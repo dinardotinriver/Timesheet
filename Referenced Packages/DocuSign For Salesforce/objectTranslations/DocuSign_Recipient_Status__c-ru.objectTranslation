@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Instrumental</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Instrumental</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Prepositional</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Prepositional</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Recipient Status --></value>
+    </caseValues>
+    <fields>
+        <label>Учетная запись</label>
+        <name>Account__c</name>
+        <relationshipLabel>Состояние получателя DocuSign</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Контактное лицо</label>
+        <name>Contact__c</name>
+        <relationshipLabel>Состояние получателя DocuSign</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Дата отклонения</label>
+        <name>Date_Declined__c</name>
+    </fields>
+    <fields>
+        <label>Дата доставки</label>
+        <name>Date_Delivered__c</name>
+    </fields>
+    <fields>
+        <label>Дата отправки</label>
+        <name>Date_Sent__c</name>
+    </fields>
+    <fields>
+        <label>Дата подписания</label>
+        <name>Date_Signed__c</name>
+    </fields>
+    <fields>
+        <label>Причина отклонения</label>
+        <name>Decline_Reason__c</name>
+    </fields>
+    <fields>
+        <label>Компания получателя DocuSign</label>
+        <name>DocuSign_Recipient_Company__c</name>
+    </fields>
+    <fields>
+        <label>Адрес эл. почты получателя DocuSign</label>
+        <name>DocuSign_Recipient_Email__c</name>
+    </fields>
+    <fields>
+        <label>Идентификатор получателя DocuSign</label>
+        <name>DocuSign_Recipient_Id__c</name>
+    </fields>
+    <fields>
+        <label>Должность получателя DocuSign</label>
+        <name>DocuSign_Recipient_Title__c</name>
+    </fields>
+    <fields>
+        <label>Порядок маршрутизации DocuSign</label>
+        <name>DocuSign_Routing_Order__c</name>
+    </fields>
+    <fields>
+        <label>Идентификатор конверта</label>
+        <name>Envelope_Id__c</name>
+    </fields>
+    <fields>
+        <label>Потенциальный клиент</label>
+        <name>Lead__c</name>
+        <relationshipLabel>Состояние получателя DocuSign</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Запись о состоянии DocuSign</label>
+        <name>Parent_Status_Record__c</name>
+        <relationshipLabel>Состояние получателя DocuSign</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Статус получателя</label>
+        <name>Recipient_Status__c</name>
+    </fields>
+    <gender><!-- Neuter --></gender>
+    <layouts>
+        <layout>DocuSign Recipient Status Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Related Objects --></label>
+            <section>Related Objects</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel><!-- DocuSign Recipient Name --></nameFieldLabel>
+    <webLinks>
+        <label><!-- ResendDocuSignEmail --></label>
+        <name>ResendDocuSignEmail</name>
+    </webLinks>
+</CustomObjectTranslation>

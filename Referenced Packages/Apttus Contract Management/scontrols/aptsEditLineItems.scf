@@ -1,0 +1,991 @@
+{!INCLUDE($SControl.aptsInclude)}
+<script language="javascript" type="text/javascript"> 
+
+var gObjectId = "";
+var gObjectIdURL = "";
+var gTable = "";
+var gRequestId = "{!$Request.aid}";
+var gLineItemIds = "{!$Request.lids}";
+var gRecordIds = new Array();
+
+var gEditColNames = new Array();
+var gEditColTypes = new Array();
+var gEditColLabels = new Array();
+var gEditColWidths = new Array();
+var gEditColHeight = new Array();
+var gPicklistMap;
+var gcpName = "";
+var gcpValues = new Array();
+var gdpName = "";
+var gdpValues = new Array();
+var gAgreementRefField = "";
+var gPicklistNames = new Array();
+var gPicklistData = new Array();
+var gNumPicklists = 0;
+
+var cDEFAULT_HEIGHT = 1;
+var cDEFAULT_WIDTH = 20;
+var cEDIT_LINEITEM = "";
+var cERROR_EDIT_LINEITEM = "";
+
+var bSHOW_TODAY_DATE = new Boolean(true);
+var bROW_SELECTABLE = new Boolean(false);
+var bDEBUG = 0;
+
+function baseInit() {
+	//get URL parameters
+	if (gObjectId == "" || gObjectId == null) {
+		gObjectId = gRequestId;
+		gObjectIdURL = "/" + gObjectId;
+	}
+}
+
+function buildPage() {
+	baseInit();
+	
+	var html = "";
+	html = buildPageHeader(html);
+	html = buildPageBody(html);
+	html = buildPageFooter(html);
+	
+	setMain(html);
+}
+
+function addEditColumn(field,width,height) {
+	if (field != "" || field != null) {
+		gEditColNames[gEditColNames.length++] = field;
+		gEditColWidths[gEditColWidths.length++] = (width=="" || width==null) ? cDEFAULT_WIDTH : width;
+		gEditColHeight[gEditColHeight.length++] = (height=="" || height==null) ? cDEFAULT_HEIGHT : height;
+	}
+}
+
+function setAgreementRefField(field) {
+	if (field != "" || field != null) {
+		gAgreementRefField = field;
+	}
+}
+
+function doSave() {
+	saveLineItems();
+}
+
+function doCancel() {
+	navigateTo(gObjectIdURL);
+}
+
+function buildPageHeader(html) {
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<form name=\"editPage\" id=\"editPage\">";
+	html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<div class=\"bPageTitle\">";
+	html += "<div class=\"ptBody secondaryPalette\">";
+	html += "<div class=\"content\">";
+	html += "<img src=\"/img/icon/contracts32.png\" alt=\"Agreement\" class=\"pageTitleIcon\" title=\"Agreement\">";
+	html += "<h1 class=\"pageType\">Agreement {!APTS_Agreement__c.Name}<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "<h2 class=\"pageDescription\">Edit " + gTitlePl + "</h2>";
+	html += "<div class=\"blank\">&nbsp;</div>";
+	html += "</div>";
+	html += "<div class=\"links\">";
+	html += "<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help&target=products_add.htm&section=Products', 'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,menubar=yes,directories=no,location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\">";
+	html += "<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\" title></a>";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"ptBreadcrumb\">";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"bDescription\">Edit multiple " + gTitle + " properties for this agreement at once.<br>";
+	html += "Click Save to update all records. Click Cancel to abort all changes.";
+	html += "</div>";
+	
+	return html;
+}
+
+function buildPageBody(html) {
+	html += getLineItems();
+	
+	return html;
+}
+
+function getLineItems() {
+	try {
+	    var fieldList = getFieldList(gTable);
+		if (gLineItemIds=="") {
+			var ids = new Array();
+			var nids = 0;
+			var records = null;
+					
+			if (gRecordIds[0]==null) { 
+			    //alert("Please select at least one clause");
+				var q = "Select " + fieldList + " " +
+						"From " + gTable + " Where " + gAgreementRefField + " = '" + gObjectId + "'";
+				var qr = sforce.connection.query(q);
+				records = qr.getArray("records");
+				
+			} else { 
+			    for (var n in gRecordIds) {
+			        var id = gRecordIds[n];
+			        ids[nids++] = id;
+			    }
+
+				var records = sforce.connection.retrieve(fieldList,gTable,ids);
+				if (records[0]==null) {
+					erroralert(cERROR_ADD_LINEITEM,records);
+					return;
+				}
+			}
+
+			return outputList(records);
+			
+		} else {
+			var num = 0;
+			var pos = 0;
+			var id = "";
+			var ids = new Array();
+
+			//extract ids from the URL parameter string
+			while (gLineItemIds.length > 0) {
+				pos = gLineItemIds.indexOf(',');
+				if (pos>0) {
+					id = gLineItemIds.substring(0,pos);
+					gLineItemIds = gLineItemIds.substring(pos+1, gLineItemIds.length);
+				} else {
+					id = gLineItemIds;
+					gLineItemIds = "";
+				}
+				
+				ids[num] = id;
+				num++;
+			}
+
+			var records = sforce.connection.retrieve(fieldList, gTable, ids);
+			if (records[0] == null) {
+				alert(cERROR_ADD_LINEITEM + records);
+				return;
+			}
+			
+	  		return outputList(records);
+		}
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+function outputList(records) {
+    var table = gTable;
+    var rows = records.length;
+    var output = "";
+    
+	//keep track of field metadata
+    var dso = sforce.connection.describeSObject(table);
+   	for (var c=0; c<gEditColNames.length; c++) {
+		var fldname = gEditColNames[c];
+		
+	    for (var d=0; d<dso.fields.length; d++) {
+	        var dsofield = dso.fields[d];
+	        if (dsofield.updateable && dsofield.name == fldname) {
+	        	gEditColTypes[c] = dsofield.type;
+		        
+		        //if (dsofield.type == "picklist") {
+		       	//	cachePicklistData(table,dsofield.name);
+		        //}
+		        
+		        if (dsofield.dependentPicklist) {
+		        	gEditColTypes[c] = "dependentpicklist";
+		        	createDependentPicklistMap(table,dsofield.name);
+		        }
+		        
+				gEditColLabels[c] = dsofield.label;
+	        }
+	    }
+	}
+	//alert("gEditColNames="+gEditColNames+"\ngEditColTypes="+gEditColTypes);
+						
+	//table definition
+	output += "<table class=\"genericTable\">";
+	output += "<tr>";
+	output += "<td colspan=\"100%\" align=\"center\">";
+	output += "<input value=\"Save\" class=\"btn\" type=\"button\" name=\"save\" title=\"Save\" onclick=\"doSave();\" />";
+	output += "<input value=\"Cancel\" class=\"btn\" type=\"button\" name=\"cancel\" title=\"Cancel\" onclick=\"doCancel();\" /></td>";
+	output += "</tr>";
+	output += "<tr>";
+	output += "<td colspan=\"100%\" height=\"15\"></td>";
+	output += "</tr>";
+	
+	//column headings
+	output += "<tr>";
+	if (bROW_SELECTABLE == true) {
+	    output += "<td nowrap align=\"left\"><input type=\"checkbox\" id=\"selectAll\" onClick=\"selectAllItems(this, " +
+	    	rows + ");\"><b><label for=\"selectAll\">" +
+	    	getFieldLabel(table,"Name") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></b></td>";
+	} else {
+		output += outputFieldLabel(table,"Name");
+	}
+
+	//column headings
+	for (var i=0; i<gEditColNames.length; i++) {
+		var col = gEditColNames[i];
+		output += outputFieldLabel(table,col);
+	}
+	output += "</tr>";
+
+	//TODO: make generic and configurable, remove hard code field names
+	//TODO: convert grid code to javascript class object we can instantiate
+	//TODO: and set properties to quickly create editable grid objects
+	//
+	//column heading picklists on second row
+	if (gTable == "Agreement_Risk_Factor__c") {
+	    output += "<tr>";
+	    output += "<td nowrap align=\"left\"></td>";
+
+	    output += "<td nowrap align=\"left\">" +
+	    	"<select name=\"Provision__c\" onChange=\"setAllPicklist(this, " + rows + ");\">" +
+	    	outputPicklist(table,"Provision__c") + "</select></td>";
+	
+	    output += "<td nowrap align=\"left\">" +
+	    	"<select name=\"Risk_Level__c\" onChange=\"setAllPicklist(this, " + rows + ");\">" +
+	    	outputPicklist(table,"Risk_Level__c") + "</select></td>";
+		
+		output += "</tr>";	
+	}
+
+	//column headings border
+	output += "<tr>";
+	output += "<td colspan=\"100%\" height=\"1\" bgcolor=\"#000000\"></td>";
+	output += "</tr>";
+	
+    //output rows
+    var row = 0;
+    for (var k=0; k<records.length; k++) {
+        var record = records[k];
+        output += outputRow(record,row);
+    	row++;
+    }
+	
+	//output the rest
+	output += "<tr>";
+	output += "<td colspan=\"100%\" height=\"25\"></td>";
+	output += "</tr>";
+	output += "<tr>";
+	output += "<td colspan=\"100%\" align=\"center\">";
+	output += "<input value=\"Save\" class=\"btn\" type=\"button\" name=\"save\" title=\"Save\" onclick=\"doSave();\" />";
+	output += "<input value=\"Cancel\" class=\"btn\" type=\"button\" name=\"cancel\" title=\"Cancel\" onclick=\"doCancel();\" /></td>";
+	output += "</tr>";
+	output += "</table>";
+	output += "</form>";
+	
+    return output;
+}
+
+function outputRow(record,row){
+    var table = gTable;
+    var value = "";
+	
+	//start row tag
+	var output = "<tr>";
+	
+	//record id selector
+	var id = record.get("Id");
+	value = record.get("Name");
+	if (value == null) value = "";
+	if (bROW_SELECTABLE == true) {
+		output += "<td valign=\"top\" class=\"bodyBold\">"
+		output += "<input type=\"checkbox\" name=\"Name\" id=\"r"+row+"_select\">";
+		output += "<label for=\"r"+row+"_select\">"+value+"</label>";
+	} else {
+		output += "<td valign=\"top\" class=\"dataField\">";
+		output += "<input type=\"text\" disabled size=\"10\" value=\""+value+"\" name=\"Name\"";
+		output += " id=\"r"+row+"_Name\">";
+	}
+	output += "<input type=\"hidden\" name=\"Id\" id=\"r"+row+"_Id\" value=\""+id+"\">";
+	output += "</td>";
+	
+	//output column data
+	for (var i=0; i<gEditColNames.length; i++) {
+		var col = gEditColNames[i];
+		var type = gEditColTypes[i]
+		var width = gEditColWidths[i];
+		var height = gEditColHeight[i];
+		//alert("col="+col+"\ntype="+type+"\nwidth="+width+"\nheight="+height);
+
+       	if (gEditColTypes[i] == "id") {
+			output += outputIdField(col,record,row);	        	
+       	} else if (gEditColTypes[i] == "string") {
+			output += outputTextField(col,record,row);	        				        	
+       	} else if (gEditColTypes[i] == "textarea") {
+			output += outputTextAreaField(col,record,row,width,height);	        				        	
+       	} else if (gEditColTypes[i] == "date") {
+			output += outputDateField(col,record,row);	        				        	
+       	} else if (gEditColTypes[i] == "datetime") {
+			output += outputDateTimeField(col,record,row);	        				        			        	
+       	} else if (gEditColTypes[i] == "picklist") {
+			output += outputPicklistField(table,col,record,row);	  				        	
+       	} else if (gEditColTypes[i] == "dependentpicklist") {
+			output += outputDependentPicklistField(table,col,record,row);	   				        	 				        	
+       	} else if (gEditColTypes[i] == "multipicklist") {
+			output += outputMultiPicklistField(table,col,record,row);	        				        	
+       	} else if (gEditColTypes[i] == "boolean") {
+			output += outputBooleanField(col,record,row);	        				        	
+       	} else if (gEditColTypes[i] == "reference") {
+			output += outputReferenceField(col,record,row);	        				        	
+       	} else {
+       		output += outputTextField(col,record,row);
+       	}
+	}
+
+	//end row tag
+	output += "</tr>";
+	
+	return output;
+}
+
+function selectAllItems(checkbox,count) {
+	if (checkbox.checked) {
+		//select all
+	    for (var i=0; i<count; i++) {
+	        var chkbox = document.getElementById(i + "-select");
+	        chkbox.checked=true;
+	    }
+	} else {
+		//select none
+	    for (var i=0; i<count; i++) {
+	        var chkbox = document.getElementById(i + "-select");
+	        chkbox.checked=false;
+	    }
+	}
+}
+
+function setAllPicklist(picklist,count) {
+    var selectedStatus = picklist.options[picklist.selectedIndex].value;
+    for (var i=0; i<count; i++) {
+        var thisPicklist = document.getElementById("r"+i+"_"+picklist.name);
+        thisPicklist.selectedIndex = picklist.selectedIndex;
+    }
+}
+
+function getPicklistValuesFromTextArea() {
+	while (gLineItemIds.length > 0) {
+		pos = gLineItemIds.indexOf(',');
+		if (pos>0) {
+			id = gLineItemIds.substring(0,pos);
+			gLineItemIds = gLineItemIds.substring(pos+1, gLineItemIds.length);
+		} else {
+			id = gLineItemIds;
+			gLineItemIds = "";
+		}
+		
+		ids[num] = id;
+		num++;
+	}
+}
+
+function getElementId(row,fieldname) {
+	return ("r" + row + "_" + fieldname);
+}
+
+function outputFieldLabel(table,field) {
+	var output = "";
+	output += "<td nowrap align=\"left\"><b><label for=\"" + field + "\">";
+	output += getFieldLabel(table,field) + "</label></b></td>";
+	return output;
+}
+
+function getFieldLabel(table,field) {
+    var label = "";
+    var dsoResult = sforce.connection.describeSObject(table);
+    var fields = dsoResult.fields;
+    
+    for (var i=0; i<fields.length; i++){
+        var fieldFromDescribe = fields[i];
+        if (fieldFromDescribe.name == field) {
+            i = fields.length;
+            label = fieldFromDescribe.label;
+        }
+    }
+    return label;
+}
+
+function outputIdField(field,record,row) {
+	return outputTextField(field,record,row);
+}
+
+function outputTextField(field,record,row) {
+	try {
+		var value = record.get(field);
+		if (value == null) value = "";
+		var output = "";
+
+		output += "<td align=\"left\" valign=\"top\" class=\"dataField\">";
+		output += "<input type=\"text\" size=\"20\" value=\""+value+"\" name=\""+field+"\"";
+		output += " id=\""+getElementId(row,field)+"\" >";
+		output += "</td>";
+		
+		return output;
+	}
+	catch(ex) {
+		return "";
+	}
+}
+
+function outputTextAreaField(field,record,row,width,height) {
+	try {
+		var value = record.get(field);
+		if (value == null) value = "";
+		var output = "";
+
+		output += "<td align=\"left\" valign=\"top\" class=\"dataField\">";
+		output += "<textarea rows="+height+" cols="+width+" ";
+		output += "name=\""+field+"\" id=\""+getElementId(row,field)+"\">"+value+"</textarea>";
+		output += "</td>";
+		
+		return output;
+	}
+	catch(ex) {
+		return "";
+	}
+}
+ 	  				        	
+/**
+	<span class="dateInput">
+	<input id="row_id" name="row_id" size="12" tabindex="3" type="text" value="3/8/2007" />
+	<a href="javascript:openPopupFocus(
+		'/home/calendar.jsp?form=editPage&field=row_id&mo=0','_blank',186, 170,
+		'width=186,height=170,resizable=yes,toolbar=no,status=no,scrollbars=no,menubar=no,directories=no,location=no,dependant=yes',true,true);"
+		class="datePicker" id="row_idPopCal" onclick="setLastMousePosition(event)"
+		tabindex="3" title="Pick A Date (New Window)">
+		<img src="/s.gif" alt="Pick A Date (New Window)" class="datePickerIcon" title="Pick A Date (New Window)">
+	</a>
+	<span class="dateFormat">[
+	<a href="#" onclick="var inputField = getElementByIdCS('row_id'); if (inputField &amp;&amp; !inputField.disabled &amp;&amp; inputField.value != '3/8/2007') { inputField.value = '3/8/2007'; if (inputField.onchange) {inputField.onchange();}}return false;" tabindex="3">
+	3/8/2007</a> ]
+	</span>
+	</span>
+*/
+function outputDateField(field,record,row) {
+	try {
+		value = record.get(field);
+		if (value == null) value = "";
+		var output = "";
+
+		var today = new Date();
+		var todayd = today.getMonth()+1+"/"+today.getDate()+"/"+today.getYear();
+		var elemId = getElementId(row,field);
+
+		var dmdy = "";
+		var d = parseDate(value);
+		if (d != null) {
+			dmdy = d.getMonth()+1+"/"+d.getDate()+"/"+d.getYear();
+		}
+		//alert("d="+d+"\ndmdy="+dmdy);
+		//var d = getDateFromFormat(d,'M/d/y');
+
+		output += "<td valign=\"top\">";
+		output += "<span class=\"dateInput\">";
+		output += "<input type=\"text\" size=\"8\"";
+		output += " id=\""+elemId+"\"";
+		output += " name=\""+elemId+"\"";
+		//output += " onChange=\"setElemDate('" + elemId + "','{!Today}');\"";
+		output += " value=\""+dmdy+"\" />";
+
+		output += "<a href=\"javascript:openPopupFocus('";
+		output += "/home/calendar.jsp?form=editPage&field="+elemId+"&mo=0&callonchange=true','_blank',186, 170,";
+		output += "'width=186,height=170,resizable=yes,toolbar=no,status=no,scrollbars=no,menubar=no,directories=no,location=no,dependant=yes',";
+		output += "true,true);\" ";
+		output += "class=\"datePicker\" id=\""+elemId+"PopCal\" onclick=\"setLastMousePosition(event)\" ";
+		output += "onchange=\"document.forms['editPage'].focusThisFieldOnLoad.value='"+elemId+"';document.forms['editPage'].submit();\" ";
+		output += "title=\"Pick A Date (New Window)\">";
+		output += "<img src=\"/s.gif\" alt=\"Pick A Date (New Window)\" class=\"datePickerIcon\" title=\"Pick A Date (New Window)\">";
+		output += "</a>";
+		
+		if (bSHOW_TODAY_DATE == true) {
+			output += "<span class=\"dateFormat\">";
+			output += "&nbsp;[ <a href=\"#\" onclick=\"setElemDate('"+elemId+"','"+todayd+"');\">"+todayd+"</a>&nbsp;]";
+			output += "</span>";
+		}
+		output += "</span>";
+		output += "</td>";
+		
+		return output;
+	}
+	catch(ex) {
+		alert(ex);
+		return "";
+	}
+}
+
+function setElemDate(elemId, elemDate) {
+	var inputField = document.getElementById(elemId);
+	if (inputField && !inputField.disabled && inputField.value != elemDate) {
+		inputField.value = elemDate;
+		if (inputField.onchange) {
+			inputField.onchange();
+		}
+	}
+	return true;
+}
+
+function outputDateTimeField(field,record,row) {
+	return outputDateField(field,record,row);
+}			        			        	
+    				        	
+function outputPicklistField(table,field,record,row) {
+	try {
+		var value = record.get(field);
+		if (value == null) value = "";
+		var output = "";
+		//alert("table="+table+"\nfield="+field+"\nrecord="+record+"\nvalue="+value);
+
+		output += "<td align=\"left\" valign=\"top\" class=\"dataField\">";
+		output += "<select name=\""+field+"\" id=\""+getElementId(row,field)+"\"";
+		
+		//if we control a dependent picklist fire onchange when we change the value
+		if (field == gcpName) {
+			output += " onChange=\"reloadDependentPicklist(this,'"+gdpName+"')\"";
+		}
+		
+		output += " >";
+		output += outputPicklist(table,field,value);
+		//output += outputCachedPicklist(table,field,value);
+		output += "</select>";
+		output += "</td>";
+		
+		setMain(output);
+		return output;
+	}
+	catch(ex) {
+		return "";
+	}
+}
+
+function outputPicklist(table,field,value) {
+    var output = "";
+    var dso = sforce.connection.describeSObject(table);
+    var fields = dso.fields;
+    
+    for (var i=0; i<fields.length; i++){
+        var dsoField = fields[i];
+        if (dsoField.name == field) {
+        	//alert("dsoField="+dsoField);
+            i = fields.length;
+            var plValues = dsoField.picklistValues;
+            output += "<option value=\"\">--None--</option>";
+
+            for (var j=0; j<plValues.length; j++) {
+                var plv = plValues[j];
+                var plLabel = plv.label;
+                var plValue = plv.value;
+                //if (plLabel != plValue) {
+                //	alert("LABEL <> VALUE:\nplLabel="+plLabel+"\nplValue="+plValue);
+                //}
+              
+                output += "<option value=\"" + plValue + "\"";
+                //if (plLabel == "Client Automatic Right to Removal of TeleTech Personnel" ||
+                //	plValue == "Client Automatic Right to Removal of TeleTech Personnel") {
+                //	alert("field="+field+"\nplLabel="+plLabel+"\nplValue="+plValue+"\nvalue="+value);
+                //}
+                if (plValue == value) {
+                	output += " selected";
+                }
+                output += ">" + plLabel + "</option>";
+            }
+        }
+    }
+    return output;
+}
+
+function cachePicklistData(table,field) {
+    var dso = sforce.connection.describeSObject(table);
+	var plValues = new Array();
+	
+    for (var i=0; i<dso.fields.length; i++){
+        var fld = dso.fields[i];
+        if (fld.name == field) {
+        	plValues = fld.picklistValues;
+        	i = dso.fields.length;
+        }
+    }
+    
+    //alert("plField="+field+"\nplValues="+plValues.length);
+    
+    gPicklistNames[gNumPicklists] = field;
+    gPicklistData[gNumPicklists] = new Array(plValues.length);
+
+	for (var i=0; i<plValues.length; i++) {
+		gPicklistData[gNumPicklists][i] = plValues[i];
+	}
+
+    var n = gNumPicklists + 1;
+    //alert("gNumPicklists="+n);
+    //alert("gPicklistNames{"+gNumPicklists+")="+gPicklistNames[gNumPicklists]);
+	//alert("gPicklistData{"+gNumPicklists+")="+gPicklistData[gNumPicklists]);
+	
+	gNumPicklists++;
+}
+
+function outputCachedPicklist(table,field,value) {
+    var output = "";
+    output += "<option value=\"\">--None--</option>";
+
+    //get cache index
+    var ci = 0;
+    for (var i=0; i<gPicklistNames.length; i++) {
+    	if (gPicklistNames[i] == field) {
+    		ci = i;
+    		i = gPicklistNames.length;
+    	}
+    }
+    
+    //get cache data
+    var plValues = gPicklistData[ci].length;
+    for (var ci=0; ci<plValues; ci++) {
+        var plv = gPicklistData[ci];
+        var plLabel = plv.label;
+        var plValue = plv.value;
+      
+        output += "<option value=\"" + plValue + "\"";
+        if (plValue == value) {
+        	output += " selected";
+        }
+        output += ">" + plLabel + "</option>";
+    }
+    return output;
+}
+
+function createDependentPicklistMap(table,field) {
+    var dso = sforce.connection.describeSObject(table);
+    var b64 = new sforce.Base64Binary("");
+    var debugMap = 0;
+    
+    //get dependent picklist values and controller name
+    for (var i=0; i<dso.fields.length; i++){
+        var fld = dso.fields[i];
+        if (fld.name == field) {
+        	gcpName = fld.controllerName;
+        	gdpName = fld.name;
+        	gdpValues = fld.picklistValues;
+        	i = dso.fields.length;
+        }
+    }
+    
+    //get controller picklist values
+    if (debugMap) document.write("<font face=\"Courier New\">&nbsp;&nbsp;&nbsp;");
+    for (var i=0; i<dso.fields.length; i++){
+        var fld = dso.fields[i];
+        if (fld.name == gcpName) {
+        	gcpValues = fld.picklistValues;
+        	i = dso.fields.length;
+        }
+    }
+    
+	if (debugMap) {
+	    for (var i=0; i<gcpValues.length; i++){
+	        document.write(i+1);
+	    }
+	    document.write("<br>");
+	}
+    gPicklistMap = new Array(gdpValues.length);
+
+	//build validfor bitset map
+	for (var dpi=0; dpi<gdpValues.length; dpi++) {
+		var dplv = gdpValues[dpi];
+		var dpLabel = dplv.label;
+		var dpValue = dplv.value;
+		
+		var vf = b64.decode(dplv.validFor);
+		var vfbits = dpi + 1;
+		if (vfbits < 10) {
+			vfbits += "&nbsp;";
+		}
+		vfbits += "&nbsp;";
+
+		gPicklistMap[dpi] = new Array(gcpValues.length);
+
+		for (var cpi=0; cpi<gcpValues.length; cpi++) {
+			var bits = vf.charCodeAt(cpi >> 3);
+			var bit = (bits & (0x80 >> (cpi%8))) != 0;
+			
+			var vfbit = (bit == true) ? 1 : 0;
+			vfbits += vfbit;
+			
+			gPicklistMap[dpi][cpi] = vfbit;
+		}
+		
+        if (debugMap) document.write(vfbits + "<br>");
+	}
+	
+	//alert(gPicklistMap);
+	
+    if (debugMap) {
+	    document.write("</font><br><br>");
+	    document.write("gPicklistMap["+gdpValues.length+"]["+gcpValues.length+"]=<br>");
+		document.write(gPicklistMap + "<br>");
+    }
+}
+
+function outputDependentPicklistField(table,field,record,row) {
+	try {
+		var value = record.get(field);
+		if (value == null) value = "";
+		var output = "";
+		
+		output += "<td align=\"left\" valign=\"top\" class=\"dataField\">";
+		output += "<select name=\""+field+"\" id=\""+getElementId(row,field)+"\" >";
+		output += outputDependentPicklist(table,field,value,row);
+		output += "</select>";
+		output += "</td>";
+		
+		return output;
+	}
+	catch(ex) {
+		return "";
+	}
+}
+
+function outputDependentPicklist(table,field,value,row) {
+    var output = "";
+	var cpId = getElementId(row,gcpName);
+	var cpElem = document.getElementById(cpId);
+	var cpi = cpElem.selectedIndex;
+	var cpv = cpElem.options[cpi].value;
+	
+	//adjust cp index for none selection
+	output += "<option value=\"\">--None--</option>";
+	if (cpi==0) {
+		return output;
+	} else {
+		cpi--;
+	}
+	
+	var dpId = getElementId(row,field);
+	var dpElem = document.getElementById(dpId);
+	
+	for (var dpi=0; dpi<gdpValues.length; dpi++) {
+		var dplv = gdpValues[dpi];
+		var dpLabel = dplv.label;
+		var dpValue = dplv.value;
+
+		if (gPicklistMap[dpi][cpi] == 1) {
+			output += "<option value=\"" + dpValue + "\"";
+			if (dpValue == value) {
+				output += " selected";
+			}
+			output += " title=\"" + dpLabel + "\"";
+			output += ">" + dpLabel + "</option>";
+		}
+ 	}
+
+    return output;
+}
+
+function reloadDependentPicklist(cpobj,dpfield) {
+	try {
+		//get controller picklist index
+		var row = 0;
+		var id = cpobj.id;
+	    if (id != "" && id != null && id.indexOf('_') > 0) {
+	        var pos = id.indexOf('_');
+	        row = id.substring(1,pos);
+	    }
+	    //alert("cpfield="+cpobj.name+"\ndpfield="+dpfield);
+	    //alert("id="+id+"\npos="+pos+"\nrow="+row);
+		
+		//get controller picklist values
+		var cpi = cpobj.selectedIndex;
+		var cpv = cpobj.options[cpi].value;
+		var dpId = getElementId(row,dpfield);
+		//alert("dpId="+dpId);
+		var dpElem = document.getElementById(dpId);
+		dpElem.options.length = 0; 
+		var startopt = 0;
+
+		dpElem.options[startopt++] = new Option("--None--","");
+
+		//adjust cp index for none selection
+		if (cpi==0) {
+			return;
+		} else {
+			cpi--;
+		}
+		
+		//set dependent picklist values
+		for (var dpi=0; dpi<gdpValues.length; dpi++) {
+			var dplv = gdpValues[dpi];
+			if (gPicklistMap[dpi][cpi] == 1) {
+				dpElem.options[startopt++] = new Option(dplv.label, dplv.value);
+			}
+	 	}
+	 	dpElem.options.length = startopt;
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+function outputMultiPicklistField(table,field,record,row) {
+	return outputPicklistField(table,field,record,row);
+}
+
+function outputBooleanField(field,record,row) {
+	try {
+		var checked = "";
+		var value = record.get(field);
+		
+		if (value==null) value = "";
+		if (value=="true" || value=="1") checked="checked";
+		
+		var output = "";
+
+		output += "<td align=\"left\" valign=\"top\" class=\"dataField\">";
+		output += "<input name=\""+field+"\" id=\""+getElementId(row,field)+"\" type=\"checkbox\" "+checked+">";
+		//output += "<label for=\""+row+"-select\">"+value+"</label>";
+		output += "</td>";
+		
+		return output;
+	}
+	catch(ex) {
+		return "";
+	}
+}
+
+function outputReferenceField(field,record,row) {
+	return outputTextField(field,record,row);
+}
+
+function Bitset(data){
+	this.dataVal = data;
+	this.dataBits = new Array();
+
+	for (var i=0; i<data.length; i++) {
+		this.dataBits[i] = data.charCodeAt(i);
+	}
+
+	this.testbit = function(n) {
+		try {
+			return (this.dataBits[n>>3] & (0x80 >> n % 8)) != 0;
+		}
+		catch(ex) {
+			return false;
+		}
+	}
+
+	this.size = function() {
+		return this.dataBits.length * 8; 
+	}
+}
+
+function saveLineItems() {
+	try {
+		var table = gTable;
+		var names = document.getElementsByName("Name");
+		var count = 0;
+		var output = "";
+		
+		//count the number of rows to update
+		for (var r=0; r<names.length; r++) {
+			if (bROW_SELECTABLE == true) {
+				var selected = document.getElementById("r"+r+"_select");
+				if (selected.checked) {
+					count++;
+				}
+			} else {
+				count++;
+			}
+		}
+
+		var items = new Array(count);
+		var bROW_SELECTED = new Boolean(true);
+		count = 0;
+		
+		//keep track of field metadata
+		for (var ci=0; ci<gEditColNames.length; ci++) {
+			var fldname = gEditColNames[ci];
+
+		    var dso = sforce.connection.describeSObject(table);
+		    for (var d=0; d<dso.fields.length; d++) {
+		        var dsofield = dso.fields[d];
+		        if (dsofield.name == fldname) {
+		        	gEditColTypes[ci] = dsofield.type;
+		        }
+		    }
+		}
+		
+		//iterate over the rows
+		for (var b=0; b<names.length; b++){
+			bROW_SELECTED = true;
+			
+			//is the row selected for update
+			if (bROW_SELECTABLE == true) {
+				var selected = document.getElementById("r"+b+"_select");
+				if (! selected.checked) {
+					bROW_SELECTED = false;
+				}
+			}
+			
+			//if so then update the selected row
+			if (bROW_SELECTED == true) {
+				var item = new sforce.SObject(table);
+				
+				var fid = document.getElementById("r"+b+"_Id");
+				item.set("Id", fid.value);
+				
+				for (var c=0; c<gEditColNames.length; c++) {
+					var fldname = gEditColNames[c];
+					var fldobj = document.getElementById("r"+b+"_"+fldname);
+					var fldval = fldobj.value;
+		        	var save = 1;
+		        	
+		        	if (gEditColTypes[c] == "picklist") {
+		        		fldval = fldobj.options[fldobj.selectedIndex].value;
+		        	
+		        	} else if (gEditColTypes[c] == "date" || gEditColTypes[c] == "datetime") {
+						//parse dates
+						if (fldval == "" || fldval == null) {
+							save = 0;
+						} else {
+							var d = parseDate(fldval);
+							fldval = toIsoDate(d);
+						}
+						
+		        	} else if (gEditColTypes[c]=="boolean") {
+						//alert("fldname="+fldname+"\nfldobj="+fldobj+"\nfldval="+fldval+"\nfldobj.checked="+fldobj.checked);
+						fldval = (fldobj.checked) ? true : false;     	
+		        	}
+				    
+				    if (save) item.set(fldname, fldval);
+				}
+				
+				items[count] = item;
+				count++;
+			}
+		}
+
+		if (count > 0) {
+			var result = sforce.connection.update(items);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_EDIT_LINEITEM, result[0]);
+			}
+			navigateTo(gObjectIdURL);	
+			
+		} else {
+			alert("You have not selected any items to edit.\nPlease select at least one item or cancel.")
+		}
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+function buildPageFooter(html) {
+	return html;
+}
+
+function logDebug(msg) {
+	if (bDEBUG) {
+		document.write(msg);
+	}
+}
+
+</script>

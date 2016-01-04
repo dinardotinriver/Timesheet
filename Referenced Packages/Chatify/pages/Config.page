@@ -1,0 +1,82 @@
+﻿<apex:page controller="Chatify.ChatifyController" id="Main">
+	<apex:includeScript value="{!$Resource.Chatify__jquery}"/>
+	<apex:stylesheet value="{!URLFOR($Resource.Chatify__ChatifyResources, 'css/style.css')}"/>
+
+	<div id="Detail-Page-Title">
+		<h2>Chatify Settings</h2>
+	</div>
+
+	<apex:form >
+		<apex:pageBlock id="pb">
+			Welcome to Chatify Settings!  Here you can start the setup of Chatify posts. Click edit to navigate through the step by step settings process.
+			<br/>
+			<br/>
+			Once the step by step process is completed click the enable button to activate!
+			<!-- Filter -->
+			<div style ="text-align:right">
+				<apex:outputlabel value="Filter: " />
+				<apex:selectList id="countries" value="{!filterObjectName}" size="1" >
+					<apex:selectOptions value="{!filterList}"/>
+					<apex:actionSupport event="onchange" action="{!onFilterSelectionChanged}" />
+				</apex:selectList>
+			</div>
+			<br/>
+
+			<!-- Table -->
+			<apex:outputPanel id="rPanel">
+				<apex:variable var="rowNum" value="{!0}"/>
+				<apex:pageBlockTable id="table1" value="{!ChatifySettingList}" var="item" columnsWidth="10%,5%,15%,15%,55%" >
+
+					<apex:column headerValue="Enable/Disable" >
+
+							<apex:commandLink value="{!IF(item.Chatify__Enabled__c,'Disable','Enable')}"  style="width:45px"
+										styleClass="btn button-in-table {!IF(item.Chatify__Enabled__c,'','greenButton')}" 
+										rerender="rPanel" action="{!onEnableDisableButtonClicked}">
+								<apex:param name="selectedSettingIndex" value="{!rowNum}" assignTo="{!selectedSettingIndex}"/>
+							</apex:commandLink>
+					
+					</apex:column>
+
+					<apex:column value="{!item.Chatify__Enabled__c}" id="column2"/>
+
+					<apex:column headerValue="Actions">
+						<apex:commandLink value="Edit" styleClass="btn button-in-table" rerender="rPanel" action="{!onEditButtonClicked}">
+							<apex:param name="selectedSettingIndex" value="{!rowNum}" assignTo="{!selectedSettingIndex}"/>
+						</apex:commandLink>
+						<apex:commandLink value="Copy" styleClass="btn button-in-table" rerender="rPanel" action="{!onCopyButtonClicked}"
+	                    	rendered="{!NOT(ISNULL(item.Chatify__RecordTypes__c))}">
+							<apex:param name="selectedSettingIndex" value="{!rowNum}" assignTo="{!selectedSettingIndex}"/>
+						</apex:commandLink>
+						<!-- variable is used for selecting setting by row number -->
+						<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+
+					</apex:column>
+
+					<!--  
+					<apex:column headerValue="Id">
+						<apex:outputText value="{!item.id}"/>
+					</apex:column>
+
+					<apex:column headerValue="Test">
+						<apex:outputText value="{!rowNum}"/>
+					</apex:column>
+					-->
+					<apex:column value="{!item.name}" id="itemname"/>
+					<apex:column headerValue="Record Type" value="{!item.Chatify__RecordTypes__c}" id="recordtype"/>
+
+				</apex:pageBlockTable>
+
+				<!-- Pages Navigation -->
+				<apex:panelGrid id="navBlock" columns="5" style="padding:20px; margin: auto;">
+					<apex:commandLink action="{!onFirstPageButtonClicked}">&#60;&#60;</apex:commandlink>
+					<apex:commandLink action="{!onPrevPageButtonClicked}">&#60;</apex:commandlink>
+					Page {!paginationHelper.pageNumber+1} of {!paginationHelper.pagesCount}
+					<apex:commandLink action="{!onNextPageButtonClicked}">&#62;</apex:commandlink>
+					<apex:commandLink action="{!onLastPageButtonClicked}">&#62;&#62;</apex:commandlink>
+				</apex:panelGrid>
+			</apex:outputPanel>
+		</apex:pageBlock>
+
+	</apex:form>
+
+</apex:page>

@@ -1,0 +1,65 @@
+<apex:component >
+    <c:REMOTE_Attachments />
+    <style>
+        .attachments .modal-dialog {
+            width: 600px;
+        }
+        .attachments-table {
+            height: 300px;
+            overflow: auto;
+        }
+    </style>
+
+    <script type="text/template" id="attachments-dialog_tmpl">
+        <div class="modal fade modal-th" tabindex="-1" data-backdrop="static"
+            role="dialog" aria-labelledby="sfDocumentDialog" aria-hidden="true">
+            <div class="modal-dialog attachments" style="width: 600px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Record Attachments for {{primaryObject}}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="attachments-table" align="center"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-th btn-th-primary ok">OK</button>
+                        <button class="btn btn-th btn-th-secondary cancel" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+
+    <script type="text/template" id="attachments-dialog-table_tmpl">
+        <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Created Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#attachments}}
+                <tr class="row_{{attachmentRowCls}}">
+                    <td>
+                    {{#isSelectable}}
+                    <input type="checkbox" class="attachment-check" data-id="{{Id}}" value="th_check_{{Name}}" {{#isSelected}}checked{{/isSelected}}></input>
+                    {{/isSelectable}}
+                    </td>
+                    <td align="left">{{Name}}</td>
+                    <td align="left">Attachment</td>
+                    <td align="left">{{size}}</td>
+                    <td align="left">{{date}}</td>
+
+                </tr>
+            {{/attachments}}
+        </tbody>
+        </table>
+    </script>
+
+</apex:component>

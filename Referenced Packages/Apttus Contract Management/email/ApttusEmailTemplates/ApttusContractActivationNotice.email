@@ -1,0 +1,21 @@
+<table cellpadding="5" width="550" height="400" cellspacing="5" border="0" >
+<tr height="400" valign="top" >
+<td locked="0" style=" font-family:arial; bLabel:main; color:#000000; font-size:12pt; bEditID:r3st1; background-color:#FFFFFF;" aEditID="c1r1" tEditID="c1r1" >
+<![CDATA[<font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">Dear 
+{!APTS_Agreement__c.OwnerFullName},</font>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">&nbsp;</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">The following 
+Apttus contract has been activated:</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">&nbsp;</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">Number:{Apttus__APTS_Agreement__c.Apttus__FF_Agreement_Number__c}</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">Name: 
+{Apttus__APTS_Agreement__c.Name}</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">Start Date: 
+{!APTS_Agreement__c.Contract_Start_Date__c}</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">End Date: 
+{!APTS_Agreement__c.Contract_End_Date__c}</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">&nbsp;</font></p><p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">Thank 
+You,</font></p>
+<p><font face="Verdana,Geneva,Arial,Helvetica,Sans-Serif" size="2">Apttus</font></p><table id="topTable" cellpadding="0" cellspacing="0" height="450" width="500"><tbody><tr valign="top"><td style="font-size: 12pt; color: rgb(0, 0, 0); font-family: arial; background-color: rgb(255, 255, 255);" styleinsert="1" height="300"><table border="0" cellpadding="5" cellspacing="5" height="400" width="550"><tbody><tr height="400" valign="top"><td style="font-size: 12pt; color: rgb(0, 0, 0); font-family: arial; background-color: rgb(255, 255, 255);" teditid="c1r1" aeditid="c1r1" locked="0"><br></td></tr></tbody></table></td></tr></tbody></table>]]></td>
+</tr>
+</table>

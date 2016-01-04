@@ -1,0 +1,2694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label>DocuSign для Salesforce</label>
+        <name>DocuSign_For_Salesforce</name>
+    </customApplications>
+    <customLabels>
+        <label>О компании DocuSign</label>
+        <name>AboutDS</name>
+    </customLabels>
+    <customLabels>
+        <label>Код доступа</label>
+        <name>AccessCode</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетная запись</label>
+        <name>Account</name>
+    </customLabels>
+    <customLabels>
+        <label>Для этого адреса электронной почты/имени уже существует учетная запись.  Для связывания с учетной записью перейдите на страницу &quot;Если учетная запись DocuSign уже настроена, для ее применения щелкните здесь&quot;</label>
+        <name>AccountAlreadyExistEmailName</name>
+    </customLabels>
+    <customLabels>
+        <label>Создание учетной записи</label>
+        <name>AccountCreation</name>
+    </customLabels>
+    <customLabels>
+        <label>Идентификатор учетной записи</label>
+        <name>AccountID</name>
+    </customLabels>
+    <customLabels>
+        <label>Сведения учетной записи</label>
+        <name>AccountInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя учетной записи</label>
+        <name>AccountInfoAccountName</name>
+    </customLabels>
+    <customLabels>
+        <label>Просмотреть сведения учетной записи до ввода учетных данных DocuSign невозможно. 
+Введите или или внесите необходимые исправления, затем обновите страницу.</label>
+        <name>AccountInfoCredentialMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign для этой учетной записи еще не выполнена.</label>
+        <name>AccountInfoNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Сведения учетной записи</label>
+        <name>AccountInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление учетной записью</label>
+        <name>AccountManagement</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо настроить учетную запись DocuSign.</label>
+        <name>AccountMustBeConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетная запись DocuSign еще не настроена.</label>
+        <name>AccountNotConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>Номер учетной записи</label>
+        <name>AccountNumber</name>
+    </customLabels>
+    <customLabels>
+        <label>Макет страницы учетной записи</label>
+        <name>AccountPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Действие учетной записи приостановлено</label>
+        <name>AccountSuspended</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетные записи</label>
+        <name>Accounts</name>
+    </customLabels>
+    <customLabels>
+        <label>Подтвердить получение</label>
+        <name>AcknowledgeReceipt</name>
+    </customLabels>
+    <customLabels>
+        <label>Действие</label>
+        <name>Action</name>
+    </customLabels>
+    <customLabels>
+        <label>Состояние действия</label>
+        <name>ActionStatus</name>
+    </customLabels>
+    <customLabels>
+        <label>Активизировать участников</label>
+        <name>ActivateMembers</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- ActivateMembersError --></label>
+        <name>ActivateMembersError</name>
+    </customLabels>
+    <customLabels>
+        <label>активизировано</label>
+        <name>Activated</name>
+    </customLabels>
+    <customLabels>
+        <label>активизировано с помощью Salesforce</label>
+        <name>ActivatedBySalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>Проверьте наличие прав доступа к DocuSign и правильность параметров учетной записи, а также убедитесь в том, что ни одно сообщение электронной почты для активизации не осталось без ответа</label>
+        <name>ActivationMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить</label>
+        <name>Add</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить пользователей с правами администратора</label>
+        <name>AddAdminUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>ДОБАВИТЬ ПОЛЬЗОВАТЕЛЕЙ С ПРАВАМИ АДМИНИСТРАТОРА = Добавить пакет DocuSign для выбранных
+			пользователей и назначить их администраторами для учетной записи DocuSign</label>
+        <name>AddAdminUsersAddTheDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить кнопки</label>
+        <name>AddButtons</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление кнопок DocuSign к макету Salesforce</label>
+        <name>AddDSButtonsToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление DocuSign к Salesforce в качестве доверенной сети</label>
+        <name>AddDSTrusted</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить документ</label>
+        <name>AddDoc</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить DocuSign в качестве доверенной сети</label>
+        <name>AddDocuSignAsATrustedNetwork</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление пакета DocuSign для выбранных пользователей.</label>
+        <name>AddDocuSignPackageForSelectedUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить меня</label>
+        <name>AddMe</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление нового документа к папке</label>
+        <name>AddNewDoc</name>
+    </customLabels>
+    <customLabels>
+        <label>или добавление роли-прототипа получателя</label>
+        <name>AddPlaceholderRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить получателя</label>
+        <name>AddRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление получателя из</label>
+        <name>AddRecipientFrom</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить роль</label>
+        <name>AddRole</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление выбранных элементов списка &quot;Доступные поля&quot; в список &quot;Выбранные поля&quot;</label>
+        <name>AddSelectedAvailableFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить кнопку DocuSign в макет по умолчанию</label>
+        <name>AddTheDocuSignButtonToDefaultLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавить пользователей</label>
+        <name>AddUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>ДОБАВИТЬ ПОЛЬЗОВАТЕЛЕЙ = Добавить пакет DocuSign для выбранных пользователей.</label>
+        <name>AddUsersAddTheDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>Добавление пакета DocuSign для выбранных пользователей и назначение их администраторами для учетной записи DocuSign.</label>
+        <name>AdddocuSignPackageMakeUsersAdministrators</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес</label>
+        <name>Address</name>
+    </customLabels>
+    <customLabels>
+        <label>Строка адреса 1</label>
+        <name>AddressLine1</name>
+    </customLabels>
+    <customLabels>
+        <label>Строка адреса 2</label>
+        <name>AddressLine2</name>
+    </customLabels>
+    <customLabels>
+        <label>Адреса получателей</label>
+        <name>AddressRecipients</name>
+    </customLabels>
+    <customLabels>
+        <label>Для доступа к этому разделу необходимы права администратора.</label>
+        <name>AdminAccessReq</name>
+    </customLabels>
+    <customLabels>
+        <label>Поиск документации...</label>
+        <name>AdminHomeSearchDocumentation</name>
+    </customLabels>
+    <customLabels>
+        <label>Применить выбранное действие к выбранным пользователям</label>
+        <name>ApplySelectedActionToSelectedUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>Аннулировать этот конверт?</label>
+        <name>AreYouSureVoidEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Обязателен хотя бы 1 (один) документ</label>
+        <name>AtLeastOneDocumentIsRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>Сведения хотя бы об 1 (одном) получателе содержат ошибку</label>
+        <name>AtLeastOneRecipientHasError</name>
+    </customLabels>
+    <customLabels>
+        <label>Обязателен хотя бы 1 (один) получатель</label>
+        <name>AtLeastOneRecipientRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>Вложения</label>
+        <name>Attachments</name>
+    </customLabels>
+    <customLabels>
+        <label>Проверить подлинность учетной записи DocuSign</label>
+        <name>AuthenticateDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep1 --></label>
+        <name>AutoSetupStep1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep2 --></label>
+        <name>AutoSetupStep2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep3 --></label>
+        <name>AutoSetupStep3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep4 --></label>
+        <name>AutoSetupStep4</name>
+    </customLabels>
+    <customLabels>
+        <label>Доступные документы</label>
+        <name>AvailableDocs</name>
+    </customLabels>
+    <customLabels>
+        <label>Доступные поля</label>
+        <name>AvailableFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Назад</label>
+        <name>Back</name>
+    </customLabels>
+    <customLabels>
+        <label>Нажмите &quot;Назад&quot; для выбора учетной записи DocuSign.</label>
+        <name>BackSelectDocuSignAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>кнопка внизу</label>
+        <name>ButtonBelow</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- CVV2 --></label>
+        <name>CVV2</name>
+    </customLabels>
+    <customLabels>
+        <label>Отмена</label>
+        <name>Cancel</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить самого себя из списка активных пользователей DocuSign невозможно. Это приведет к утрате полномочий на администрирование в DocuSign для Salesforce.</label>
+        <name>CannotRemoveYourselfFromActiveDocuSignUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>Копия</label>
+        <name>CarbonCopy</name>
+    </customLabels>
+    <customLabels>
+        <label>Заказная доставка</label>
+        <name>CertifiedDelivery</name>
+    </customLabels>
+    <customLabels>
+        <label>Изменить</label>
+        <name>Change</name>
+    </customLabels>
+    <customLabels>
+        <label>осталось символов: 200</label>
+        <name>CharactersRemaining200</name>
+    </customLabels>
+    <customLabels>
+        <label>Обсудить с помощью Chatter эти события, относящиеся к конверту</label>
+        <name>ChatterOnTheseEnvelopeEvents</name>
+    </customLabels>
+    <customLabels>
+        <label>Обсудить с помощью Chatter эти события, относящиеся к получателю</label>
+        <name>ChatterOnTheseRecipientEvents</name>
+    </customLabels>
+    <customLabels>
+        <label>Параметры Chatter</label>
+        <name>ChatterSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Обновления Chatter</label>
+        <name>ChatterUpdates</name>
+    </customLabels>
+    <customLabels>
+        <label>Проверьте адрес электронной почты, создайте пароль DocuSign и вернитесь к этой странице.</label>
+        <name>CheckEmailCreatePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Если этот флажок установлен, при отправке документа с помощью
+DocuSign средство разметки отображается в отдельном окне,
+а не встроено в окно Salesforce.</label>
+        <name>CheckingThisBoxMeansThat</name>
+    </customLabels>
+    <customLabels>
+        <label>Если этот флажок установлен, при отправке документа с помощью
+DocuSign страница подписи отображается в отдельном окне,
+а не встроена в окно Salesforce. Это способствует правильной визуализации
+пользовательского интерфейса на всех устройствах.</label>
+        <name>CheckingThisBoxMeansThatWhen</name>
+    </customLabels>
+    <customLabels>
+        <label>Китайский (упрощенное письмо)</label>
+        <name>ChineseSimplified</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор полей</label>
+        <name>ChooseFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор варианта фильтрации для</label>
+        <name>ChooseFilterOption</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор количества строк, отображаемых на одной странице</label>
+        <name>ChooseNumberOfRows</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор получателя из</label>
+        <name>ChooseRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор полей для отображения в расположенной ниже таблице пользователей</label>
+        <name>ChooseTheFieldsToDisplay</name>
+    </customLabels>
+    <customLabels>
+        <label>Город</label>
+        <name>City</name>
+    </customLabels>
+    <customLabels>
+        <label>щелкните здесь</label>
+        <name>ClickHere</name>
+    </customLabels>
+    <customLabels>
+        <label>Щелкните здесь для восстановления подключения</label>
+        <name>ClickHereToReconnect</name>
+    </customLabels>
+    <customLabels>
+        <label>Нажмите кнопку &quot;Редактировать пароль DocuSign&quot; для ввода
+			пароля системного отправителя DocuSign.</label>
+        <name>ClickOnEditDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- ClosePopUpAfterComplete --></label>
+        <name>ClosePopUpAfterComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>(по завершении закройте всплывающее окно)</label>
+        <name>ClosePopup</name>
+    </customLabels>
+    <customLabels>
+        <label>Наименование компании</label>
+        <name>CompanyName</name>
+    </customLabels>
+    <customLabels>
+        <label>Завершен</label>
+        <name>Completed</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign для Salesforce</label>
+        <name>ConfigSFDC</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка демонстрационной системы DocuSign для Salesforce</label>
+        <name>ConfigSFDCDemo</name>
+    </customLabels>
+    <customLabels>
+        <label>Процедура настройки демонстрационной системы DocuSign для Salesforce не вызывает затруднений. Если процесс настройки прерван, для продолжения вернитесь на вкладку администрирования DocuSign. Настройка демонстрационной системы выполняется в два этапа:</label>
+        <name>ConfigSFDCDemoMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign для Salesforce проста и удобна</label>
+        <name>ConfigSFDCEasy</name>
+    </customLabels>
+    <customLabels>
+        <label>На следующем этапе настройки, как правило, в макеты страниц включается кнопка &quot;Отправить с помощью DocuSign&quot;, что позволяет пользователям отправлять материалы с помощью DocuSign подобно сообщениям электронной почты Salesforce.</label>
+        <name>ConfigSendWithDSButton</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка средства разметки...</label>
+        <name>ConfigTagger</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка конфигурации:</label>
+        <name>ConfigurationErrorColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Настроить учетную запись</label>
+        <name>ConfigureAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетная запись уже настроена. Нажмите расположенную ниже кнопку для перехода на страницу администрирования DocuSign.</label>
+        <name>ConfiguredDSAdmin</name>
+    </customLabels>
+    <customLabels>
+        <label>Подтвердить</label>
+        <name>Confirm</name>
+    </customLabels>
+    <customLabels>
+        <label>Сообщение электронной почты для подтверждения отправлено по адресу {0}.  После активизации введите пароль DocuSign.</label>
+        <name>ConfirmActivateLoginMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Подтвердите запрос на удаление учетных данных DocuSign
+			для этого пользователя</label>
+        <name>ConfirmDeleteTheDocuSignCredentials</name>
+    </customLabels>
+    <customLabels>
+        <label>Подтверждение пароля</label>
+        <name>ConfirmPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Подключение DocuSign к Salesforce</label>
+        <name>ConnectDSToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>Подключение DocuSign к Salesforce</label>
+        <name>ConnectDocuSignToSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при подключении -</label>
+        <name>ConnectErrorDash</name>
+    </customLabels>
+    <customLabels>
+        <label>Консоль</label>
+        <name>Console</name>
+    </customLabels>
+    <customLabels>
+        <label>Контактное лицо</label>
+        <name>Contact</name>
+    </customLabels>
+    <customLabels>
+        <label>Если учетная запись по-прежнему настроена неверно, обратитесь к системному администратору.</label>
+        <name>ContactAdminForConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>Макет страницы контактного лица</label>
+        <name>ContactPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Обратитесь к администратору Salesforce для получения прав доступа на чтение/обновление/удаление</label>
+        <name>ContactSFAdminForAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Обратитесь в службу поддержки пользователей DocuSign по адресу</label>
+        <name>ContactSupport</name>
+    </customLabels>
+    <customLabels>
+        <label>Контактные лица</label>
+        <name>Contacts</name>
+    </customLabels>
+    <customLabels>
+        <label>Содержимое</label>
+        <name>Content</name>
+    </customLabels>
+    <customLabels>
+        <label>-- Выбрать рабочую область --</label>
+        <name>ContentWorkspaceListSelectWorkspace</name>
+    </customLabels>
+    <customLabels>
+        <label>Продолжить</label>
+        <name>Continue</name>
+    </customLabels>
+    <customLabels>
+        <label>Договор</label>
+        <name>Contract</name>
+    </customLabels>
+    <customLabels>
+        <label>Макет страницы договора</label>
+        <name>ContractPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно проверить подлинность пользователя для отправки в DocuSign</label>
+        <name>CouldNotAuthenticateUser</name>
+    </customLabels>
+    <customLabels>
+        <label>невозможно активизировать -</label>
+        <name>CoultNotBeActivatedDash</name>
+    </customLabels>
+    <customLabels>
+        <label>Страна</label>
+        <name>Country</name>
+    </customLabels>
+    <customLabels>
+        <label>Создание нового представления пользователя</label>
+        <name>CreateANewUserView</name>
+    </customLabels>
+    <customLabels>
+        <label>Создание учетной записи</label>
+        <name>CreateAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Заполните приведенную ниже форму и нажмите кнопку &quot;Создать учетную запись&quot; для настройки новой учетной записи DocuSign.</label>
+        <name>CreateAccountForm</name>
+    </customLabels>
+    <customLabels>
+        <label>На этом этапе необходимо создать новую учетную запись DocuSign или воспользоваться ранее созданной учетной записью</label>
+        <name>CreateDSOrUseExisting</name>
+    </customLabels>
+    <customLabels>
+        <label>Создано новое членство DocuSign, и пользователь успешно связан с ним.  Пользователь получит сообщение электронной почты со ссылкой для активизации.  По завершении активизации пользователь должен перейти на вкладку &quot;Администратор DocuSign&quot; и ввести на ней пароль.</label>
+        <name>CreateMemberStatusMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Создать членство</label>
+        <name>CreateMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>Создать учетную запись</label>
+        <name>CreateMyAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Создать новое членство для</label>
+        <name>CreateNewMembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>Создать новое представление</label>
+        <name>CreateNewView</name>
+    </customLabels>
+    <customLabels>
+        <label>Создание учетной записи для свободно распространяемой ознакомительной версии DocuSign или связывание с существующей учетной записью</label>
+        <name>CreateTrialOrLinkExisting</name>
+    </customLabels>
+    <customLabels>
+        <label>Информация о кредитной карте</label>
+        <name>CreditCardInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Дата окончания текущего расчетного периода</label>
+        <name>CurrentBillingPeriodEndDate</name>
+    </customLabels>
+    <customLabels>
+        <label>Дата начала текущего расчетного периода</label>
+        <name>CurrentBillingPeriodStartDate</name>
+    </customLabels>
+    <customLabels>
+        <label>Текущий пользователь Salesforce</label>
+        <name>CurrentSalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетная запись DocuSign настроена</label>
+        <name>DSAccountConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>Администратор DocuSign</label>
+        <name>DSAdmin</name>
+    </customLabels>
+    <customLabels>
+        <label>USER_AUTHENTICATION_FAILED: неверное имя пользователя и/или пароль.</label>
+        <name>DSClientAuthenticationException</name>
+    </customLabels>
+    <customLabels>
+        <label>USER_AUTHENTICATION_FAILED</label>
+        <name>DSClient_USER_AUTHENTICATION_FAILED</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес электронной почты DSCreateEnvRecord DSEnvelope:</label>
+        <name>DSCreateEnvRecordEmailIs</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес электронной почты DocuSign</label>
+        <name>DSEmail</name>
+    </customLabels>
+    <customLabels>
+        <label>Конверт DocuSign</label>
+        <name>DSEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign для Salesforce</label>
+        <name>DSForSF</name>
+    </customLabels>
+    <customLabels>
+        <label>Пароль DocuSign</label>
+        <name>DSPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>В DocuSign предусмотрена возможность принудительной передачи информации в Salesforce в реальном времени с внедрением состояний, документов и данных в используемые объекты. Для этого требуется вход в Salesforce посредством DocuSign.</label>
+        <name>DSPushToSFOnLogin</name>
+    </customLabels>
+    <customLabels>
+        <label>Получатель DocuSign</label>
+        <name>DSRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес электронной почты получателя DocuSign</label>
+        <name>DSRecipientEmail</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя получателя DocuSign</label>
+        <name>DSRecipientName</name>
+    </customLabels>
+    <customLabels>
+        <label>Результат повторной отправки сообщения электронной почты</label>
+        <name>DSResendResult</name>
+    </customLabels>
+    <customLabels>
+        <label>Результирующее состояние DocuSign</label>
+        <name>DSStatusResult</name>
+    </customLabels>
+    <customLabels>
+        <label>Положения и условия DocuSign</label>
+        <name>DSTermsConditions</name>
+    </customLabels>
+    <customLabels>
+        <label>Подключение DocuSign к Salesforce завершено</label>
+        <name>DSToSFComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Отклонен</label>
+        <name>Declined</name>
+    </customLabels>
+    <customLabels>
+        <label>Определено в шаблоне</label>
+        <name>DefInTemplate</name>
+    </customLabels>
+    <customLabels>
+        <label>Текст сообщения электронной почты по умолчанию</label>
+        <name>DefaultEmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Тема сообщения электронной почты по умолчанию</label>
+        <name>DefaultEmailSubject</name>
+    </customLabels>
+    <customLabels>
+        <label>Истечение срока действия конверта по умолчанию через N дн.</label>
+        <name>DefaultExpireEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Повторная отправка напоминания по умолчанию через N дн.</label>
+        <name>DefaultRepeatReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправка напоминания по умолчанию через N дн.</label>
+        <name>DefaultSendReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>Предупреждение об истечении срока действия по умолчанию за N дн.</label>
+        <name>DefaultWarnOfExpiration</name>
+    </customLabels>
+    <customLabels>
+        <label>Удал.</label>
+        <name>Del</name>
+    </customLabels>
+    <customLabels>
+        <label>удалить</label>
+        <name>Delete</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить членство</label>
+        <name>DeleteMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить членство для</label>
+        <name>DeleteMembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить</label>
+        <name>DeleteUppercase</name>
+    </customLabels>
+    <customLabels>
+        <label>Доставлен</label>
+        <name>Delivered</name>
+    </customLabels>
+    <customLabels>
+        <label>Сведения</label>
+        <name>Details</name>
+    </customLabels>
+    <customLabels>
+        <label>Отключить редактирование сообщения эл. почты пользователя</label>
+        <name>DisableUserEmailMessageEditing</name>
+    </customLabels>
+    <customLabels>
+        <label>Отключить редактирование темы письма пользователя</label>
+        <name>DisableUserEmailSubjectEditing</name>
+    </customLabels>
+    <customLabels>
+        <label>Запрещено</label>
+        <name>Disabled</name>
+    </customLabels>
+    <customLabels>
+        <label>Отменить изменения в списке &quot;Выбранные поля&quot;</label>
+        <name>DiscardTheChangesToSelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображается учетных записей: {0} из {1}.</label>
+        <name>Display0Of1Accounts</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить список компонентов макета страницы учетной записи для добавления к макету кнопки &quot;Отправить с помощью DocuSign&quot;</label>
+        <name>DisplayAccountPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить страницу параметров учетной записи DocuSign</label>
+        <name>DisplayAccountSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить консоль DocuSign</label>
+        <name>DisplayConsole</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение списка компонентов макета страницы контактного лица для добавления к макету кнопки &quot;Отправить с помощью DocuSign&quot;</label>
+        <name>DisplayContactPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить список компонентов макета страницы договора для добавления к макету кнопки &quot;Отправить с помощью DocuSign&quot;</label>
+        <name>DisplayContractPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить страницу параметров конверта DocuSign</label>
+        <name>DisplayEnvelopSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение списка компонентов макета страницы потенциального клиента для добавления к макету кнопки &quot;Отправить с помощью DocuSign&quot;</label>
+        <name>DisplayLeadPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить страницу управления пользователями</label>
+        <name>DisplayManageUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение страницы управления пользователями DocuSign для добавления пользователей к учетной записи DocuSign</label>
+        <name>DisplayManageUsersAdd</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение страницы управления пользователями DocuSign для отмены активизации пользователей, связанных с учетной записью DocuSign</label>
+        <name>DisplayManageUsersDeactivate</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение списка компонентов макета страницы потенциальной сделки для добавления к макету кнопки &quot;Отправить с помощью DocuSign&quot;</label>
+        <name>DisplayOpportunityPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Место отображения строк:</label>
+        <name>DisplayRowsWhere</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение страницы DocuSign для подписи при личном присутствии в отдельном окне</label>
+        <name>DisplayTheDocuSignInPerson</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение страницы средства разметки DocuSign в отдельном окне</label>
+        <name>DisplayTheDocuSignTaggerPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Отобразить страницу приветствия DocuSign</label>
+        <name>DisplayWelcomePage</name>
+    </customLabels>
+    <customLabels>
+        <label>Отображение страницы</label>
+        <name>DisplayingPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Дополнительные возможности DocuSign</label>
+        <name>DoMoreWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Порядок документов</label>
+        <name>DocOrder</name>
+    </customLabels>
+    <customLabels>
+        <label>Документы на подпись</label>
+        <name>DocsForSignature</name>
+    </customLabels>
+    <customLabels>
+        <label>Сведения учетной записи DocuSign уже заданы.</label>
+        <name>DocuSignAccountAlreadyConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Сведения учетной записи DocuSign</label>
+        <name>DocuSignAccountInformation</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DocuSignChatter --></label>
+        <name>DocuSignChatter</name>
+    </customLabels>
+    <customLabels>
+        <label>В DocuSign не возвращается состояние для операции повторной отправки этого конверта.</label>
+        <name>DocuSignDidNotReturnStatus</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес электронной почты DocuSign</label>
+        <name>DocuSignEmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>Операция с конвертом DocuSign отменена</label>
+        <name>DocuSignEnvelopeCancelled</name>
+    </customLabels>
+    <customLabels>
+        <label>Состояние конверта DocuSign отличается от \&quot;Отправлен\&quot; и \&quot;Доставлен\&quot;, или для учетной записи DocuSign не разрешена функция \&quot;Исправление конвертов\&quot;.  Ни одно сообщение электронной почты не отправлено.</label>
+        <name>DocuSignEnvelopeNotSentOrDeilivered</name>
+    </customLabels>
+    <customLabels>
+        <label>Конверт DocuSign сохранен</label>
+        <name>DocuSignEnvelopeSaved</name>
+    </customLabels>
+    <customLabels>
+        <label>Корпорация DocuSign</label>
+        <name>DocuSignInc</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление участниками в DocuSign</label>
+        <name>DocuSignMemberManagement</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign не выполнена</label>
+        <name>DocuSignNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign не выполнена. Обратитесь к системному
+			администратору.</label>
+        <name>DocuSignNotConfiguredContactAdmin</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправка с помощью DocuSign завершена</label>
+        <name>DocuSignSendingCompleted</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign</label>
+        <name>DocuSignSetup</name>
+    </customLabels>
+    <customLabels>
+        <label>Системный отправитель DocuSign не задан</label>
+        <name>DocuSignSystemSenderNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь, назначенный системным отправителем DocuSign</label>
+        <name>DocuSignSystemSenderUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Идентификатор пользователя, назначенного системным отправителем DocuSign</label>
+        <name>DocuSignSystemSenderUserId</name>
+    </customLabels>
+    <customLabels>
+        <label>Информация о пользователе, назначенном системным отправителем DocuSign</label>
+        <name>DocuSignSystemSenderUserInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаблоны DocuSign</label>
+        <name>DocuSignTemplates</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь DocuSign</label>
+        <name>DocuSignUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Идентификатор пользователя DocuSign</label>
+        <name>DocuSignUserId</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь DocuSign не настроен</label>
+        <name>DocuSignUserNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя пользователя DocuSign</label>
+        <name>DocuSignUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>Документ</label>
+        <name>Document</name>
+    </customLabels>
+    <customLabels>
+        <label>-- Выбрать папку --</label>
+        <name>DocumentFolderListSelectFolder</name>
+    </customLabels>
+    <customLabels>
+        <label>Документы</label>
+        <name>Documents</name>
+    </customLabels>
+    <customLabels>
+        <label>Готово</label>
+        <name>Done</name>
+    </customLabels>
+    <customLabels>
+        <label>Голландский</label>
+        <name>Dutch</name>
+    </customLabels>
+    <customLabels>
+        <label>Каждое имя роли необходимо вводить в отдельной строке.</label>
+        <name>EachRoleNameMustBeEntered</name>
+    </customLabels>
+    <customLabels>
+        <label>Правка</label>
+        <name>Edit</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактирование сведений учетной записи DocuSign</label>
+        <name>EditAccountInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактирование параметров по умолчанию Chatter для конвертов DocuSign</label>
+        <name>EditChatterSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Не следует непосредственно вызывать функцию редактирования получателя: к ней следует обращаться со страницы редактирования конверта</label>
+        <name>EditDocFromEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактировать пароль DocuSign</label>
+        <name>EditDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактирование текста сообщения электронной почты, используемого по умолчанию при отправке конвертов DocuSign</label>
+        <name>EditEmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактирование параметров напоминаний о конвертах DocuSign</label>
+        <name>EditEnvelopeReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>Надлежащая информация о ссылке</label>
+        <name>EditLinkInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактировать макеты страниц</label>
+        <name>EditPageLayouts</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактировать получателя</label>
+        <name>EditRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактировать пользователя Salesforce</label>
+        <name>EditSalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактировать выбранного пользователя</label>
+        <name>EditSelectedUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактирование системного отправителя и пароля DocuSign</label>
+        <name>EditSenderNPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Редактирование представления пользователя</label>
+        <name>EditTheUserView</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес эл. почты</label>
+        <name>EmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>Отсутствует адрес электронной почты.</label>
+        <name>EmailAddressMissing</name>
+    </customLabels>
+    <customLabels>
+        <label>Длина текста сообщения электронной почты не может превышать 2000 символов.</label>
+        <name>EmailBodyLimitedTwoThousand</name>
+    </customLabels>
+    <customLabels>
+        <label>Сообщение эл. почты</label>
+        <name>EmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Сообщение электронной почты не отправлено</label>
+        <name>EmailNotSent</name>
+    </customLabels>
+    <customLabels>
+        <label>Адреса электронной почты участников не разрешены. Адрес электронной почты является частью домена с ограниченным доступом.  Для связывания с учетной записью перейдите на страницу &quot;Если учетная запись DocuSign уже настроена, для ее применения щелкните здесь&quot;</label>
+        <name>EmailNowAllowedEmailRestricted</name>
+    </customLabels>
+    <customLabels>
+        <label>Адрес электронной почты обязателен</label>
+        <name>EmailRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>Параметры сообщения электронной почты</label>
+        <name>EmailSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Тема сообщения эл. почты</label>
+        <name>EmailSubject</name>
+    </customLabels>
+    <customLabels>
+        <label>Поле темы сообщения электронной почты не может быть пустым.</label>
+        <name>EmailSubjectNotBeBlank</name>
+    </customLabels>
+    <customLabels>
+        <label>или отправьте сообщение электронной почты по адресу</label>
+        <name>EmailUsAt</name>
+    </customLabels>
+    <customLabels>
+        <label>Разрешить обновление состояний в Chatter</label>
+        <name>EnableChatterUpdates</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- EnableNewMobileTaggingUI --></label>
+        <name>EnableNewMobileTaggingUI</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- EnableNewMobileTaggingUIToolTip --></label>
+        <name>EnableNewMobileTaggingUIToolTip</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- EnableReminderExpiration --></label>
+        <name>EnableReminderExpiration</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Enable Reminder and Expiration Settings Help Text --></label>
+        <name>EnableReminderExpirationHelpText</name>
+    </customLabels>
+    <customLabels>
+        <label>Разрешить компенсацию ограничения на внешние вызовы в Salesforce</label>
+        <name>EnableSalesforceCalloutLimit</name>
+    </customLabels>
+    <customLabels>
+        <label>Разрешение на передачу данных и документов из DocuSign в Salesforce в реальном времени</label>
+        <name>EnableSendDataToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>Разрешено - всегда включено</label>
+        <name>EnabledAlwaysOn</name>
+    </customLabels>
+    <customLabels>
+        <label>Разрешено - по умолчанию отключено</label>
+        <name>EnabledOffByDefault</name>
+    </customLabels>
+    <customLabels>
+        <label>Разрешено - по умолчанию включено</label>
+        <name>EnabledOnByDefault</name>
+    </customLabels>
+    <customLabels>
+        <label>Английский</label>
+        <name>English</name>
+    </customLabels>
+    <customLabels>
+        <label>Убедитесь в том, что для учетной записи DocuSign разрешена подпись в сеансе.</label>
+        <name>EnsureDocuSignAccountHasSession</name>
+    </customLabels>
+    <customLabels>
+        <label>Введите адрес электронной почты и пароль для существующей записи DocuSign, затем нажмите кнопку &quot;Связать с учетной записью&quot;</label>
+        <name>EnterCredentialsLinkAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Введите учетные данные системного отправителя DocuSign и нажмите
+			кнопку &quot;Обновить учетные данные DocuSign&quot;.</label>
+        <name>EnterDocuSignSystemSenderCredentials</name>
+    </customLabels>
+    <customLabels>
+        <label>Введите пароль и выберите &quot;Обновить пароль DocuSign&quot; для
+			проверки пароля средствами DocuSign и обновления записи о пользователе.</label>
+        <name>EnterPasswordClickUpdateDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Введите пароль и выберите &quot;Обновить пароль DocuSign&quot; для проверки
+			пароля средствами DocuSign и обновления записи о пользователе, соответствующей системному отправителю.</label>
+        <name>EnterPasswordandClickUpdatePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Ввести/удалить роли по умолчанию.</label>
+        <name>EnterRemoveDefaultRoles</name>
+    </customLabels>
+    <customLabels>
+        <label>Введите значение для среды настраиваемых адресов URL в Salesforce.</label>
+        <name>EnterValueSalesforceCustomURL</name>
+    </customLabels>
+    <customLabels>
+        <label>Конверт</label>
+        <name>Envelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправить конверт повторно невозможно. Он не находится в состоянии \&quot;Отправлен\&quot; или \&quot;Доставлен\&quot;.</label>
+        <name>EnvelopeCannotBeResent</name>
+    </customLabels>
+    <customLabels>
+        <label>Создать конверт невозможно.</label>
+        <name>EnvelopeCouldNotBeCreated</name>
+    </customLabels>
+    <customLabels>
+        <label>Повторно отправить сообщение электронной почты для конверта невозможно. Для этого конверта не выбраны получатели</label>
+        <name>EnvelopeEmaillCannotBeResent</name>
+    </customLabels>
+    <customLabels>
+        <label>Сообщения электронной почты для конверта не отправлены повторно. Не выбраны получатели в состоянии \&apos;Отправлен\&apos; или \&apos;Доставлен\&apos;.</label>
+        <name>EnvelopeEmailsNotResent</name>
+    </customLabels>
+    <customLabels>
+        <label>Идентификатор конверта DocuSign</label>
+        <name>EnvelopeID</name>
+    </customLabels>
+    <customLabels>
+        <label>Идентификатор конверта:</label>
+        <name>EnvelopeIDColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Информация о конверте DocuSign</label>
+        <name>EnvelopeInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Задать получателей конверта</label>
+        <name>EnvelopeReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройки конверта</label>
+        <name>EnvelopeSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Конверты</label>
+        <name>Envelopes</name>
+    </customLabels>
+    <customLabels>
+        <label>Среда</label>
+        <name>Environment</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при добавлении участников к учетной записи:</label>
+        <name>ErrorAddingMembersToAccountColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Приносим извинения за ошибку. Можно нажать расположенную ниже кнопку для возврата к странице администрирования и начать сначала.</label>
+        <name>ErrorAdminPageStartOver</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при проверке подлинности.</label>
+        <name>ErrorAuthenticating</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при проверке подлинности.  Недостаточно прав доступа к объекту User.</label>
+        <name>ErrorAuthenticatingInsufficientUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при проверке подлинности. Отсутствуют необходимые полномочия.</label>
+        <name>ErrorAuthenticatingNotHaveProperPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка: неверные переменные URL</label>
+        <name>ErrorBadURLVar</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка:</label>
+        <name>ErrorColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при обращении к DocuSign во время активизации Salesforce:</label>
+        <name>ErrorContactingDocuSignActivatingSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при создании DocuSignEnvelope: недостаточно прав доступа к объекту DocuSignEnvelope.</label>
+        <name>ErrorCreatingEnvelopeInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при отмене активизации учетных записей DocuSign.</label>
+        <name>ErrorDeactivatingDocuSignAccounts</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при отмене активизации учетной записи DocuSign:</label>
+        <name>ErrorDeactivingDocuSignAccountColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка =</label>
+        <name>ErrorEquals</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка из</label>
+        <name>ErrorFrom</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка в</label>
+        <name>ErrorIn</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка: недостаточно прав доступа к объекту User.</label>
+        <name>ErrorInsufficientAccessToUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>Сообщения об ошибках</label>
+        <name>ErrorMessages</name>
+    </customLabels>
+    <customLabels>
+        <label>К сожалению, обнаружена ошибка. Возможно, на подключение к DocuSign повлияли неполадки сети. Повторная попытка передачи запроса может оказаться успешной.</label>
+        <name>ErrorNetworkIssueRetry</name>
+    </customLabels>
+    <customLabels>
+        <label>Возникла ошибка. Обратитесь по адресу service@docusign.com.</label>
+        <name>ErrorOccurredContact</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при запросе на активизацию.</label>
+        <name>ErrorRequestingActivation</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при извлечении информации с консоли DocuSign.  Для доступа обратитесь к системному администратору.  Ошибка:</label>
+        <name>ErrorRetrievingDocuSignConsoleInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>ОШИБКА НАСТРОЙКИ УЧЕТНЫХ ДАННЫХ МЕНЕДЖЕРОВ ПО ПРОДАЖАМ. УБЕДИТЕСЬ, ЧТО СЕТЬ DOCUSIGN ДОБАВЛЕНА\N В СПИСОК ДОВЕРЕННЫХ СЕТЕЙ И ПРОВЕРЬТЕ ИМЯ ПОЛЬЗОВАТЕЛЯ, ПАРОЛЬ И\N СЕТЕВОЕ ОКРУЖЕНИЕ МЕНЕДЖЕРА ПО ПРОДАЖАМ. ОШИБКА:</label>
+        <name>ErrorSalesforceCredentialsVerify</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при сохранении информации о подключении к учетной записи.  Недостаточно прав доступа к объекту User.</label>
+        <name>ErrorSavingAccountConnectInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при сохранении участников.  Недостаточно прав доступа к объекту User.</label>
+        <name>ErrorSavingMembersInsufficientAccessUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка при отправке</label>
+        <name>ErrorSending</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка: невозможно отправить конверт. Конверт не существует.</label>
+        <name>ErrorUnableToSendEvenlopeNotExist</name>
+    </customLabels>
+    <customLabels>
+        <label>Пример. Если первой является роль &quot;Заказчик&quot;, получатель, связанный
+			с ролью, сопоставляется вкладкам \s1\, \i1\ в документах.</label>
+        <name>ExampleIfTheFirstRoleIsCustomer</name>
+    </customLabels>
+    <customLabels>
+        <label>Месяц окончания срока действия</label>
+        <name>ExpirationMonth</name>
+    </customLabels>
+    <customLabels>
+        <label>Год окончания срока действия</label>
+        <name>ExpirationYear</name>
+    </customLabels>
+    <customLabels>
+        <label>Внеш.</label>
+        <name>Ext</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя</label>
+        <name>FName</name>
+    </customLabels>
+    <customLabels>
+        <label>Факс</label>
+        <name>Fax</name>
+    </customLabels>
+    <customLabels>
+        <label>Поля, которые будут отображаться в расположенном ниже списке</label>
+        <name>FieldsThatWillBeDisplayed</name>
+    </customLabels>
+    <customLabels>
+        <label>Заключительные шаги</label>
+        <name>FinalSteps</name>
+    </customLabels>
+    <customLabels>
+        <label>Папка</label>
+        <name>Folder</name>
+    </customLabels>
+    <customLabels>
+        <label>в ознакомительной учетной записи DocuSign</label>
+        <name>ForFreeDSTrial</name>
+    </customLabels>
+    <customLabels>
+        <label>Забыли пароль DocuSign?</label>
+        <name>ForgotDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Забыли пароль?</label>
+        <name>ForgotPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Ответ на вопрос для восстановления забытого пароля</label>
+        <name>ForgottenPassAnswer</name>
+    </customLabels>
+    <customLabels>
+        <label>Вопрос для восстановления забытого пароля</label>
+        <name>ForgottenPassQuestion</name>
+    </customLabels>
+    <customLabels>
+        <label>Французский</label>
+        <name>French</name>
+    </customLabels>
+    <customLabels>
+        <label>Немецкий</label>
+        <name>German</name>
+    </customLabels>
+    <customLabels>
+        <label>Размещение кнопки &quot;Отправить с помощью DocuSign&quot; и обеспечение видимости в реальном времени</label>
+        <name>GetSendNRealTimeVisibility</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь может разместить этот сеанс подписания только в том случае, если его имя и адрес электронной почты, заданные в Salesforce, совпадают с именем и адресом электронной почты, заданными в DocuSign.  Обратитесь к администратору для приведения учетных данных DocuSign в соответствие с учетными данными Salesforce или учетных данных Salesforce в соответствие с учетными данными DocuSign.</label>
+        <name>GetSigningURLRedirectErrorMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Параметры Chatter</label>
+        <name>HideChatterSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Скрыть поле текста сообщения электронной почты</label>
+        <name>HideEmailMessageField</name>
+    </customLabels>
+    <customLabels>
+        <label>Скрыть поле темы сообщения электронной почты</label>
+        <name>HideEmailSubjectField</name>
+    </customLabels>
+    <customLabels>
+        <label>Скрыть параметры напоминаний и истечения срока действия</label>
+        <name>HideTheRemindAndExpireSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Скрыть кнопку &quot;Отправить сейчас&quot;</label>
+        <name>HideTheSendNowButton</name>
+    </customLabels>
+    <customLabels>
+        <label>Скрыть кнопку &quot;Разметить&quot;</label>
+        <name>HideTheTagButton</name>
+    </customLabels>
+    <customLabels>
+        <label>Домашний</label>
+        <name>Home</name>
+    </customLabels>
+    <customLabels>
+        <label>Личное присутствие</label>
+        <name>HostInPerson</name>
+    </customLabels>
+    <customLabels>
+        <label>Личное присутствие - подписать сейчас</label>
+        <name>HostInPersonDashSignNow</name>
+    </customLabels>
+    <customLabels>
+        <label>Инструкции по редактированию параметров обновления состояния активности DocuSign</label>
+        <name>HowToEditYourDocuSignActivity</name>
+    </customLabels>
+    <customLabels>
+        <label>Инструкции по отправке с помощью DocuSign для Salesforce</label>
+        <name>HowToSendUsingDocuSignSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>Я выражаю согласие с</label>
+        <name>IAgreeToThe</name>
+    </customLabels>
+    <customLabels>
+        <label>У меня есть учетная запись DocuSign</label>
+        <name>IHaveDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Мне нужна учетная запись DocuSign</label>
+        <name>INeedDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>При наличии неполадок обратитесь на</label>
+        <name>IfDoesntWorkContact</name>
+    </customLabels>
+    <customLabels>
+        <label>Если отображается экран для входа в DocuSign</label>
+        <name>IfYouSeeTheDocuSignLoginScreen</name>
+    </customLabels>
+    <customLabels>
+        <label>Не завершено</label>
+        <name>Incomplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно прав доступа к объекту DocuSignEnvelopeDocument</label>
+        <name>InsufficientAccessDocuSignEnvelopeDocument</name>
+    </customLabels>
+    <customLabels>
+        <label>Информация о недостаточных правах доступа</label>
+        <name>InsufficientAccessInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно прав доступа к объекту DocuSignAccountConfiguration.</label>
+        <name>InsufficientAccessToConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить контактную информацию. Недостаточно прав доступа к объекту Contact.</label>
+        <name>InsufficientAccessToContact</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить контактную информацию. Недостаточно прав доступа к объекту Lead.</label>
+        <name>InsufficientAccessToLead</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить контактную информацию. Недостаточно прав доступа к объекту User.</label>
+        <name>InsufficientAccessToUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно прав доступа к объекту User</label>
+        <name>InsufficientAccessUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно прав доступа к объекту DocuSign_Envelope_Recipient__c.</label>
+        <name>InsufficientDocuSignEnvelopeRecipientc</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно полномочий для обновления записей о пользователях.</label>
+        <name>InsufficientPriviliegesSelectUserRecords</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно полномочий на чтение</label>
+        <name>InsufficientReadPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label>Неверный адрес электронной почты или пароль DocuSign.</label>
+        <name>InvalidDocuSignEmailPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Недопустимые полномочия DocuSign - для работы с этой программой необходимы полномочия DocuSign на отправку в отношении данного пользователя. Обратитесь к системному администратору.</label>
+        <name>InvalidDocuSignPermissionToUseThisProduct</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- InvalidSourceId --></label>
+        <name>InvalidSourceId</name>
+    </customLabels>
+    <customLabels>
+        <label>Неверный идентификатор шаблона -</label>
+        <name>InvalidTemplateIdDash</name>
+    </customLabels>
+    <customLabels>
+        <label>Итальянский</label>
+        <name>Italian</name>
+    </customLabels>
+    <customLabels>
+        <label>Японский</label>
+        <name>Japanese</name>
+    </customLabels>
+    <customLabels>
+        <label>Корейский</label>
+        <name>Korean</name>
+    </customLabels>
+    <customLabels>
+        <label>Фамилия</label>
+        <name>LName</name>
+    </customLabels>
+    <customLabels>
+        <label>Язык</label>
+        <name>Language</name>
+    </customLabels>
+    <customLabels>
+        <label>Потенциальный клиент</label>
+        <name>Lead</name>
+    </customLabels>
+    <customLabels>
+        <label>Макет страницы потенциального клиента</label>
+        <name>LeadPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>Потенциальные клиенты</label>
+        <name>Leads</name>
+    </customLabels>
+    <customLabels>
+        <label>Дополнительная информация</label>
+        <name>LearnMore</name>
+    </customLabels>
+    <customLabels>
+        <label>Дополнительная информация:</label>
+        <name>LearnMoreColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Библиотека</label>
+        <name>Library</name>
+    </customLabels>
+    <customLabels>
+        <label>Вероятно, расширение имени передаваемого файла отсутствует или не распознается средствами DocuSign.</label>
+        <name>LikelyFileMissingFileExtension</name>
+    </customLabels>
+    <customLabels>
+        <label>Связать с учетной записью</label>
+        <name>LinkAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Связать с учетной записью DocuSign</label>
+        <name>LinkDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Связать с существующим членством для</label>
+        <name>LinkExistingMembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>Связать с членством</label>
+        <name>LinkMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>Вход</label>
+        <name>LogIn</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление</label>
+        <name>Manage</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление учетной записью</label>
+        <name>ManageAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>&gt;Справка по управлению пользователями DocuSign</label>
+        <name>ManageDocuSignUsersHelp</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление конвертом</label>
+        <name>ManageEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление конвертами</label>
+        <name>ManageEnvelopes</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление пользователями DocuSign</label>
+        <name>ManageUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>Длина списка участников, возвращенного из DocuSign, не совпадает с длиной отправленного списка.</label>
+        <name>MemberListDocuSignNotSameLengthListSent</name>
+    </customLabels>
+    <customLabels>
+        <label>Длина списка участников, возвращенного из DocuSign, не совпадает с длиной отправленного списка.</label>
+        <name>MemberListFromDocuSignNotSameLengthList</name>
+    </customLabels>
+    <customLabels>
+        <label>Членство для</label>
+        <name>MembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>Сообщение</label>
+        <name>Message</name>
+    </customLabels>
+    <customLabels>
+        <label>сообщение =</label>
+        <name>MessageEquals</name>
+    </customLabels>
+    <customLabels>
+        <label>Второе имя</label>
+        <name>MiddleName</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетная запись является допустимой, но содержит не все параметры, необходимые для ее использования в качестве основной учетной записив  DocuSign для Salesforce.</label>
+        <name>MissingSettingToBePrimaryAccountSFDC</name>
+    </customLabels>
+    <customLabels>
+        <label>Переместить вниз</label>
+        <name>MoveDown</name>
+    </customLabels>
+    <customLabels>
+        <label>Перемещение выбранного поля на одну позицию вниз</label>
+        <name>MoveTheSelectedFieldDown</name>
+    </customLabels>
+    <customLabels>
+        <label>Перемещение выбранного поля на одну позицию вверх</label>
+        <name>MoveTheSelectedFieldUp</name>
+    </customLabels>
+    <customLabels>
+        <label>Возврат полей из списка &quot;Выбранные поля&quot; в список &quot;Доступные
+			поля&quot;</label>
+        <name>MoveTheSelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Переместить вверх</label>
+        <name>MoveUp</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо выразить согласие с положениями и условиями DocuSign.</label>
+        <name>MustAgreeDocuSignTerms</name>
+    </customLabels>
+    <customLabels>
+        <label>Для выполнения этой операции необходимы полномочия администратора</label>
+        <name>MustHaveAdminPermissionsPerformOperation</name>
+    </customLabels>
+    <customLabels>
+        <label>Для выполнения этой операции необходимы полномочия администратора DocuSign</label>
+        <name>MustHaveDocuSignAdminPermissionsPerformOperation</name>
+    </customLabels>
+    <customLabels>
+        <label>Для выполнения этой операции необходимы полномочия администратора</label>
+        <name>MustHavePermissionsToPerformOperations</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать действительные имя и пароль пользователя Salesforce</label>
+        <name>MustProvideValidSalesforceUserAndPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо выбрать учетную запись.</label>
+        <name>MustSelectAnAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать наименование компании.</label>
+        <name>MustSpecifyCompanyName</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать адрес электронной почты.</label>
+        <name>MustSpecifyEmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать имя.</label>
+        <name>MustSpecifyName</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать пароль.</label>
+        <name>MustSpecifyPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Мои документы</label>
+        <name>MyDocuments</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя</label>
+        <name>Name</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя на карте</label>
+        <name>NameOnCard</name>
+    </customLabels>
+    <customLabels>
+        <label>Новый</label>
+        <name>New</name>
+    </customLabels>
+    <customLabels>
+        <label>далее</label>
+        <name>Next</name>
+    </customLabels>
+    <customLabels>
+        <label>Выберите &quot;Далее&quot; для добавления параметров к учетной записи или &quot;Назад&quot; для выбора другой учетной записи.</label>
+        <name>NextOrBackMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Далее</label>
+        <name>NextUppercase</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoAccessToPage --></label>
+        <name>NoAccessToPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Нет свободного подключения к DocuSign</label>
+        <name>NoConnectionDocuSignAvailable</name>
+    </customLabels>
+    <customLabels>
+        <label>Нет доступа к DocuSign</label>
+        <name>NoDocuSignAccess</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoDocuments --></label>
+        <name>NoDocuments</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoDocumentsDesktop --></label>
+        <name>NoDocumentsDesktop</name>
+    </customLabels>
+    <customLabels>
+        <label>Полномочия пользователя DocuSign не заданы</label>
+        <name>NoPermissionConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>Отсутствуют необходимые полномочия для доступа к настраиваемым объектам DocuSign</label>
+        <name>NoPermissionCustomObj</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoRecipients --></label>
+        <name>NoRecipients</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoRecipientsDesktop --></label>
+        <name>NoRecipientsDesktop</name>
+    </customLabels>
+    <customLabels>
+        <label>Нет строк для отображения.</label>
+        <name>NoRowsToDisplay</name>
+    </customLabels>
+    <customLabels>
+        <label>Этот пользователь Salesforce не связан с пользователем, назначенным системным
+			отправителем DocuSign.</label>
+        <name>NotAssociatedSalesforceUserToDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Не владелец конверта</label>
+        <name>NotEnvelopeOwner</name>
+    </customLabels>
+    <customLabels>
+        <label>Отсутствуют необходимые полномочия для обновления записей о пользователях Salesforce
+			с применением информации о пользователях DocuSign.</label>
+        <name>NotHavePermissionsToUpdateSalesforceUserRecords</name>
+    </customLabels>
+    <customLabels>
+        <label>Недостаточно полномочий для повторной отправки этого конверта. Ни одно сообщение электронной почты не отправлено.</label>
+        <name>NotHaveSufficientPermissionResend</name>
+    </customLabels>
+    <customLabels>
+        <label>Пароль системного отправителя не задан.</label>
+        <name>NotHaveSystemSenderPassword</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NotSupposedToBeShown --></label>
+        <name>NotSupposedToBeShown</name>
+    </customLabels>
+    <customLabels>
+        <label>Примечание для получателя</label>
+        <name>NoteForRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>&quot;Примечание. Кнопку “Отправить с помощью DocuSign” можно добавить к любому макету
+			страницы (стандартному или настраиваемому) для любого
+			стандартного или настраиваемого объекта Salesforce; приведенные выше пять примеров подходят для ознакомления
+			с этой функцией.&quot;</label>
+        <name>NoteSendWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>из</label>
+        <name>Of</name>
+    </customLabels>
+    <customLabels>
+        <label>Исправить можно только конверты в состоянии \&quot;Отправлен\&quot; или \&quot;Доставлен\&quot;</label>
+        <name>OnlyEnvelopeInSentOrDelivered</name>
+    </customLabels>
+    <customLabels>
+        <label>Потенциальная сделка</label>
+        <name>Opportunity</name>
+    </customLabels>
+    <customLabels>
+        <label>Макет страницы потенциальной сделки</label>
+        <name>OpportunityPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>или</label>
+        <name>Or</name>
+    </customLabels>
+    <customLabels>
+        <label>Порядок</label>
+        <name>Order</name>
+    </customLabels>
+    <customLabels>
+        <label>Порядок ролей определяет вкладку привязки, заданную для сопоставления.</label>
+        <name>OrderOfTheRolesDetermines</name>
+    </customLabels>
+    <customLabels>
+        <label>Страница</label>
+        <name>Page</name>
+    </customLabels>
+    <customLabels>
+        <label>Пароль</label>
+        <name>Password</name>
+    </customLabels>
+    <customLabels>
+        <label>Личные сведения</label>
+        <name>PersonalInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Номер телефона</label>
+        <name>PhoneNumber</name>
+    </customLabels>
+    <customLabels>
+        <label>Роль прототипа</label>
+        <name>PlaceholderRole</name>
+    </customLabels>
+    <customLabels>
+        <label>Дата окончания планового периода</label>
+        <name>PlanEndDate</name>
+    </customLabels>
+    <customLabels>
+        <label>Идентификатор плана</label>
+        <name>PlanID</name>
+    </customLabels>
+    <customLabels>
+        <label>Название плана</label>
+        <name>PlanName</name>
+    </customLabels>
+    <customLabels>
+        <label>Дата начала планового периода</label>
+        <name>PlanStartDate</name>
+    </customLabels>
+    <customLabels>
+        <label>Обратитесь в службу поддержки пользователей DocuSign по адресу service@docusign.com.</label>
+        <name>PleaseContactDocuSignSupportAt</name>
+    </customLabels>
+    <customLabels>
+        <label>Обратитесь в службу поддержки пользователей DocuSign. Обратитесь по адресу электронной почты: service@docusign.com.</label>
+        <name>PleaseContactDocuSignSupportTo</name>
+    </customLabels>
+    <customLabels>
+        <label>&quot;Обратитесь к администратору Salesforce для получения прав
+			доступа на обновление следующих полей объекта User:&quot;</label>
+        <name>PleaseContactYourSalesforceAdministratorToBeGranted</name>
+    </customLabels>
+    <customLabels>
+        <label>Португальский (Бразильский)</label>
+        <name>PortugueseBrazilian</name>
+    </customLabels>
+    <customLabels>
+        <label>Возможные состояния ошибки</label>
+        <name>PossibleErrorConditions</name>
+    </customLabels>
+    <customLabels>
+        <label>Почтовый индекс</label>
+        <name>PostCode</name>
+    </customLabels>
+    <customLabels>
+        <label>Предыдущий</label>
+        <name>Previous</name>
+    </customLabels>
+    <customLabels>
+        <label>При выполнении операции возникла неполадка</label>
+        <name>ProblemWithTransaction</name>
+    </customLabels>
+    <customLabels>
+        <label>Быстрые ссылки</label>
+        <name>QuickLinks</name>
+    </customLabels>
+    <customLabels>
+        <label>Получить копию</label>
+        <name>ReceiveCopy</name>
+    </customLabels>
+    <customLabels>
+        <label>Получатель</label>
+        <name>Recipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Получателю должен быть назначен адрес электронной почты</label>
+        <name>RecipientMustHaveEmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>Параметры роли получателя</label>
+        <name>RecipientRoleSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Получатели и маршрутизация</label>
+        <name>RecipientsAndRouting</name>
+    </customLabels>
+    <customLabels>
+        <label>Получатели уведомлены по электронной почте обо всех аннулированных конвертах.</label>
+        <name>RecipientsHaveNeenNotifiedEmail</name>
+    </customLabels>
+    <customLabels>
+        <label>Получатели, не поставившие подпись, лишаются прав доступа к
+			представлению.</label>
+        <name>RecipientsWhoHaveNotSigned</name>
+    </customLabels>
+    <customLabels>
+        <label>Получатели лишаются прав доступа на подпись конверта.</label>
+        <name>RecipientsWillNoLongerAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Регион</label>
+        <name>Region</name>
+    </customLabels>
+    <customLabels>
+        <label>Параметрам напоминаний и истечения срока действия должны быть присвоены числовые значения.</label>
+        <name>ReminderExpirationsMustBeNumbers</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить</label>
+        <name>Remove</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить и закрыть пользователей</label>
+        <name>RemoveAndCloseUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>УДАЛИТЬ И ЗАКРЫТЬ ПОЛЬЗОВАТЕЛЕЙ = Удалить пакет DocuSign для
+			выбранных пользователей и закрыть их учетные записи</label>
+        <name>RemoveAndCloseUsersDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>Удаление пакета DocuSign для выбранных пользователей с сохранением их доступа к учетным записям DocuSign.</label>
+        <name>RemoveDocuSignPackageSelectedUsersKeepAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Удаление пакета DocuSign для выбранных пользователей и закрытие их учетных записей, связанных с основной учетной записью DocuSign.</label>
+        <name>RemoveDocuSignPackageSelectedUsrsClose</name>
+    </customLabels>
+    <customLabels>
+        <label>Удалить пользователей</label>
+        <name>RemoveUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>УДАЛИТЬ ПОЛЬЗОВАТЕЛЕЙ = Удалить пакет DocuSign для выбранных
+			пользователей</label>
+        <name>RemoveUsersRemoveTheDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправить сообщение электронной почты для конвертов DocuSign повторно</label>
+        <name>ResendEmails</name>
+    </customLabels>
+    <customLabels>
+        <label>Повторная отправка сообщений электронной почты DocuSign завершена</label>
+        <name>ResendEmailsComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Изменить пароль</label>
+        <name>ResetPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Разворачивание или сворачивание панели приветствия</label>
+        <name>ResizeWelcomePanel</name>
+    </customLabels>
+    <customLabels>
+        <label>Возврат</label>
+        <name>Return</name>
+    </customLabels>
+    <customLabels>
+        <label>Возврат в</label>
+        <name>ReturnTo</name>
+    </customLabels>
+    <customLabels>
+        <label>Возврат к конверту DocuSign</label>
+        <name>ReturnToEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Роль</label>
+        <name>Role</name>
+    </customLabels>
+    <customLabels>
+        <label>Имена роли</label>
+        <name>RoleNames</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать роль или имя получателя.</label>
+        <name>RoleOrRecipientNameRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>Роли служат для сопоставления вкладок привязки по умолчанию в документах
+			получателям при отправке с помощью DocuSign.</label>
+        <name>RolesAreUsedToMapDefaultAnchorTabs</name>
+    </customLabels>
+    <customLabels>
+        <label>Порядок маршрутизации</label>
+        <name>RoutingOrder</name>
+    </customLabels>
+    <customLabels>
+        <label>Порядок маршрутизации должен быть не меньше 1.</label>
+        <name>RoutingOrderMustBeOneOrHeigher</name>
+    </customLabels>
+    <customLabels>
+        <label>Количество строк на странице</label>
+        <name>RowsDisplayedPerPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Русский</label>
+        <name>Russian</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign для работы с Salesforce успешно завершена. Теперь все операции управления учетными записями и пользователями можно выполнять на вкладке администрирования DocuSign.</label>
+        <name>SFDCCompleteManageAdminTab</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка DocuSign для Salesforce завершена</label>
+        <name>SFDCSetupComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Среда Salesforce</label>
+        <name>SalesforceEnv</name>
+    </customLabels>
+    <customLabels>
+        <label>Среда Salesforce</label>
+        <name>SalesforceEnvironment</name>
+    </customLabels>
+    <customLabels>
+        <label>Пароль Salesforce</label>
+        <name>SalesforcePass</name>
+    </customLabels>
+    <customLabels>
+        <label>Пароль Salesforce</label>
+        <name>SalesforcePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Маркер Salesforce</label>
+        <name>SalesforceToken</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь Salesforce</label>
+        <name>SalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Сохранить</label>
+        <name>Save</name>
+    </customLabels>
+    <customLabels>
+        <label>Сохранить изменения параметров конверта DocuSign</label>
+        <name>SaveDocuSignEnvelopeChanges</name>
+    </customLabels>
+    <customLabels>
+        <label>Сохранить получателя</label>
+        <name>SaveRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Сохранить изменения в списке &quot;Выбранные поля&quot;</label>
+        <name>SaveTheChangesToTheSelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Поиск документации DocuSign на DocuSign.com</label>
+        <name>SearchDocumentation</name>
+    </customLabels>
+    <customLabels>
+        <label>Просмотреть другие учетные записи</label>
+        <name>SeeMoreAccounts</name>
+    </customLabels>
+    <customLabels>
+        <label>Выберите</label>
+        <name>Select</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбрать пользователя</label>
+        <name>SelectAUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор всех пользователей для активизации или отмены активизации в
+			DocuSign</label>
+        <name>SelectAllUsersOnThisPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Это действие возможно только в том случае, если выбран хотя бы один пользователь, активизированный для DocuSign (значение DSProSFUsername задано).</label>
+        <name>SelectAtLeastOneUserActivatedDSProSFUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>Это действие возможно только в том случае, если выбран хотя бы один пользователь, еще не активизированный для DocuSign (значение DSProSFUsername не задано).</label>
+        <name>SelectAtLeastOneUserDSProSFUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>Выберите заголовок столбца для сортировки содержимого таблицы.</label>
+        <name>SelectColumnHeaderToSort</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбрать поля для отображения в расположенном ниже списке</label>
+        <name>SelectFieldsToDisplayInList</name>
+    </customLabels>
+    <customLabels>
+        <label>Выберите фильтр для применения к расположенному ниже списку пользователей.</label>
+        <name>SelectFilterToApply</name>
+    </customLabels>
+    <customLabels>
+        <label>С этим адресом электронной почты связано несколько учетных записей DocuSign.  Выберите учетную запись для работы с Salesforce:</label>
+        <name>SelectOneEmailForSFDC</name>
+    </customLabels>
+    <customLabels>
+        <label>Это действие возможно только в том случае, если всем выбранным пользователям в Salesforce предоставлены полномочия на управление пользователями и ни один из них еще не активизирован для DocuSign (значение DSProSFUsername не задано).</label>
+        <name>SelectOnlyUsersHavePermissionDSProSFUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбрать подпись DocuSign</label>
+        <name>SelectSignature</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбор пользователя для добавления к пакету DocuSign или удаления из него</label>
+        <name>SelectUserToBeAdded</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбранные документы</label>
+        <name>SelectedDocs</name>
+    </customLabels>
+    <customLabels>
+        <label>Выбранные поля</label>
+        <name>SelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправка с помощью DocuSign завершена</label>
+        <name>SendComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Сбой отправки</label>
+        <name>SendFailed</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправить сейчас</label>
+        <name>SendNow</name>
+    </customLabels>
+    <customLabels>
+        <label>Параметры отправки</label>
+        <name>SendSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправить с помощью DocuSign | Обновить документы DocuSign</label>
+        <name>SendUpdate</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправить с помощью DocuSign</label>
+        <name>SendWithDS</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправить с помощью DocuSign | Получатель DocuSign</label>
+        <name>SendWithDSRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Выполняется отправка конверта</label>
+        <name>SendingEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Отправлен</label>
+        <name>Sent</name>
+    </customLabels>
+    <customLabels>
+        <label>Задать сообщение электронной почты по умолчанию</label>
+        <name>SetEmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка учетной записи DocuSign завершена</label>
+        <name>SetUpDocuSignAccountComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Настроить учетную запись DocuSign</label>
+        <name>SetupDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка настройки</label>
+        <name>SetupError</name>
+    </customLabels>
+    <customLabels>
+        <label>Настройка не завершена.</label>
+        <name>SetupNotComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>После этого можно настроить конкретных пользователей в учетной записи Salesforce для работы с DocuSign для Salesforce</label>
+        <name>SetupUsersInSFToUseDS</name>
+    </customLabels>
+    <customLabels>
+        <label>Поделитесь опытом с сообществом AppExchange.</label>
+        <name>ShareExperienceWithCommunity</name>
+    </customLabels>
+    <customLabels>
+        <label>Показать первую страницу</label>
+        <name>ShowTheFirstPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Показать последнюю страницу</label>
+        <name>ShowTheLastPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Показать следующую страницу</label>
+        <name>ShowTheNextPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Показать предыдущую страницу</label>
+        <name>ShowThePreviousPage</name>
+    </customLabels>
+    <customLabels>
+        <label>Подпись</label>
+        <name>Sign</name>
+    </customLabels>
+    <customLabels>
+        <label>Подписать при личном присутствии</label>
+        <name>SignInPerson</name>
+    </customLabels>
+    <customLabels>
+        <label>Состояние &quot;Подписать сейчас&quot;</label>
+        <name>SignNowStatus</name>
+    </customLabels>
+    <customLabels>
+        <label>Регистрация</label>
+        <name>SignUp</name>
+    </customLabels>
+    <customLabels>
+        <label>Регистрация в ознакомительной учетной записи DocuSign</label>
+        <name>SignUpFreeDSTrial</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DocuSign --></label>
+        <name>SignWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Подпись</label>
+        <name>Signature</name>
+    </customLabels>
+    <customLabels>
+        <label>Подписан</label>
+        <name>Signed</name>
+    </customLabels>
+    <customLabels>
+        <label>Подписант</label>
+        <name>Signer</name>
+    </customLabels>
+    <customLabels>
+        <label>Подписант - подписать сейчас</label>
+        <name>SignerDashSignNow</name>
+    </customLabels>
+    <customLabels>
+        <label>Имя подписанта</label>
+        <name>SignerName</name>
+    </customLabels>
+    <customLabels>
+        <label>Роль подписанта</label>
+        <name>SignerRole</name>
+    </customLabels>
+    <customLabels>
+        <label>Роль подписанта уже используется. Выберите другую роль.</label>
+        <name>SignerRoleAlreadyInUse</name>
+    </customLabels>
+    <customLabels>
+        <label>Тип подписанта</label>
+        <name>SignerType</name>
+    </customLabels>
+    <customLabels>
+        <label>Источник</label>
+        <name>Source</name>
+    </customLabels>
+    <customLabels>
+        <label>Испанский</label>
+        <name>Spanish</name>
+    </customLabels>
+    <customLabels>
+        <label>Ошибка: указанный конверт больше не существует в DocuSign.</label>
+        <name>SpecifiedEnvelopeNoLonerExist</name>
+    </customLabels>
+    <customLabels>
+        <label>Указанный пользователь не является получателем указанного конверта</label>
+        <name>SpecifiedUserNotRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>Запустить DocuSigning</label>
+        <name>StartDocuSigning</name>
+    </customLabels>
+    <customLabels>
+        <label>Начать настройку</label>
+        <name>StartSetUp</name>
+    </customLabels>
+    <customLabels>
+        <label>Регион</label>
+        <name>State</name>
+    </customLabels>
+    <customLabels>
+        <label>Статус</label>
+        <name>Status</name>
+    </customLabels>
+    <customLabels>
+        <label>Исправление допускается только для конвертов в состоянии &quot;Отправлен&quot; или &quot;Доставлен&quot;.</label>
+        <name>StatusCorrectInDocuSignErrorMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Повторная отправка сообщения электронной почты DocuSign допускается только для конвертов в состоянии &quot;Отправлен&quot; или &quot;Доставлен&quot;.</label>
+        <name>StatusVoidEnvelopeError</name>
+    </customLabels>
+    <customLabels>
+        <label>Аннулирование допускается только для конвертов в состоянии &quot;Отправлен&quot; или &quot;Доставлен&quot;.</label>
+        <name>StatusVoidEnvelopeErrorMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаг 1</label>
+        <name>Step1</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаг 1. Настройка подключения к учетной записи DocuSign</label>
+        <name>Step1SetUpConnToDS</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаг 2</label>
+        <name>Step2</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаг 2. Подключение DocuSign к Salesforce</label>
+        <name>Step2ConnectDSToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаг 1. Настройка учетной записи DocuSign</label>
+        <name>StepOneSetupDocuSignAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Шаг 2. Подключение DocuSign к Salesforce</label>
+        <name>StepTwoConnectDocuSignToSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>Улица, дом</label>
+        <name>StreetAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>Тема</label>
+        <name>Subject</name>
+    </customLabels>
+    <customLabels>
+        <label>Суффикс</label>
+        <name>Suffix</name>
+    </customLabels>
+    <customLabels>
+        <label>сайт службы поддержки</label>
+        <name>SupportSite</name>
+    </customLabels>
+    <customLabels>
+        <label>Системный отправитель DocuSign</label>
+        <name>SystemSender</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователю, назначенному системным отправителем, уже присвоены идентификатор
+			и пароль DocuSign</label>
+        <name>SystemSenderAlreadyConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Разметить</label>
+        <name>Tag</name>
+    </customLabels>
+    <customLabels>
+        <label>Первая роль в списке сопоставляется вкладкам &quot;1&quot; в
+			документе, вторая роль – вкладкам &quot;2&quot; и т. п.</label>
+        <name>TheFirstRoleInTheListWillMap</name>
+    </customLabels>
+    <customLabels>
+        <label>Должность</label>
+        <name>Title</name>
+    </customLabels>
+    <customLabels>
+        <label>в существующую учетную запись DocuSign</label>
+        <name>ToExistingDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Для аннулирования этого конверта укажите ниже причину
+			аннулирования и нажмите &quot;Аннулировать конверт&quot;. Получателям, уже поставившим свои подписи,
+			будет отправлено сообщение электронной почты с уведомлением об аннулировании этого конверта
+			и сопроводительными комментариями.</label>
+        <name>ToVoidThisEnvelopeProvideReason</name>
+    </customLabels>
+    <customLabels>
+        <label>верхний</label>
+        <name>Top</name>
+    </customLabels>
+    <customLabels>
+        <label>всего строк</label>
+        <name>TotalRow</name>
+    </customLabels>
+    <customLabels>
+        <label>При выполнении операции возникла неполадка.</label>
+        <name>TransactionProblem</name>
+    </customLabels>
+    <customLabels>
+        <label>Информация об операции.</label>
+        <name>TransctionInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>Доверенная сеть</label>
+        <name>TrustedNetwork</name>
+    </customLabels>
+    <customLabels>
+        <label>Тип</label>
+        <name>Type</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно добавить вложение.  Недостаточно прав доступа к объекту Attachment.</label>
+        <name>UnableAddAttachmentInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно добавить сопутствующее содержимое.  Недостаточно прав доступа к объекту ContentVersion.</label>
+        <name>UnableAddContentInsufficientAccessContentVersion</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно добавить/обновить документы.</label>
+        <name>UnableAddUpdateDocument</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно добавить/обновить конверты DocuSign.</label>
+        <name>UnableAddUpdateEnvelopes</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно добавить/обновить получателей.</label>
+        <name>UnableAddUpdateRecipients</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно настроить DocuSign для Salesforce.  Недостаточно полномочий для доступа к объекту DocuSignAccountConfiguration.</label>
+        <name>UnableConfigureDocuSignSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно удалить получателя.  Недостаточно прав доступа к объекту DocuSign_Envelope_Recipient__c.</label>
+        <name>UnableDeleteDocuSignEnvelopeRecipientc</name>
+    </customLabels>
+    <customLabels>
+        <label>Не найден конверт с идентификатором =</label>
+        <name>UnableFindEvenlopeWithIdEquals</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить имя вложения.  Недостаточно прав доступа к объекту Attachment.</label>
+        <name>UnableGetAttachmentNameInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить контактную информацию из обращения.  Недостаточно прав доступа к объекту Case.</label>
+        <name>UnableGetContactInformationFromCase</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить контактную информацию из потенциальной сделки.  Недостаточно прав доступа к объекту OpportunityContactRole.</label>
+        <name>UnableGetContactsFromOpportunity</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить информацию о содержимом.  Недостаточно прав доступа к объекту ContentWorkspace.</label>
+        <name>UnableGetContentInformationInsufficientContentWorkspace</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить информацию о документе.  Недостаточно прав доступа к объекту Attachment.</label>
+        <name>UnableGetDocumentInformationInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить информацию о документе.  Недостаточно прав доступа к объекту ContentVersion.</label>
+        <name>UnableGetDocumentInformationInsufficientAccessContentVersion</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно начать настройку DocuSign.  Недостаточно прав доступа к объекту DocuSignAccountConfiguration.</label>
+        <name>UnableInitializeDocuSignAccountConfiguration</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно загрузить информацию для подготовки новой учетной записи</label>
+        <name>UnableLoadProvisioningAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно получить информацию для подготовки из DocuSign. Проверьте правильность имени пользователя, пароля и ключа интегратора.</label>
+        <name>UnableLoadProvisioningInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно заполнить список папок.  Недостаточно прав доступа к объекту Folder.</label>
+        <name>UnablePopulateFolderList</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно отправить конверт. Конверт не существует.</label>
+        <name>UnableSendEvelopeNotExist</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно проверить подлинность пользователя в DocuSign. Неверное имя пользователя или пароль</label>
+        <name>UnableToAuthticateUserWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно отредактировать документы.</label>
+        <name>UnableToEditDocuments</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно обновить получателя.  Недостаточно прав доступа к объекту DocuSign_Envelope_Recipient__c.</label>
+        <name>UnableUpdateRecipientDocuSignEnvelopeRecipientc</name>
+    </customLabels>
+    <customLabels>
+        <label>Неизвестно</label>
+        <name>Unknown</name>
+    </customLabels>
+    <customLabels>
+        <label>Обновить параметры учетной записи DocuSign</label>
+        <name>UpdateDSAccSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Обновить документы</label>
+        <name>UpdateDoc</name>
+    </customLabels>
+    <customLabels>
+        <label>Обновить учетные данные DocuSign</label>
+        <name>UpdateDocuSignCredentials</name>
+    </customLabels>
+    <customLabels>
+        <label>Обновить пароль DocuSign</label>
+        <name>UpdateDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Эту информацию можно обновить с помощью консоли на вкладке администрирования DocuSign</label>
+        <name>UpdateInfoDSAdminTab</name>
+    </customLabels>
+    <customLabels>
+        <label>Обновите пароль на вкладке администрирования DocuSign</label>
+        <name>UpdatePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Загрузить вложение</label>
+        <name>UploadAttachment</name>
+    </customLabels>
+    <customLabels>
+        <label>Если учетная запись DocuSign уже настроена, для ее применения</label>
+        <name>UseDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь</label>
+        <name>User</name>
+    </customLabels>
+    <customLabels>
+        <label>Для пользователя уже заданы идентификатор и пароль DocuSign</label>
+        <name>UserAlreadyConfiguredWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Этому пользователю недостаточно полномочий.</label>
+        <name>UserLacksSufficientPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label>Связывание пользователя с членством DocuSign удалено</label>
+        <name>UserLinkedDocuSignMembershipDeleted</name>
+    </customLabels>
+    <customLabels>
+        <label>Необходимо указать пользователя Salesforce.</label>
+        <name>UserMustBeProvided</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователь успешно связан с членством DocuSign</label>
+        <name>UserSuccessfullyLinkedDocuSignMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>Пользователи</label>
+        <name>Users</name>
+    </customLabels>
+    <customLabels>
+        <label>пользователи.</label>
+        <name>UsersPeriod</name>
+    </customLabels>
+    <customLabels>
+        <label>Задание в документе позиций для подписи и сбора данных
+			с помощью меток привязки</label>
+        <name>UsingAnchorTagsToPlaceSignature</name>
+    </customLabels>
+    <customLabels>
+        <label>Просмотр:</label>
+        <name>ViewColon</name>
+    </customLabels>
+    <customLabels>
+        <label>Аннулировать конверт</label>
+        <name>VoidEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>Аннулирование конверта завершено</label>
+        <name>VoidEnvelopeComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Аннулирован</label>
+        <name>Voided</name>
+    </customLabels>
+    <customLabels>
+        <label>При аннулировании конверта он становится недоступным для
+			получателей. Они не могут просматривать и подписывать аннулированный
+			конверт.</label>
+        <name>VoidingEnvelopeWillRemoveAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>Добро пожаловать!</label>
+        <name>Welcome</name>
+    </customLabels>
+    <customLabels>
+        <label>С чего начать?</label>
+        <name>WhereToStart</name>
+    </customLabels>
+    <customLabels>
+        <label>Рабочая область</label>
+        <name>Workspace</name>
+    </customLabels>
+    <customLabels>
+        <label>Написать отзыв</label>
+        <name>WriteAReview</name>
+    </customLabels>
+    <customLabels>
+        <label>Управление параметрами конвертов возможно только после завершения настройки
+			учетной записи.</label>
+        <name>YouCannotManageEnvelopeSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>Невозможно выбрать более</label>
+        <name>YouCannotSelectMoreThan</name>
+    </customLabels>
+    <customLabels>
+        <label>Пароль не задан. Нажмите кнопку &quot;Редактировать
+			пароль DocuSign&quot; для ввода пароля DocuSign.</label>
+        <name>YouDoNotHavePasswordSet</name>
+    </customLabels>
+    <customLabels>
+        <label>Этот пользователь Salesforce не связан с пользователем
+			DocuSign. Введите учетные данные DocuSign и нажмите кнопку &quot;Обновить
+			учетные данные DocuSign&quot;.</label>
+        <name>YouHaveNotAssociatedSalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>Права доступа к DocuSign не предоставлены. Обратитесь
+			к системному администратору.</label>
+        <name>YouHaveNotBeenGrantedDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>Учетная запись DocuSign еще не настроена.</label>
+        <name>YourDocuSignAccountNotYetConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>Информация о пользователе DocuSign</label>
+        <name>YourDocuSignUserInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>Фамилия (используемая при подписи)</label>
+        <name>YourName</name>
+    </customLabels>
+    <customLabels>
+        <label>Индекс</label>
+        <name>Zip</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Add Another Signer --></label>
+        <name>m_AddAnotherSigner</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Add Signer --></label>
+        <name>m_Add_Signer</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Cancel --></label>
+        <name>m_Cancel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Documents --></label>
+        <name>m_DOCUMENTS</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - DocuSign --></label>
+        <name>m_DocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Done --></label>
+        <name>m_Done</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download DocuSign Android Url --></label>
+        <name>m_Download_DocuSign_Android_Url</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download DocuSign Mobile --></label>
+        <name>m_Download_DocuSign_Mobile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download DocuSign iOS_Url --></label>
+        <name>m_Download_DocuSign_iOS_Url</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download the DocuSign mobile --></label>
+        <name>m_Download_the_DocuSign_mobile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Email Address --></label>
+        <name>m_EmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Email Here --></label>
+        <name>m_EmailHere</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Error - In Person --></label>
+        <name>m_Error_InPerson</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Error - Invalid Email --></label>
+        <name>m_Error_InvalidEmail</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Full Name --></label>
+        <name>m_FullName</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Full Name Here --></label>
+        <name>m_FullNameHere</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Get DocuSign Mobile --></label>
+        <name>m_Get_DocuSign_Mobile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - In Person --></label>
+        <name>m_InPerson</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- InvalidEmailError --></label>
+        <name>m_InvalidEmailError</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Reorder --></label>
+        <name>m_Reorder</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - SIGNERS --></label>
+        <name>m_SIGNERS</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Save Signer --></label>
+        <name>m_SaveSigner</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Via Email --></label>
+        <name>m_ViaEmail</name>
+    </customLabels>
+    <customPageWebLinks>
+        <label>Администратор DocuSign</label>
+        <name>DocuSignAdminLink</name>
+    </customPageWebLinks>
+    <customTabs>
+        <label>Администратор DocuSign</label>
+        <name>DocuSign_Admin</name>
+    </customTabs>
+    <customTabs>
+        <label>Демонстрационная система DocuSign</label>
+        <name>DocuSign_Partner_Demo</name>
+    </customTabs>
+</Translations>

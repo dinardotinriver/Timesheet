@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsAddLineItems)}
+
+<script language="javascript" type="text/javascript"> 
+
+var cADD_AGREEMENT_CLAUSE = "Adding clauses to agreement...Please Wait";
+var cERROR_ADD_AGREEMENT_CLAUSE = "ERROR adding clauses to agreement:\n";
+var cERROR_SEARCH_AGREEMENT_CLAUSE = "ERROR searching agreement clauses:\n";
+
+function initPage() {
+	window.setTimeout("doInit();",gTimeout);
+}
+
+function doInit() {
+	//set grid specific properties
+	gObjectId = gContractId;
+	gObjectIdURL = gContractIdURL;
+	
+	gEditLineItemsURL = "$SControl.Apttus__aptsClauseEdit}";
+	gTableMaster = "Apttus__Agreement_Clause__c";
+	gTable = "Apttus__Agreement_Clause__c";
+	gTitlePl = "Agreement Clauses";
+	gTitle = "Agreement Clause";
+	gDebug = false;
+	
+	cADD_LINEITEM = cADD_AGREEMENT_CLAUSE;
+	cERROR_ADD_LINEITEM = cERROR_ADD_AGREEMENT_CLAUSE;
+	cERROR_SEARCH_LINEITEM = cERROR_SEARCH_AGREEMENT_CLAUSE;
+	
+	//specify table properties
+	setSearchColField("Apttus__Category__c");
+	addSearchColumn("Apttus__Action__c");
+	addSearchColumn("Apttus__Text__c");
+	addSearchColumn("Apttus__Comments__c");
+
+	setActiveField("Apttus__Active__c");
+	//setAgreementTypesField("Apttus__Agreement_Types__c");
+	setAgreementRefField("Apttus__Agreement__c");
+	
+	buildPage();
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

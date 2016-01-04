@@ -1,0 +1,12 @@
+<apex:page id="PushStartLocalHandler" 
+	action="{!PushStartLocal}"
+	applyBodyTag="false" 
+	cache="false"
+	controller="BGIntegration.RepConsoleScriptingController"
+	label="PushStartLocalHandler" 
+	name="PushStartLocalHandler"
+	showHeader="false"
+	sidebar="false"
+	standardStylesheets="false"
+	title="Push Start Local Handler">
+</apex:page>

@@ -1,0 +1,236 @@
+<script language="javascript" type="text/javascript"> 
+
+var gTargetStatusCategoryField = "Apttus__Status_Category__c";
+var gTargetStatusCategory = "In Signatures";
+var gTargetStatusField = "Apttus__Status__c";
+var gTargetStatus = "Internal Signatures";
+
+var cFILENAME_SUFFIX = "_Original";
+var cCREATE_FINAL_AGREEMENT = "Generating agreement...Please wait";
+var cSAVING_FINAL_AGREEMENT = "Saving agreement...Please wait";
+var cERROR_CREATE_FINAL_AGREEMENT = "ERROR generating agreement:\n";
+var cERROR_SAVING_FINAL_AGREEMENT = "ERROR saving agreement:\n";
+var cERROR_CREATE_INT_SIG_TASK = "ERROR creating internal signature task:\n";
+var cERROR_CREATE_EXT_SIG_TASK = "ERROR creating internal signature task:\n";
+var cERROR_CREATE_SCAN_TASK = "ERROR creating scan & attach task:\n";
+var cERROR_ACTIVATE_CONTRACT = "ERROR activating agreement:\n";
+
+function generateAgreementInit() {
+	gDebugTime = false;
+	gIsDraft = false;
+	gIsVisible = true;
+	
+	gMergeType = "Final";
+	gMergeTypeMsg = cCREATE_FINAL_AGREEMENT;
+	gMergeTypeErr = cERROR_CREATE_FINAL_AGREEMENT;
+	
+	gPageTitle = "Generate Agreement";
+	gPageDescription = "Apttus can generate a final version of your agreement from your data.<br>" +
+		"Please choose an agreement template.";
+	
+	gWorkflowTriggerField = "Apttus__Workflow_Trigger_Viewed_Final__c";
+	
+	initWizard();
+}
+
+//function preMerge() {}
+
+function postMerge() {
+	if (gDebugVerbose) { alert("NumApiCalls="+gNumApiCalls); }
+	
+	showMsgProgress(cSAVING_FINAL_AGREEMENT);
+	window.setTimeout("doSaveAttachment();", 100);
+}
+
+function doSaveAttachment() {
+	try {
+		gAttachmentBody = gMMObj.Base64Encode(gAttachmentName);
+
+		var fnSys = getFileNameFromPath(gAttachmentName);
+		var fnPre = getFileNamePrefix(gAttachmentName);
+		var fnExt = getFileNameExtension(gAttachmentName);
+		
+		var fn = fnPre + cFILENAME_SUFFIX + "." + fnExt;
+		
+		createAttachment(gContractId, "{!User.Id}", fn);
+	}
+	catch(ex) {
+		alert(cERROR_SAVING_FINAL_AGREEMENT + ex);
+	}
+}
+
+function createAttachment(parentId, ownerId, name) {
+	try {	
+		var attachment = new sforce.SObject("Attachment");
+		
+	    attachment.ParentId = parentId;
+	    attachment.OwnerId = ownerId;
+	    attachment.Name = name;
+	    attachment.Body = gAttachmentBody;
+	    
+		showMsgProgress(cSAVING_FINAL_AGREEMENT);
+		
+		if (gUseAsyncMode == true) {
+			var result = sforce.connection.create([attachment],
+				{ onSuccess : createAttachmentSuccess,
+				  onFailure : createAttachmentFailure });
+		} else {
+			var result = sforce.connection.create([attachment]);
+			if (result[0].getBoolean("success")) {
+				activateAgreement();
+			} else {
+				erroralert(cERROR_SAVING_FINAL_AGREEMENT, result[0]);
+			}
+		}
+	}
+	catch(ex) {
+	    alert(cERROR_SAVING_FINAL_AGREEMENT + ex);
+	    navigateTo(gContractIdURL);
+	}
+}
+
+function createAttachmentSuccess(result) {
+	activateAgreement();
+}
+
+function createAttachmentFailure(error) {
+	alert(cERROR_CREATE_FINAL_AGREEMENT + error);
+
+	gMMObj = null;
+	navigateTo(gContractIdURL);
+}
+
+function activateAgreement() {
+	try {
+		//record activity history
+		var msg = "Status Category changed " +
+			"from '{!APTS_Agreement__c.Status_Category__c}' " +
+			"to '" + gTargetStatusCategory + "'";
+		createActivityLogEntry(msg);
+		
+		//update fields and create tasks manually or using workflow
+		var contract = new sforce.SObject(gAgreementObjName);
+		contract.Id = gContractId;
+
+		if (gUsingWorkflow) {
+			contract.set(gWorkflowTriggerField, "True");
+		} else {
+			contract.set(gTargetStatusCategoryField, gTargetStatusCategory);
+			contract.set(gTargetStatusField, gTargetStatus);
+		}
+		
+		var result = sforce.connection.update([contract]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_ACTIVATE_CONTRACT, result[0]);
+		}
+		
+		if (!gUsingWorkflow) {
+			createInternalSignatureTask();
+			createExternalSignatureTask();
+			createScanAndAttachTask();		
+		}
+	}
+	catch(ex) {
+		alert(cERROR_ACTIVATE_CONTRACT + ex);
+	}
+	finally {
+		gMMObj = null;
+		navigateTo(gContractIdURL);
+	}
+}
+
+/**
+	View Final Agreement Workflow rule:
+	
+	Create tasks and notifications when users perform View Final Agreement action.
+	- view final should set to external signatures
+	- due dates for signature tasks - + 14 days for external, +5 days after external, + 2 days after internal
+	- external sig task should also have follow up task assigned to requestor (recruiter) field
+	- all tasks assigned to contract generator
+	- completion of ext sig recvd should set other party signed date, same for company signed date
+	- need an email saying we got external sig, also to scheduler ?, and to physician payroll?
+*/
+function createInternalSignatureTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+//		task.AccountId = "{!APTS_Agreement__c.AccountId__c}";
+		task.ActivityDate = new Date();
+		task.Description = "Please review the final version of agreement {!APTS_Agreement__c.Agreement_Number__c} " +
+			"and approve it when your review is complete.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Get Internal Signatures";
+		task.WhatId = gContractId;
+		task.WhoId = "{!APTS_Agreement__c.Company_Signed_ById__c}";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_INT_SIG_TASK, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_INT_SIG_TASK + ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createExternalSignatureTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+//		task.AccountId = "{!APTS_Agreement__c.AccountId__c}";
+		task.ActivityDate = new Date();
+		task.Description = "Please review the final version of agreement {!APTS_Agreement__c.Agreement_Number__c} " +
+			"and approve it when your review is complete.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Get External Signatures";
+		task.WhatId = gContractId;
+		task.WhoId = "{!APTS_Agreement__c.Other_Party_Signed_ById__c}";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+				
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_EXT_SIG_TASK, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_EXT_SIG_TASK + ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createScanAndAttachTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+//		task.AccountId = "{!APTS_Agreement__c.AccountId__c}";
+		task.ActivityDate = new Date();
+		task.Description = "Please review the final version of agreement {!APTS_Agreement__c.Agreement_Number__c} " +
+			"and scan and attach the agreement back into Salesforce when your review is complete.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Scan & Attach Agreement";
+		task.WhatId = gContractId;
+		task.WhoId = "{!APTS_Agreement__c.Company_Signed_ById__c}";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_SCAN_TASK, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_SCAN_TASK + ex);
+		navigateTo(gContractIdURL);
+	}
+}
+</script>

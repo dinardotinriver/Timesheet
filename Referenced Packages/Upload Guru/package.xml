@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Upload Guru</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>Upload multiple attachments and attach image using webcam.</description>
+    <namespacePrefix>vish_file</namespacePrefix>
+    <types>
+        <members>UploadController</members>
+        <members>UploadControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>UploadHere</members>
+        <members>header</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>UploadHere_Account</members>
+        <members>UploadHere_Contact</members>
+        <members>UploadHere_Lead</members>
+        <members>fileupload</members>
+        <members>redirectto</members>
+        <members>settings</members>
+        <members>webcam</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>Upload_Guru</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>Upload_Guru_Settings</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>Upload_Guru</members>
+        <members>Upload_Guru/Upload_Guru_Logo.png</members>
+        <name>Document</name>
+    </types>
+    <types>
+        <members>Upload_Attachments</members>
+        <name>QuickAction</name>
+    </types>
+    <types>
+        <members>SLDS080</members>
+        <members>UploadGuru</members>
+        <name>StaticResource</name>
+    </types>
+    <types>
+        <members>Account.Upload_Attachments</members>
+        <members>Contact.Upload_Attachments</members>
+        <members>Lead.Upload_Attachments</members>
+        <name>WebLink</name>
+    </types>
+    <version>30.0</version>
+</Package>

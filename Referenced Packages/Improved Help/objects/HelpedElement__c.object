@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>A help-enabled element on a Helped Page Layout that accesses a specific Help Topic</description>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>DataDrivenFilter__c</fullName>
+        <deprecated>false</deprecated>
+        <description>(Optional) criteria limiting the circumstances in which this Helped Element is to be displayed based on data values</description>
+        <externalId>false</externalId>
+        <inlineHelpText>(Optional) criteria limiting the circumstances in which this Helped Element is to be displayed based on data values. Use Field Name not the Label, as this builds a SOQL query.</inlineHelpText>
+        <label>Data-driven Filter</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ElementType__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The type of page element that is being helped</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The type of page element that is being helped</inlineHelpText>
+        <label>Element Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Button</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Custom Link</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Custom Section Label</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Detail Section Label</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Field</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Page Help Link</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Record Title</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Related List Column Label</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Related List Help Link</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Related List Label</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Visualforce Element</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Help and Training Link</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Signature Element</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>HasDDF__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Checked if this Helped Element has a Data Driven Filter</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Checked if this Helped Element has a Data Driven Filter</inlineHelpText>
+        <label>Has DDF?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HelpTopic__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Help Topic to associate with this Helped Element</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Help Topic to associate with this Helped Element</inlineHelpText>
+        <label>Help Topic</label>
+        <referenceTo>HelpTopic__c</referenceTo>
+        <relationshipLabel>Helped Elements</relationshipLabel>
+        <relationshipName>Helped_Elements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>HelpedPageLayout__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Layout on which this Helped Element occurs</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Layout on which this Helped Element occurs</inlineHelpText>
+        <label>Helped Page Layout</label>
+        <referenceTo>HelpedPageLayout__c</referenceTo>
+        <relationshipLabel>Helped Elements</relationshipLabel>
+        <relationshipName>Helped_Elements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Identifier__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Character string that uniquely identifies this Helped Element on a viewed (Helped Page) Layout</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Character string that uniquely identifies this Helped Element on a viewed (Helped Page) Layout</inlineHelpText>
+        <label>Identifier</label>
+        <length>255</length>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UseForNew__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Where data driven filters are in use for a given Helpable, check this box to force usage of this Helped Element when creating new object records.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Where data driven filters are in use for a given Helpable, check this box to force usage of this Helped Element when creating new object records.</inlineHelpText>
+        <label>Use for new records?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Visibility__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Help Topic classification to enable context-based visibility using data sharing rules.</inlineHelpText>
+        <label>Visibility</label>
+        <picklist>
+            <picklistValues>
+                <fullName>All</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Internal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partners</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Helped Element</label>
+    <listViews>
+        <fullName>AllFieldHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Field</value>
+        </filters>
+        <label>1. All &apos;Field&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllHeaderHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Header Help</value>
+        </filters>
+        <label>2. All &apos;Header&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllHelpedElements</fullName>
+        <columns>HelpedPageLayout__c</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllPageHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Page Help Link</value>
+        </filters>
+        <label>3. All &apos;Page Help Links&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllPageLabelHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Page Label</value>
+        </filters>
+        <label>4. All &apos;Page Label&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllPicklistValHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Picklist Value</value>
+        </filters>
+        <label>5. All &apos;Picklist Value&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllRListColHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Related List Column Label</value>
+        </filters>
+        <label>6. All &apos;Rel List Column&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllRListHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Related List Help Link</value>
+        </filters>
+        <label>7. All &apos;Rel List Help&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllRListLabelHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Related List Label</value>
+        </filters>
+        <label>8. All &apos;Rel List Label&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>AllSectionLabelHelpedElements</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>ElementType__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ElementType__c</field>
+            <operation>equals</operation>
+            <value>Detail Section Label</value>
+        </filters>
+        <label>9. All &apos;Details Label&apos; Helped Elements</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Data_Driven_Helped_Elements</fullName>
+        <columns>NAME</columns>
+        <columns>DataDrivenFilter__c</columns>
+        <columns>ElementType__c</columns>
+        <columns>HelpedPageLayout__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>Identifier__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All &apos;Data Driven&apos; Helped Elements</label>
+    </listViews>
+    <nameField>
+        <label>Helped Element Name</label>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Helped Elements</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>ElementType__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Identifier__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>HelpedPageLayout__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>HelpTopic__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Visibility__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>ElementType__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Identifier__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>HelpedPageLayout__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Visibility__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>HelpedPageLayout__c</lookupFilterFields>
+        <lookupFilterFields>HelpTopic__c</lookupFilterFields>
+        <searchFilterFields>HelpTopic__c</searchFilterFields>
+        <searchFilterFields>ElementType__c</searchFilterFields>
+        <searchFilterFields>HelpedPageLayout__c</searchFilterFields>
+        <searchFilterFields>Visibility__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
+        <searchFilterFields>UPDATEDBY_USER</searchFilterFields>
+        <searchResultsAdditionalFields>ElementType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>HelpTopic__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>HelpedPageLayout__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Visibility__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UPDATEDBY_USER</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+</CustomObject>

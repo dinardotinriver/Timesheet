@@ -1,0 +1,42 @@
+<apex:component >
+  <apex:attribute name="imageName" description="Text of the tooltip"
+    type="String" required="false" />
+  <apex:attribute name="tableFields" description="Table fields"
+    type="StrikeIronInter.Pair[]" required="false" />
+  <apex:attribute name="identifier"
+    description="Identifier for dynamically generated components"
+    type="String" required="false" />
+  <apex:attribute name="fieldName" description="Name of the field"
+    type="String" required="false" />
+  <apex:attribute name="label" description="Label for tooltip"
+    type="String" required="false" />
+  <apex:attribute name="tooltip" description="Label for tooltip"
+    type="String" required="false" />
+  <apex:attribute name="hideClass" description="Class for hiding element"
+    type="String" required="false" />
+  
+  <apex:outputPanel >
+    <table cellpadding="0" cellspacing="0" class="{!hideClass}"> 
+      <tr>
+        <td valign="top" style="margin-top:3px;width:20px;"> 
+          <img style="position:relative;top:3px;" id="{!identifier}" src="{!imageName}" title="{!tooltip}" />
+        </td>
+        <td>
+          <apex:outputPanel styleClass="{!identifier}" rendered="{!NOT(ISNULL(tableFields))}">
+            <table cellpadding="0" cellspacing="0" > 
+              <apex:repeat value="{!tableFields}" var="pair" id="theRepeat">
+                <tr>
+                  <td style="width:115px;"><b><apex:outputText value="{!pair.fieldName}" />:</b></td>
+                  <td style="color:blue;"><apex:outputText value="{!pair.title}" /></td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </apex:outputPanel>
+          <apex:outputPanel styleClass="{!identifier}" rendered="{!ISNULL(tableFields)}">
+            <span style="display:block;position:relative;top:3px;color:gray;">{!label} has not been verified</span>
+          </apex:outputPanel>
+        </td>
+      </tr>
+    </table>
+  </apex:outputPanel> 
+</apex:component>

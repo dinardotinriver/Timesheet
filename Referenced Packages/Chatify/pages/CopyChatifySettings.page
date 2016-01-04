@@ -1,0 +1,28 @@
+<apex:page controller="Chatify.ChatifySettingsCopyController">
+    <apex:stylesheet value="{!URLFOR($Resource.Chatify__ChatifyResources, 'css/style.css')}"/>
+    <div id="Detail-Page-Title">
+        <h1>{!setting.Name}</h1>
+        <br/>
+        <h2>Copy Configuration</h2>
+    </div>
+    <apex:form >
+        <apex:pageBlock >
+            Copy &quot;{!setting.RecordTypes__c}&quot; to the following Record Types:
+            <br/>
+            <br/>
+            <c:MultiselectPicklist leftLabel="Avaiable Record Types"
+                                leftOptions="{!unselectedSettings}"
+                                rightLabel="Selected Record Types"
+                                rightOptions="{!selectedSettings}"
+                                size="10"
+                                width="160px"
+                                showUpDown="false"
+                                />
+
+        </apex:pageBlock>
+        <div class="button-group">
+            <apex:commandButton value="Save" action="{!save}" styleClass="saveButton blueButton"/>
+            <apex:commandButton value="Cancel" action="{!cancel}"/>
+        </div>
+    </apex:form>
+</apex:page>

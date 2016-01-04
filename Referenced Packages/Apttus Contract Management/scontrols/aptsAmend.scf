@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	Amend
+	Amends an agreement.  First a deep copy of the agreement is created, the version is incremented 
+	and the amended agreement is related back to the original agreeement.  This action is available
+	when the status category is In Effect.
+	
+	Open issues:
+	- How to remerge into a redlined document?
+	- Design of deep copy should be extensible using a map
+	=================================================================================================
+*/
+var gOriginalTargetCatStatus = "In Effect";
+var gOriginalTargetStatus = "Being Amended";
+var gAmendedTargetCatStatus = "Request";
+var gAmendedTargetStatus = "In Amendment";
+
+var cAMEND_AGREEMENT = "Amending agreement...Please Wait";
+var cERROR_AMEND_AGREEMENT = "ERROR amending agreement:\n";
+
+function initPage() {
+	showMsgProgress(cAMEND_AGREEMENT);
+	window.setTimeout("amendAgreement();", 10);
+}
+
+function amendAgreement() {
+	try {
+		//clone the agreement
+		logonAsSuperUser();
+		var cloneId = cloneObject(gAgreementObjName, gContractId);
+		var fieldList = getFieldList(gAgreementObjName);
+		var ids = new Array(1);
+		ids[0] = cloneId;
+		
+		var result = sforce.connection.retrieve(fieldList,gAgreementObjName,ids);
+		if (result[0]==null) {
+			erroralert(cERROR_AMEND_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+ 	    //amend the clone
+  		var clone = new sforce.SObject(gAgreementObjName);
+	    clone.Id = cloneId;
+	    clone.Name = result[0].Name + " Amended";
+	    clone.Apttus__Status_Category__c = gAmendedTargetCatStatus;
+	    clone.Apttus__Status__c = gAmendedTargetStatus;
+	    clone.Apttus__Agreement_Number__c = "{!APTS_Agreement__c.Agreement_Number__c}";
+		clone.Apttus__Version_Number__c = 1*(result[0].Apttus__Version_Number__c) + 1;
+	    clone.OwnerId = "{!User.Id}";
+	    	    	    
+		var result = sforce.connection.update([clone]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_AMEND_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+ 	    //amend the original agreement
+  		var agreement = new sforce.SObject(gAgreementObjName);
+	    agreement.Id = gContractId;
+	    agreement.Apttus__Status_Category__c = gOriginalTargetCatStatus;
+	    agreement.Apttus__Status__c = gOriginalTargetStatus;
+	    	    
+		result = sforce.connection.update([agreement]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_AMEND_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+  		//store link back to original
+  		var relation = new sforce.SObject(gRelatedAgreementObjName);
+	    relation.Name = "Current Agreement";
+	    relation.Apttus__APTS_Contract_From__c = gContractId;
+	    relation.Apttus__Relationship_From_Type__c = "Is Amended By";
+	    relation.Apttus__APTS_Contract_To__c = cloneId;
+	    relation.Apttus__Relationship_To_Type__c = "Is Amendment For";
+	    
+ 		result = sforce.connection.create([relation]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CLONE_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+		
+		//make a note in the original agreement
+		createActivityLogEntry(gContractId,"Amended Agreement","Amended Agreement","Completed");
+
+		//make a note in the amended agreement
+		var subj = "Amended From {!APTS_Agreement__c.FF_Agreement_Number__c}";
+		createActivityLogEntry(cloneId,subj,subj,"Completed");
+
+		//open the cloned agreement in edit mode
+		navigateTo("/" + cloneId + "/e?retURL=%2F" + cloneId);
+	}
+	catch(ex) {
+		erroralert(cERROR_AMEND_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createActivityLogEntry(id,subj,desc,status) {
+	try {
+		var task = new sforce.SObject("Task");
+		task.Description = desc;
+		task.ActivityDate = new Date();
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = status;
+		task.Subject = subj;
+		task.WhatId = id;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

@@ -1,0 +1,688 @@
+{!INCLUDE($SControl.aptsInclude)}
+<script language="javascript" type="text/javascript"> 
+
+var gObjectId = "";
+var gObjectIdURL = "";
+var gEditLineItemsURL = "";
+var gTableMaster = "";
+var gTable = "";
+var gTitlePl = "";
+var gTitle = "";
+var gNumRecords = 0;
+var gRequest = "{!$Request.cid}";
+var gSearchColFields = new Array();
+var gSearchColLabels = new Array();
+var gSearchColName = "";
+var gSearchColField = "";
+var gActiveField = "";
+var gAgreementTypesField = "";
+var gAgreementRefField = "";
+
+var cADD_LINEITEM = "";
+var cERROR_ADD_LINEITEM = "";
+var cERROR_SEARCH_LINEITEM = "";
+var cUSE_AUTO_FILTER = 1;
+
+function buildPage() {
+	var html = "";
+	html = buildPageHeader(html);
+	html = buildPageBody(html);
+	html = buildPageFooter(html);
+	
+	doSearch("ASC");
+}
+
+function setSearchColField(field) {
+	if (field != "" || field != null) {
+		gSearchColField = field;
+		gSearchColName = getFieldLabel(gTableMaster,field);
+	}
+}
+
+function addSearchColumn(field) {
+	if (field != "" || field != null) {
+		var label = getFieldLabel(gTableMaster,field);
+		gSearchColFields[gSearchColFields.length++] = field;
+		gSearchColLabels[gSearchColLabels.length++] = label;
+	}
+}
+
+function setActiveField(field) {
+	if (field != "" || field != null) {
+		gActiveField = field;
+	}
+}
+
+function setAgreementTypesField(field) {
+	if (field != "" || field != null) {
+		gAgreementTypesField = field;
+	}
+}
+
+function setAgreementRefField(field) {
+	if (field != "" || field != null) {
+		gAgreementRefField = field;
+	}
+}
+
+function doSearch(orderby) {
+	if (gDebug) { writeDebugLn("<p>doSearch:"); }
+	try {
+		//draw search results table
+		var html = "";
+		html += "<div id=\"searchResults\">";
+		html += "<table class=\"list\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
+		html += "<tr class=\"headerRow\">";
+		html += "<th class=\"actionColumn\" scope=\"col\">";
+		html += "<input id=\"allBox\" name=\"allBox\"";
+		html += "onclick=\"javascript:SelectAllOrNoneByCheckbox(document.forms['dispatch'],'ids', this);\"";
+		html += "title=\"Toggle All Rows\" type=\"checkbox\" value />";
+		html += "</th>";
+
+		if (orderby == "" || orderby == null) orderby = "ASC";
+		html += "<th scope=\"col\" class>";
+		if (orderby == "ASC") {
+			html += "<a href=\"#\" title=\"" + gTitle + " Name\">";
+			html += gTitle + " Name";
+			//html += "<img src=\"/img/sort_asc_arrow.gif\" alt=\"Sorted Ascending\" width=\"21\" height=\"14\"";
+			//html += "align=\"texttop\" title=\"Sorted Ascending\" />";
+			html += "</a>";	
+		} else {
+			html += "<a href=\"#\" title=\"" + gTitle + " Name\">";
+			html += gTitle + " Name";
+			//html += "<img src=\"/img/sort_desc_arrow.gif\" alt=\"Sorted Descending\" width=\"21\" height=\"14\"";
+			//html += "align=\"texttop\" title=\"Sorted Descending\" />";
+			html += "</a>";	
+		}
+		html += "</th>";
+		
+		//draw sortable column names
+		html += "<th scope=\"col\" class>";
+		if (orderby == "ASC") {
+			html += "<a href=\"#\" type=\"submit\" onclick=\"doSearch('DESC');\" title=\"" + gSearchColName + " - Sorted ascending\">";
+			html += gSearchColName + "<img src=\"/img/sort_asc_arrow.gif\" alt=\"Sorted Ascending\" width=\"21\" height=\"14\"";
+			html += "align=\"texttop\" title=\"Sorted Ascending\" /></a>";
+		} else {
+			html += "<a href=\"#\" type=\"submit\" onclick=\"doSearch('ASC');\" title=\"" + gSearchColName + " - Sorted descending\">";
+			html += gSearchColName + "<img src=\"/img/sort_desc_arrow.gif\" alt=\"Sorted Descending\" width=\"21\" height=\"14\"";
+			html += "align=\"texttop\" title=\"Sorted Descending\" /></a>";
+		}
+		html += "</th>";
+
+		//draw column names
+		for (var i=0; i<gSearchColLabels.length; i++) {
+			var colName = gSearchColLabels[i];
+
+			html += "<th scope=\"col\" class>";
+			html += "<a href=\"#\" type=\"submit\" title=\"" + colName + "\">";
+			html += colName + "</a>";
+			html += "</th>";
+		}
+		html += "</tr>";
+		
+		//get search options
+		var keySearchVal = document.getElementById("addPSearch").value;
+		var f1 = document.getElementById("col0");
+		var fldSearchFld = f1.options[f1.selectedIndex].value;
+		var f2 = document.getElementById("oper0");
+		var fldSearchOp = f2.options[f2.selectedIndex].value;
+		var fldSearchVal = document.getElementById("fval0").value;
+		
+		//auto filter by agreement type
+		var recordType = "";
+		if (cUSE_AUTO_FILTER) {
+			var hasRecordTypes = hasCustomField("RecordTypeId", gAgreementObjName);
+			if (hasRecordTypes == true) {
+				var ids = new Array(1);
+				ids[0] = gObjectId;
+				
+				//get record type for this agreement without using mergefield
+				//since the mergefield does not exist if record types dont
+				var sobj = sforce.connection.retrieve("Id,Name,RecordTypeId", gAgreementObjName, ids);
+				if (sobj[0] == null) {
+					alert(cERROR_SEARCH_LINEITEM + sobj);
+					return;
+				}
+				
+				recordTypeId = sobj[0].RecordTypeId;
+				recordType = getRecordTypeDescription(recordTypeId);
+			}
+		}
+		
+		//build query string
+		var fieldList = getFieldList(gTableMaster);
+		var q = "select " + fieldList + " from " + gTableMaster + " ";
+
+		//auto filter by active flag and agreement type
+		if (cUSE_AUTO_FILTER) {
+			if (gActiveField!=null && gActiveField!="") {
+				q += "where " + gActiveField + " = true ";
+				if (hasRecordTypes && recordType!=null && recordType!="" &&
+					gAgreementTypesField!=null && gAgreementTypesField!="")
+				{
+					q += "and " + gAgreementTypesField + " includes ('" + recordType + "') ";
+				}
+			}
+		}
+		
+		//add keyword and field search parameters
+		if (keySearchVal != "" || fldSearchVal != "") {
+			if (keySearchVal != "") {
+				q += "and " + gSearchColField + " like '%" + keySearchVal + "%' ";
+			}
+			else if (fldSearchFld != "" && fldSearchOp != "" && fldSearchVal != "") {
+				if (fldSearchOp == "starts_with") {
+					q += "and " + fldSearchFld + " like '%" + fldSearchVal + "' ";
+				} else if (fldSearchOp == "contains") {
+					q += "and " + fldSearchFld + " like '%" + fldSearchVal + "%' ";
+				} else if (fldSearchOp == "does_not_contain") {
+					q += "and (not(" + fldSearchFld + " like '%" + fldSearchVal + "%')) ";
+				} else if (fldSearchOp == "in") {
+					q += "and " + fldSearchFld + " in ('" + fldSearchVal + "') ";
+				} else if (fldSearchOp == "not in") {
+					q += "and " + fldSearchFld + " not in ('" + fldSearchVal + "') ";
+				} else if (fldSearchOp == "includes") {
+					q += "and " + fldSearchFld + " includes ('" + fldSearchVal + "') ";
+				} else if (fldSearchOp == "excludes") {
+					q += "and " + fldSearchFld + " excludes ('" + fldSearchVal + "') ";
+				} else {
+					q += "and " + fldSearchFld + " " + fldSearchOp + " '" + fldSearchVal + "' ";
+				}
+			}
+		}
+		q += "Order By " + gSearchColField + " " + orderby;
+		if (gDebug) { writeDebugLn("<br>q="+q); }
+		
+		var body = document.getElementById("divBody");
+		body.innerHTML = "";
+
+		//search
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		gNumRecords = records.length;
+		
+		//build a table of the results
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			if (gDebug) { writeDebugLn("<br>record="+record); }
+			
+			var id = record.Id;
+			var name = record.Name;
+			var searchcol = record.get(gSearchColField);
+	
+			html += "<tr class=\" dataRow even first\"";
+			html += "onblur=\"if (window.hiOff){hiOff(this);}\"";
+			html += "onfocus=\"if (window.hiOn){hiOn(this);}\"";
+			html += "onmouseout=\"if (window.hiOff){hiOff(this);}\"";
+			html += "onmouseover=\"if (window.hiOn){hiOn(this);}\">";
+			html += "<td class=\"actionColumn\">";
+			html += "<input id=\"ids" + i + "\" name=\"ids\" onclick=\"javascript:updateToggleAllBox(this.form,'ids');\"";
+			html += "title=\"Select " + name + "\" type=\"checkbox\" value=\"" + id + "\" />";
+			html += "</td>";
+			html += "<th scope=\"row\" class=\"dataCell\">";
+			html += "<a href=\"/" + id + "\">" + name + "</a></th>";
+			html += "<td class=\"dataCell\">" + searchcol + "</td>";
+			
+			for (var j=0; j<gSearchColFields.length; j++) {
+				var colFld = gSearchColFields[j];
+				var colVal = record.get(colFld);
+				if (colVal=="" || colVal==null) colVal = "";
+				
+				html += "<td class=\"dataCell\">" + colVal + "</td>";
+			}
+			
+			html += "<td class=\"dataCell\">&nbsp;</td>";
+			html += "</tr>";
+		}
+		html += "</table></div>";
+	
+		body.innerHTML = html;
+	}
+	catch(ex) {
+		//alert(cERROR_SEARCH_LINEITEM + ex);
+		alert(cERROR_SEARCH_LINEITEM + ex.faultstring);
+	}
+}
+
+function doSelect() {
+	if (gDebug) { writeDebugLn("<p>doSelect:"); }
+	try {
+		var hasSelection = verifyChecked(dispatch, 'ids', 'Please select at least one row');
+		if (hasSelection == true) {
+		    //build list of item fields
+			var fieldList = getFieldList(gTableMaster);
+			
+			//iterate over selected items
+			var results = document.getElementById("searchResults");
+			var objs = new Array();
+			var nobjs = 0;
+			for (var i=0; i<gNumRecords; i++) {
+				//alert("i="+i);
+				var id = "ids" + i;
+				var item = document.getElementById(id);
+				var itemChecked = item.checked;
+				if (itemChecked == true) {
+					var itemId = item.value;
+					
+					//retrieve selected items from master table
+					var ids = new Array(1);
+					ids[0] = itemId;
+					var tableMaster = sforce.connection.retrieve(fieldList, gTableMaster, ids);
+					if (tableMaster[0] == null) {
+						alert(cERROR_ADD_LINEITEM + tableMaster);
+						return;
+					}
+					
+			  		//create new lineitem for item selected
+			  		var dsoli = sforce.connection.describeSObject(gTable);
+			  		var table = new sforce.SObject(gTable);
+				    
+				    //alert("dsoli.fields.length="+dsoli.fields.length);
+				    var autonum = 0;
+				    for (var li=0; li<dsoli.fields.length; li++) {
+				        try {
+					        var field = dsoli.fields[li];
+					        var fieldName = field.name;
+					        //alert("field="+field);
+					        
+					        if (field.nameField == "true" && field.autoNumber == "true") {
+					        	autonum = 1;
+					        }
+					        
+					        //alert("field.name="+field.name+
+					        //	"\nfield.createable="+field.createable+
+					        //	"\nfield.defaultedOnCreate="+field.defaultedOnCreate+
+					        //	"\nfield="+field);
+						        							//copy fields from master
+							if (field.createable == "true" && field.defaultedOnCreate == "false") {
+								table.set(fieldName, tableMaster[0].get(fieldName));
+								/**
+								if (field.type == "picklist") {
+									//copy picklist values from master
+								    for (var fli=0; fli<dsom.fields.length; fli++) {
+								    	if (dsom.fields[fli].name == field.name) {
+								    		var plf = dsom.fields[fli];
+								    		var plv = new Array(plf.picklistValues.length);
+								    		
+								    		for (var pli=0; pli<plf.picklistValues.length; pli++) {
+								    			plv[pli] = plf.picklistValues[pli];
+								    		}
+								    		
+								    		//alert("plv="+plv);
+								    	}
+								    }
+								} else {
+									table.set(fieldName, tableMaster[0].get(fieldName));
+								}
+								*/
+							}
+						}
+				        catch(ex) {
+				        	//alert("SET LINEITEM ERROR:\n"+dsoli.fields[li].name+"="+dsoli.fields[li]);
+				        }
+				    }
+				    
+			  		//set the lineitem key unless we are using autonumber
+			  		if (! autonum) {
+			  			table.Name = tableMaster[0].Name;
+			  		}
+
+			  		//set master-detail link to owning agreement
+			  		table.set(gAgreementRefField, gObjectId);
+				    	    
+					//alert("table="+table);
+					objs[nobjs++] = table;
+				}
+			}
+
+			//create agreement lineitems
+			var result = sforce.connection.create(objs);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_ADD_LINEITEM, result[0]);
+			}
+			
+			//build url string with lineitem ids to edit
+			var idstr = "";
+			for (var i=0; i<result.length; i++) {
+				if (idstr.length > 0) idstr += ",";
+				idstr += result[i].id;
+			}
+			
+			//edit the selected lineitems
+			navigateTo(gEditLineItemsURL+"&aid="+gObjectId+"&lids="+idstr);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_ADD_LINEITEM + ex);
+	}
+}
+
+function getSelectedIds() {
+	if (gDebug) { writeDebugLn("<p>getSelectedIds:"); }
+	var ids = new Array();
+	var nids = 0;
+	for (var i=0; i<dispatch.elements.length; i++) {
+		var elem = dispatch.elements[i];
+		if ((elem.name == "ids") && elem.checked) {
+			//alert("elem.name="+elem.name+"\nelem.checked="+elem.checked+"\nelem.value="+elem.value)
+			ids[nids++] = elem.value;
+		}
+	}
+	
+	var idstr = "";
+	for (var i=0; i<ids.length; i++) {
+		if (idstr.length > 0) idstr += ",";
+		idstr += ids[i];
+	}
+	return idstr;
+}
+
+function doCancel() {
+	navigateTo(gObjectIdURL);
+}
+
+function buildPageHeader(html) {
+	if (gDebug) { writeDebugLn("<p>buildPageHeader:"); }
+	
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<div class=\"bPageTitle\">";
+	html += "	<div class=\"ptBody secondaryPalette\">";
+	html += "		<div class=\"content\">";
+	html += "			<img src=\"/img/icon/contracts32.png\" alt=\"Agreement\" class=\"pageTitleIcon\" title=\"Agreement\">";
+	html += "			<h1 class=\"pageType\">Agreement {!APTS_Agreement__c.Name}<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "			<h2 class=\"pageDescription\">Add " + gTitlePl + "</h2>";
+	html += "			<div class=\"blank\">&nbsp;</div>";
+	html += "		</div>";
+	html += "		<div class=\"links\">";
+	html += "			<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help&target=products_add.htm&section=Products', 'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,menubar=yes,directories=no,location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\">";
+	html += "			<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\" title></a>";
+	html += "		</div>";
+	html += "	</div>";
+	html += "	<div class=\"ptBreadcrumb\">";
+	html += "	</div>";
+	html += "</div>";
+	html += "<div class=\"bDescription\">";
+	html += "	Enter your keyword and filter criteria and click Find to begin your ";
+	html += "	search. Click More filters to use more than one filter. Search results ";
+	html += "	include all records that match both your keyword and filter entries.</div>";
+	html += "<h3>Find " + gTitlePl + "</h3>";
+	html += "<table cellspacing=\"0\" cellpadding=\"1\" width=\"100%\" border=\"0\">";
+	html += "	<form id=\"pSearch\" name=\"pSearch\">";
+	html += "		<input type=\"hidden\" name=\"addTo\" id=\"find_addTo\" value=\"{!APTS_Agreement__c.Id}\" />";
+	html += "		<input type=\"hidden\" name=\"numFilters\" id=\"find_numFilters\" value=\"1\" />";
+	html += "		<input type=\"hidden\" name=\"retURL\" id=\"find_retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "		<input type=\"hidden\" name=\"save_new_url\" id=\"find_save_new_url\" value />";
+	html += "		<tr>";
+	html += "			<td class=\"productsTab\">";
+	html += "			<img alt=\"\" src=\"/s.gif\" width=\"1\" height=\"1\"></td>";
+	html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td><img alt=\"\" src=\"/s.gif\" width=\"1\" height=\"1\"></td>";
+	html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td bgcolor=\"#dddddd\"><b><label for=\"addPSearch\">By Keyword</label></b></td>";
+	html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td bgcolor=\"#dddddd\">";
+	html += "			<input id=\"addPSearch\" maxlength=\"80\" name=\"addPSearch\" size=\"20\" type=\"text\" value />";
+	html += "			</td>";
+	html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td bgcolor=\"#dddddd\"><b>By Field Filter</b></td>";
+	html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td bgcolor=\"#dddddd\">";
+	html += "			<table borders=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
+	html += "			<tr>";
+	html += "				<td>";
+	html += "					<div id=\"divSearchFields\"></div>";
+	html += "				</td>";
+	html += "				<td>";
+	html += "				<select id=\"oper0\" name=\"oper0\" title=\"Operator 1\">";
+	html += "				<option value>--None--</option>";
+	html += "				<option value=\"=\">equals</option>";
+	html += "				<option value=\"!=\">not equal to</option>";
+	html += "				<option value=\"starts_with\">starts with</option>";
+	html += "				<option value=\"contains\">contains</option>";
+	html += "				<option value=\"does_not_contain\">does not contain</option>";
+	html += "				<option value=\"<\">less than</option>";
+	html += "				<option value=\">\">greater than</option>";
+	html += "				<option value=\"<=\">less or equal</option>";
+	html += "				<option value=\">=\">greater or equal</option>";
+	html += "				<option value=\"in\">includes</option>";
+	html += "				<option value=\"not in\">excludes</option>";
+	html += "				<option value=\"includes\">includes (multi-picklist)</option>";
+	html += "				<option value=\"excludes\">excludes (multi-picklist)</option>";
+	html += "				</select></td>";
+	html += "				<td>";
+	html += "				<input id=\"fval0\" maxlength=\"80\" name=\"fval0\" size=\"20\" title=\"Value 1\" type=\"text\" /></td>";
+	html += "				<td></td>";
+	html += "			</tr>";
+	html += "			</table>";
+	html += "			</td>";
+	html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td bgcolor=\"#dddddd\">";
+	html += "				<input value=\"Find " + gTitlePl + "\" class=\"btn\" type=\"button\" name=\"find\" onclick=\"doSearch();\" title=\"Find Deal Points\" />";
+	html += "			</td>";
+	html += "		</tr>";
+	//html += "		<tr>";
+	//html += "			<td bgcolor=\"#dddddd\">";
+	//html += "				<a href=\"#\" class=\"bodySmall\" ";
+	//html += "				onclick=\"return verifyCheckedWarning(document.forms['dispatch'], 'ids', 'Your selections on this page will be lost. Do you want to continue?')\">";
+	//html += "				More filters &gt;&gt;</a></td>";
+	//html += "		</tr>";
+	html += "		<tr>";
+	html += "			<td>&nbsp;</td>";
+	html += "		</tr>";
+	html += "	</form>";
+	html += "</table>";
+	html += "<br>";
+
+	return html;
+}
+
+function buildPageBody(html) {
+	if (gDebug) { writeDebugLn("<p>buildPageBody:"); }
+	
+	html += "<div class=\"bNext\">";
+	html += "	<div class=\"withFilter\">";
+	html += "		<div class=\"clearingBox\">";
+	html += "		</div>";
+	html += "	</div>";
+	html += "</div>";
+	html += "<div class=\"listAgreement\">";
+	html += "<div class=\"bPageBlock secondaryPalette\">";
+	html += "<form id=\"dispatch\" name=\"dispatch\" method=\"post\">";
+	html += "	<input type=\"hidden\" name=\"cid\" id=\"cid\" value=\"{!APTS_Agreement__c.Id}\" />";
+	//html += "	<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	//html += "	<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"/oppitm/multilineitemaddprd.jsp?addTo={!APTS_Agreement__c.Id}&amp;retURL=%2F{!APTS_Agreement__c.Id}\" />";
+	html += "	<div class=\"pbHeader\">";
+	html += "		<div class=\"buttons\">";
+	html += "			<input value=\"Select\" class=\"btn\" type=\"submit\" name=\"select\" title=\"Select\" onclick=\"doSelect();\" />";
+	html += "			<input value=\"Cancel\" class=\"btn\" type=\"submit\" name=\"cancel\" title=\"Cancel\" onclick=\"doCancel();\" />";
+	html += "		</div>";
+	html += "	</div>";
+	html += "	<div id=\"divBody\" class=\"pbBody\">";
+	html += "		<div class=\"pbInnerFooter\">";
+	html += "			<div class=\"buttons\">";
+	html += "				<input value=\"Select\" class=\"btn\" type=\"submit\" name=\"select\" title=\"Select\" onclick=\"doSelect();\" />";
+	html += "				<input value=\"Cancel\" class=\"btn\" type=\"submit\" name=\"cancel\" title=\"Cancel\" onclick=\"doCancel();\" />";
+	html += "			</div>";
+	html += "		</div>";
+	html += "	</div>";
+	html += "</form>";
+	html += "<div class=\"pbFooter secondaryPalette\">";
+	html += "	<div class=\"bg\">";
+	html += "	</div>";
+	html += "</div>";
+	
+	setMain(html);
+	buildSearchFields();
+	
+	return html;
+}
+
+function sortByName(f1,f2) {
+	return (f1['name'] > f2['name']);
+}
+
+function sortByLabel(f1,f2) {
+	return (f1['label'] > f2['label']);
+}
+
+function buildSearchFields() {
+	if (gDebug) { writeDebugLn("<p>buildSearchFields:"); }
+	try {
+	    var html = "";
+		//html += "<select id=\"col0\" name=\"col0\" onchange=\"updateOperator(this, 'oper0');\" title=\"Field 1\">";
+		html += "<select id=\"col0\" name=\"col0\" title=\"Field 1\">";
+		html += "<option value>--None--</option>";	
+		
+		//sort fieldlist
+		var dso = sforce.connection.describeSObject(gTableMaster);
+		var fieldList = getFieldNamesArray(gTableMaster);
+		fieldList.sort();
+
+	    for (var i=0; i<fieldList.length; i++) {
+	        var field = fieldList[i];
+	        
+		    for (var j=0; j<dso.fields.length; j++) {
+		        var dsofld = dso.fields[j];
+		        if (dsofld.name==field) {
+		        	html += "<option value=\"" + dsofld.name + "\">" + dsofld.label + "</option>";
+		        }
+		    }
+
+	        //alert("name="+field['name']+"\nlabel="+field['label']);       
+	        //html += "<option value=\"" + field['name'] + "\">" + field['label'] + "</option>";
+	    }
+		html += "</select>";
+	
+		var searchFlds = document.getElementById("divSearchFields");
+		searchFlds.innerHTML = html;
+	}
+	catch(ex) {
+		alert(cERROR_ADD_LINEITEM + ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function buildPageFooter(html) {
+	return html;
+}
+
+var type2ops = new Array();
+type2ops['0'] = ['e','n','l','g','m','h','c','k','s','i'];
+type2ops['1'] = ['e','n','s'];
+type2ops['2'] = ['e','n','l','g','m','h','c','k','s','i'];
+type2ops['3'] = ['e','n','l','g','m','h'];
+type2ops['4'] = ['e','n','l','g','m','h'];
+type2ops['5'] = ['e','n','l','g','m','h'];
+type2ops['6'] = ['e','n'];
+type2ops['7'] = ['e','n','l','g','m','h'];
+type2ops['8'] = ['e','n','l','g','m','h'];
+type2ops['9'] = ['e','n','l','g','m','h'];
+type2ops['10'] = ['e','n','l','g','m','h'];
+type2ops['11'] = ['e','n','l','g','m','h','c','k','s'];
+type2ops['12'] = ['e','n'];
+type2ops['13'] = ['e','n','u','x'];
+
+var val2type = new Array();
+val2type['PRICEBOOK.NAME'] = '0';
+val2type['PRICEBOOK.ACTIVE'] = '6';
+val2type['PRODUCT.NAME'] = '0';
+val2type['PRODUCT.CUSTOMER_PRODUCT_ID'] = '0';
+val2type['PRODUCT2.FAMILY_ENUM'] = '2';
+val2type['PRODUCT.DEFAULT_PRICE'] = '5';
+val2type['PB_ENTRY.USE_STANDARD_PRICE'] = '6';
+val2type['PRODUCT.ACTIVE'] = '6';
+val2type['PRODUCT2.DESCRIPTION'] = '0';
+val2type['PB_ENTRY.CREATED_DATE'] = '7';
+val2type['PB_ENTRY.LAST_UPDATE'] = '7';
+val2type['CREATEDBY_USER.ALIAS'] = '0';
+val2type['UPDATEDBY_USER.ALIAS'] = '0';
+val2type['PRODUCT2.ACTIVE'] = '6';
+
+var oppLabels = new Array();
+oppLabels['e'] = 'equals';
+oppLabels['n'] = 'not equal to';
+oppLabels['s'] = 'starts with';
+oppLabels['c'] = 'contains';
+oppLabels['k'] = 'does not contain';
+oppLabels['l'] = 'less than';
+oppLabels['g'] = 'greater than';
+oppLabels['m'] = 'less or equal';
+oppLabels['h'] = 'greater or equal';
+oppLabels['u'] = 'includes';
+oppLabels['x'] = 'excludes';
+
+var allOperators = ['e','n','s','c','k','l','g','m','h','u','x'];
+var noneLabel;
+	
+function updateOperator(sel, opSelName, lookupName) {
+	var selObj = document.getElementById(opSelName);
+	selObj.style.width = selObj.offsetWidth + 'px';
+	
+	if (noneLabel == null && selObj.options[0].value.length == 0)
+		noneLabel = selObj.options[0].text;
+	
+	var ops = null;
+	var val = sel.options[sel.selectedIndex];
+	if (val)
+		ops = type2ops[val2type[val.value]];
+	if (ops == null)
+		ops = allOperators;
+	
+	var currSelected = selObj.options[selObj.selectedIndex];
+	selObj.length = 0;
+	var off = 0;
+	
+	if (noneLabel != null) {
+		off = 1;
+		selObj.options[0] = new Option (noneLabel, '');
+		if (currSelected.value == '') {
+			selObj.options[0].selected = true;
+		}
+	}
+	
+	for (var i=0; i<ops.length; i++) { 
+		var label = oppLabels[ops[i]];
+		if (label == null) continue;
+		var option = new Option (oppLabels[ops[i]], ops[i]);
+		selObj.options[i + off] = option;
+		if (currSelected != null && currSelected.value == option.value) {
+			option.selected = true;
+		}
+	}
+	
+	if (lookupName) {
+		if (val.value != 'MEMBER_STATUS' &&
+			val.value != 'CAMPAIGN_MEMBER.STATUS' &&
+			val.value != 'Lead.CampaignMemberStatus' &&
+			val2type[val.value] == '2' ||
+			val2type[val.value] == '12' ||
+			val2type[val.value] == '6')
+			document.getElementById(lookupName).style.display = '';
+		else
+			document.getElementById(lookupName).style.display = 'none';
+	}
+}
+
+function initializeOperator(selName, colName, lookupName) {
+	var obj = document.getElementById(colName);
+	if (obj) {
+		obj.style.width = obj.scrollWidth + 'px';
+		obj = document.getElementById(selName);
+		if (obj != null) {
+			updateOperator(obj, colName, lookupName);
+		}
+	}
+}
+
+function onLoadCriteria() {
+	initializeOperator('col0', 'oper0', null);
+}
+
+</script>

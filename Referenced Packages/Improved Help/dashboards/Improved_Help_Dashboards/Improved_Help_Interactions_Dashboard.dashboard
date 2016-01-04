@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <description>Who is accessing what Help Content, from where and when?</description>
+    <leftSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>Donut</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>All Interactions by Type. See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>HelpInteraction__c.HelpInteractionType__c</groupingColumn>
+            <header>General Interaction Analysis</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_Log</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Interactions by Type</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Bar</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>This Fiscal Year.</footer>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Help_Users_Help_Subscription_Allocation</report>
+            <showPercentage>false</showPercentage>
+            <showPicturesOnCharts>false</showPicturesOnCharts>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Interactions By Help User Type</title>
+            <useReportChart>true</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>ColumnStacked</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>This shows how your users are accessing &apos;Improved Help&apos; and what features are being utilised by Month. ee &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>HelpInteraction__c.CreatedDateTime__c</groupingColumn>
+            <groupingColumn>HelpInteraction__c.HelpInteractionType__c</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_Users_by_Type_All_Time</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Interactions by Type by Month</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>BarStacked</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>How are your TOP Users interacting with &apos;Improved Help&apos;? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>CUST_CREATED_NAME</groupingColumn>
+            <groupingColumn>HelpInteraction__c.HelpInteractionType__c</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <maxValuesDisplayed>20</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Interaction_Log</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowValueDescending</sortBy>
+            <title>Interaction Type by Top 20 Users</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>Donut</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>What Elements are Users Interacting with? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>FK_$HelpedElement__c.ElementType__c</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_By_Callout_Type</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Interactions by Element Type</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardTableColumn>
+                <column>FK_NAME</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>What are the TOP 20 most popular &apos;Help Topics&apos; that Users are Bookmarking? Shows Trending &apos;Help Topics&apos;. See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>20</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Bookmarks_Most_Bookmarked_Help_Topic</report>
+            <showPicturesOnTables>false</showPicturesOnTables>
+            <title>Top 20 Bookmarked &apos;Help Topics&apos;</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>ColumnStacked</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>Top 50 &apos;Help Topics&apos; are Bookmarked by Users each Month. See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>CUST_CREATED_DATE</groupingColumn>
+            <groupingColumn>FK_NAME</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <maxValuesDisplayed>50</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Bookmarks_Created_Over_Time</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Bookmarks Created over Time</title>
+            <useReportChart>false</useReportChart>
+        </components>
+    </leftSection>
+    <middleSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardTableColumn>
+                <column>FK_NAME</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>FORMULA1</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>Which are the most popular &apos;Help Topics&apos; being viewed? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <header>&apos;Help Topic&apos; Interaction Analysis</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>30</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Help_Topic_Interaction_Trends</report>
+            <showPicturesOnTables>false</showPicturesOnTables>
+            <title>Top 30 Viewed &apos;Help Topics&apos;</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <footer>How many &apos;Help Topic&apos; page views have there been across ALL &apos;Help Topics&apos;? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel>Total No.of &apos;Help Topic&apos; Views</metricLabel>
+            <report>Improved_Help_Reports/Help_Topic_Interaction_Trends</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>Donut</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>Who&apos;s creating the most popular &apos;Help Topics&apos;? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>HelpTopic__c$Owner</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_Help_Topics_Usage</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Most Viewed &apos;Help Topics&apos; by Author</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardTableColumn>
+                <column>FK_NAME</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>What are the TOP 20 &apos;Related Resources&apos; clicked on by Users. See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <header>&apos;Related Resource&apos; Interaction Analysis</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>20</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Resource_Usage</report>
+            <showPicturesOnTables>false</showPicturesOnTables>
+            <title>Top 20 Related Resources Used</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>BarStacked</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>Who are the TOP 20 Users and which &apos;Related Resources&apos; are they accessing? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>CUST_OWNER_NAME</groupingColumn>
+            <groupingColumn>FK_NAME</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <maxValuesDisplayed>20</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Resource_Usage</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowValueDescending</sortBy>
+            <title>&apos;Related Resources&apos; Clicked by User</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>Donut</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>Where are the Users going when they click on a &apos;Related Resource&apos;? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>FK_$HelpResource__c.Location__c</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Resource_Usage</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>&apos;Related Resources&apos; Used by Location</title>
+            <useReportChart>false</useReportChart>
+        </components>
+    </middleSection>
+    <rightSection>
+        <columnSize>Medium</columnSize>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Donut</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>Which Countries are using Search...Shows all Search Interactions by Users by Country (From their User Profile). See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <header>&apos;Search&apos; Interaction Analysis</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_Search_Log_Users</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Searches by Country</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardTableColumn>
+                <column>HelpInteraction__c.Description__c</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>What are your Users &apos;Searching&apos; for, do you have sufficient content for the top searched words? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>20</maxValuesDisplayed>
+            <report>Improved_Help_Reports/Interaction_Search_Analysis</report>
+            <showPicturesOnTables>false</showPicturesOnTables>
+            <title>Top 20 Search Terms</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Metric</componentType>
+            <displayUnits>Auto</displayUnits>
+            <footer>How many &apos;Searches&apos; have been conducted? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <metricLabel>Total No.of Searches</metricLabel>
+            <report>Improved_Help_Reports/Interaction_Search_Analysis</report>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Donut</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>Which Users are &apos;Searching&apos; for Help the most? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_Search_by_User</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Searches by User</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Gauge</componentType>
+            <displayUnits>Auto</displayUnits>
+            <footer>See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <gaugeMax>300.0</gaugeMax>
+            <gaugeMin>0.0</gaugeMin>
+            <header>&apos;Error&apos; Management</header>
+            <indicatorBreakpoint1>50.0</indicatorBreakpoint1>
+            <indicatorBreakpoint2>100.0</indicatorBreakpoint2>
+            <indicatorHighColor>#C25454</indicatorHighColor>
+            <indicatorLowColor>#C2C254</indicatorLowColor>
+            <indicatorMiddleColor>#C28B54</indicatorMiddleColor>
+            <report>Improved_Help_Reports/Interaction_Error_Management</report>
+            <showPercentage>false</showPercentage>
+            <showTotal>true</showTotal>
+            <showValues>false</showValues>
+            <title>Total No.of Errors</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>RowCount</column>
+            </chartSummary>
+            <componentType>ColumnGrouped</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>What errors is the &apos;Improved Help&apos; app finding? See &apos;Help Settings &apos; Tab, &apos;Tracking Options&apos; for Management</footer>
+            <groupingColumn>CUST_CREATED_DATE</groupingColumn>
+            <groupingColumn>HelpInteraction__c.HelpInteractionType__c</groupingColumn>
+            <legendPosition>Bottom</legendPosition>
+            <report>Improved_Help_Reports/Interaction_Error_Management</report>
+            <showPercentage>false</showPercentage>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>System Vs Issue</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardTableColumn>
+                <column>CUST_CREATED_DATE</column>
+                <sortBy>RowLabelAscending</sortBy>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>true</showTotal>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>How are these Error trending over time?</footer>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <report>Improved_Help_Reports/Interaction_Error_Management</report>
+            <showPicturesOnTables>false</showPicturesOnTables>
+        </components>
+    </rightSection>
+    <runningUser>andy.louca1@thomsonreuters.com</runningUser>
+    <textColor>#000000</textColor>
+    <title>Improved Help - Interaction Analysis Dashboard</title>
+    <titleColor>#3333FF</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

@@ -1,0 +1,12 @@
+<apex:page id="JumpToHandler" 
+	action="{!JumpTo}"
+	applyBodyTag="false" 
+	cache="false"
+	controller="BGIntegration.RepConsoleScriptingController"
+	label="JumpToHandler" 
+	name="JumpToHandler"
+	showHeader="false"
+	sidebar="false"
+	standardStylesheets="false"
+	title="Jump To Handler">
+</apex:page>

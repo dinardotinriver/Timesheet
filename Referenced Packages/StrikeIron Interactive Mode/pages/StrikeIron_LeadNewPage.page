@@ -1,0 +1,166 @@
+<apex:page standardController="Lead" extensions="StrikeIronInter.LeadNewExtensionController" showHeader="true" >
+  <apex:stylesheet value="{!$Resource.StrikeIronInter__styles}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__jQuery}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__json2}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__common}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__correctionDlg}"/>
+  <script type="text/javascript">
+    var j$ = jQuery.noConflict();
+    var buttonClicked;
+    var permissionError = <apex:outputText >{!permissionError}</apex:outputText>;
+    var changableObjects = [
+      {
+        "type": "email",
+        "cssclass": "leadEmail",
+        "fieldname": "Email", 
+        "changed": false
+      },
+      {
+        "type": "phone",
+        "cssclass": "leadPhone",
+        "fieldname": "Phone", 
+        "changed": false
+      },
+      {
+        "type": "phone",
+        "cssclass": "leadMobile",
+        "fieldname": "MobilePhone", 
+        "changed": false
+      },
+      {
+        "type": "phone",
+        "cssclass": "leadFax",
+        "fieldname": "Fax", 
+        "changed": false
+      },
+      {
+        "type": "address",
+        "cssclass": "leadAddress",
+        "fieldname": "Street", 
+        "changed": false,
+        "cityclass" : "leadCity",
+        "stateclass" : "leadState",
+        "zipclass" : "leadZip",
+        "countryclass" : "leadCountry"
+      } 
+    ];
+  
+  function changed(ident, fieldName, label){
+    if(!permissionError){
+      fieldChanged(changableObjects, ident, fieldName, label, 
+        false, '{!URLFOR($Resource.Images, 'question.png')}');
+    }
+  }
+  
+  function saveClicked(b) {
+    if (!buttonClicked) {
+      buttonClicked = b;
+    }
+    var params = [];
+    fillParams(params, changableObjects, '{!lead.id}', '{!JSENCODE(lead.name)}', 'Lead', 
+      '{!$Component.leadNewForm}:');
+    
+      if (params.length > 0 && !permissionError) { 
+        sendAjax(params, '{!$Component.leadNewForm}:', 
+          '<apex:outputText >{!SiServerUrl}</apex:outputText>',
+          '<apex:outputText >{!$Api.Session_ID}</apex:outputText>',
+          '<apex:outputText >{!$Api.Partner_Server_URL_180}</apex:outputText>', 
+          'outPopUp', false, changableObjects,
+          '{!JSENCODE($User.FirstName)}' + ' ' + '{!JSENCODE($User.LastName)}'); 
+      } else {
+        onResponse(buttonClicked);
+      }
+        return false;
+    }
+    
+    j$(window).ready(function() {
+      j$('.outPopUp').each(function() {j$(this).hide()});
+      checkIfErrorExists(changableObjects);
+    });
+  
+  </script>
+  <apex:form id="leadNewForm">
+    <c:ModalDialog title="Please confirm correction"></c:ModalDialog>
+    <apex:actionFunction name="overridedSave" action="{!save}" />
+    <apex:actionFunction name="overridedSaveNew" action="{!savenew}" />
+    <apex:sectionHeader title="Lead Edit" subtitle="New Lead" help="https://help.salesforce.com"/> 
+    
+    <apex:inputHidden id="EmailVerResult" value="{!emailVerResult}" />
+    <apex:inputHidden id="PhoneVerResult" value="{!phoneVerResult}" />
+    <apex:inputHidden id="MobilePhoneVerResult" value="{!mobileVerResult}" />
+    <apex:inputHidden id="FaxVerResult" value="{!faxVerResult}" />
+    <apex:inputHidden id="StreetVerResult" value="{!addressVerResult}" />
+    
+    <apex:pageBlock title="Lead Edit" mode="edit" id="leadPageBlock">
+      <apex:pageMessages />
+      <apex:pageBlockButtons location="top">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+          <apex:commandButton value="Save" onclick="return saveClicked('save')" />
+        </span>
+        <apex:commandButton value="Save & New" onclick="return saveClicked('savenew')" />
+        <apex:commandButton value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Lead Information">
+        <apex:outputText label="Lead Owner" value="{!Owner.name}"/>
+        <apex:inputField taborderhint="9" styleClass="leadPhone" value="{!lead.phone}" 
+          onchange="changed('phoneComponent', 'Phone', 'Phone')" /> 
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="First Name"/>
+          <apex:outputpanel >
+            <apex:inputField taborderhint="1" value="{!lead.Salutation}" />
+            &nbsp;
+            <apex:inputField taborderhint="2" value="{!lead.FirstName}" />
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:inputField taborderhint="10" styleClass="leadMobile" value="{!lead.mobilephone}" 
+          onchange="changed('mobileComponent', 'MobilePhone', 'Mobile')" />
+        <apex:inputField taborderhint="3" value="{!lead.lastName}"/>
+        <apex:inputField taborderhint="11" styleClass="leadFax" value="{!lead.fax}" 
+          onchange="changed('faxComponent', 'Fax', 'Fax')" /> 
+        <apex:inputField taborderhint="4" value="{!lead.company}" />
+        <apex:inputField taborderhint="12" styleClass="leadEmail" value="{!lead.email}" 
+          onchange="changed('emailComponent', 'Email', 'Email')" />
+        <apex:inputField taborderhint="5" value="{!lead.title}" />
+        <apex:inputField taborderhint="13" value="{!lead.website}" />
+        <apex:inputField taborderhint="6" value="{!lead.leadsource}" />
+        <apex:inputField taborderhint="14" value="{!lead.status}" />
+        <apex:inputField taborderhint="7" value="{!lead.industry}" />
+        <apex:inputField taborderhint="15" value="{!lead.rating}" />
+        <apex:inputField taborderhint="8" value="{!lead.annualrevenue}" />
+        <apex:inputField taborderhint="16" value="{!lead.numberofemployees}" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Address Information" columns="1">
+        <apex:inputTextarea tabindex="170" rows="2" cols="27" styleClass="leadAddress" value="{!lead.street}" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="18" value="{!lead.city}" styleClass="leadCity" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="19" value="{!lead.state}" styleClass="leadState" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="20" value="{!lead.postalCode}" styleClass="leadZip" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="21" value="{!lead.country}" styleClass="leadCountry" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Additional Information" >
+        <apex:repeat value="{!SobjectFields}" var="f">
+          <apex:inputField value="{!Lead[f]}"/>
+        </apex:repeat>
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Description Information" >
+        <apex:inputTextarea tabindex="270" rows="6" cols="75" value="{!lead.description}" />
+      </apex:pageBlockSection>
+      <apex:pageBlockButtons location="bottom">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+          <apex:commandButton tabindex="280" value="Save" onclick="return saveClicked('save')" />
+        </span>
+        <apex:commandButton tabindex="290" value="Save & New" onclick="return saveClicked('savenew')" />
+        <apex:commandButton tabindex="300" value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+    </apex:pageBlock>
+  </apex:form>
+  <script type="text/javascript">
+    beenFocused = true;
+  </script>
+</apex:page>

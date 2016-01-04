@@ -1,0 +1,198 @@
+<apex:page sidebar="false" controller="vish_file.UploadController" showHeader="false" standardStylesheets="false">
+<c:header />
+<title>Webcam</title>
+<div class="slds"> 
+<div class="container"  style="background-color:#FFF">
+    <div class="slds-grid">
+        <div class="slds-container--center is640">
+            <div class="slds-grid slds-grid--align-spread slds-m-top--medium">                   
+                <div class="slds-align-middle slds-col--padded"><button class="slds-button slds-button--brand" id="snap" >Capture</button>
+                <button class="slds-button slds-button--brand" style="display:none" id="new">Retake</button>
+                <button class="slds-button slds-button--brand" style="display:none" id="upload">Upload</button> </div>
+                <div class="slds-align-middle slds-col--padded"><input class="slds-m-left--small slds-input" type="text" id="imagename" value="{!JSENCODE(imgName)}"/></div> 
+                <div class="slds-align-middle slds-col--padded"><select class="slds-m-left--small slds-input" id="videoSource"></select></div>
+            </div>
+            <div class="slds-m-top--medium"></div>
+            <canvas id="canvas" style="display:none;border-radius: 15px;" width="640" height="480"></canvas>
+            <video class="myvideo" id="video" autoplay="autoplay" style="border-radius: 15px;"></video>
+        </div>    
+    </div> 
+    
+    <div class="isNot640 alert slds-notify slds-notify--alert slds-theme--error" role="alert">
+        <div class="slds-container--center">
+            <b>Your screen must have 680*480 resolution.</b>
+        </div>
+    </div>  
+    
+    <div id="el_loading" style="display:none;position: fixed;top:0;background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+        <div class="slds-spinner--large"  style="margin-top: 200px;margin-left:50%;">
+           <img class="waitingImage" src="{!URLFOR($Resource.SLDS080, 'assets/images/spinners/slds_spinner_brand.gif')}" />
+       </div>
+    </div>      
+</div>
+
+<div class="slds-container--center">
+    <div id="myModal1">
+            <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+           <div class="slds-modal__container">         
+             <div class="slds-modal__content slds-notify slds-notify--toast slds-theme--success">             
+                 <h1 class="slds-button slds-notify__close" style="cursor: pointer;"> <a href="" onclick="hideTheBoxComponent();" >&#10006;</a></h1>
+                 <p class="slds-text-align--center"> Image Saved</p>
+             </div>        
+           </div>
+         </div>
+         <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+       </div>
+    </div>
+</div>  
+<script src="{!URLFOR($Resource.UploadGuru,'UploadGuru/gajs.js')}"></script> 
+
+<script>  
+   
+     $(function() {
+      $('#weblink').addClass('slds-active');
+    });
+    
+    $( document ).ready(function() {
+        $("#myModal1").css("display","none");
+    });
+    function hideTheBoxComponent(){
+        $("#myModal1").css("display","none"); 
+    }
+    
+    function showDialogComponent(){
+        $("#myModal1").css("display","block");
+    }
+              
+    // Put event listeners into place
+    window.addEventListener("DOMContentLoaded", function() {
+    
+        // Grab elements, create settings, etc.
+        var canvas = document.getElementById("canvas"),
+            context = canvas.getContext("2d"),
+            video = document.getElementById("video"),
+            videoObj = { "video": true },
+            errBack = function(error) {
+                console.log("Video capture error: ", error.code); 
+            };
+
+        // Capture Snap Photo
+        document.getElementById("snap").addEventListener("click", function() {
+            context.drawImage(video, 0, 0, 640, 480);
+            // Littel effects
+            $('#video').hide();
+            $('#canvas').show();
+            $('#snap').hide();
+            $('#new').show();
+            $('#upload').show();
+        });
+    
+        // Capture New Photo
+        document.getElementById("new").addEventListener("click", function() {
+            $('#video').show();
+            $('#canvas').hide();
+            $('#snap').show();
+            $('#new').hide();
+            $('#upload').hide();
+        });
+        
+    
+        // Upload image to sever 
+        document.getElementById("upload").addEventListener("click", function(){
+            Visualforce.remoting.timeout = 500000;
+            if( '{!JSENCODE(sid)}' != '' ){                                    
+                $('#el_loading').show();        
+                var id = '{!JSENCODE(sid)}';
+                var imgname = $('#imagename').val();
+                var dataUrl = canvas.toDataURL();
+                
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.UploadController.saveImage}', 
+                    id, 
+                    imgname,
+                    dataUrl,
+                    function(result, event){
+                        if (event.status) {
+                          $('#el_loading').hide();
+                          $('#video').show();
+                          $('#canvas').hide();
+                          $('#snap').show();
+                          $('#new').hide();
+                          $('#upload').hide();
+                          if( '{!JSENCODE(retURL) }' != '' ){  
+                              window.open('{!JSENCODE(retURL)}',"_self");
+                          }else{
+                              showDialogComponent();
+                          }
+                        }
+                        else if (event.type === 'exception') {
+                            alert( event.message + ' ' + event.where );
+                                
+                        } else {
+                            alert( event.message);
+                        }
+                    }, 
+                    {escape: true}
+                );
+            }
+            else{
+                alert('Attachment can not saved without record id.');
+            }
+        });
+    }, false);
+    
+    'use strict';
+
+    var videoElement = document.querySelector('video');    
+    var videoSelect = document.querySelector('select#videoSource');
+    navigator.getUserMedia = navigator.getUserMedia ||
+      navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    
+    function gotSources(sourceInfos) {
+      for (var i = 0; i !== sourceInfos.length; ++i) {
+        var sourceInfo = sourceInfos[i];
+        var option = document.createElement('option');
+        option.value = sourceInfo.id;
+        if (sourceInfo.kind === 'video') {
+          option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
+          videoSelect.appendChild(option);
+        } else {
+          console.log('Some other kind of source: ', sourceInfo);
+        }
+      }
+    }
+    
+    if (typeof MediaStreamTrack === 'undefined'){
+      alert('This browser does not support MediaStreamTrack.\n\nTry Chrome Canary.');
+    } else {
+      MediaStreamTrack.getSources(gotSources);
+    }
+
+    function successCallback(stream) {
+      window.stream = stream; // make stream available to console
+      videoElement.src = window.URL.createObjectURL(stream);
+      videoElement.play();
+    }
+    
+    function errorCallback(error){
+      console.log('navigator.getUserMedia error: ', error);
+    }
+    
+    function start(){
+      if (!!window.stream) {
+        videoElement.src = null;
+        window.stream.stop();
+      }
+      var videoSource = videoSelect.value;
+      var constraints = {
+        
+        video: {
+          optional: [{sourceId: videoSource}]
+        }
+      };
+      navigator.getUserMedia(constraints, successCallback, errorCallback);
+    }
+    videoSelect.onchange = start;
+    start();
+</script>
+</apex:page>

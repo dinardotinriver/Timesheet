@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>BatchGenerateTimesheets</members>
+        <members>TimesheetController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>Time_Sheet_Activity__c</members>
+        <members>Timesheet__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Time_Sheet_Activity__c-Time Sheet Item Layout</members>
+        <members>Timesheet__c-Timesheet Layout</members>
+        <name>Layout</name>
+    </types>
+    <version>15.0</version>
+</Package>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>HelpInteraction__c.Description__c</field>
+    </columns>
+    <columns>
+        <field>HelpInteraction__c.HelpTopic__c</field>
+    </columns>
+    <columns>
+        <field>HelpInteraction__c.Context__c</field>
+    </columns>
+    <description>What Vote Options are most frequently logged?</description>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>HelpInteraction__c.CreatedDateTime__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>HelpInteraction__c.HelpVoteOption__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Interaction: Votes by Vote Option</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$HelpInteraction__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>HelpInteraction__c.CreatedDateTime__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

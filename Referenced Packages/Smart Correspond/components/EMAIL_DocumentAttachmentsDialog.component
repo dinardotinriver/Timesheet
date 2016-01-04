@@ -1,0 +1,79 @@
+<apex:component >
+    <c:REMOTE_Documents />
+    <c:LoadJS module="docedt/email-attachments-dialog" />
+    <style>
+        .documents .modal-dialog {
+            width: 600px;
+        }
+        #documents-table {
+            height: 300px;
+            overflow: auto;
+        }
+    </style>
+
+    <script type="text/template" id="doc_modal_tmpl">
+        <div class="modal fade modal-th" tabindex="-1" data-backdrop="static"
+            role="dialog" aria-labelledby="sfDocumentDialog" aria-hidden="true">
+            <div class="modal-dialog documents" style="width: 600px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div id="folder-list"></div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="documents-table" align="center"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-th btn-th-primary" id="th_btn_attachdocs">OK</button>
+                        <button class="btn btn-th btn-th-secondary" data-dismiss="modal" aria-hidden="true" id="th_btn_canceldocs">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="folder-dropdown_tmpl">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">Folder</label>
+                <div class="col-lg-9">
+                    <select class="form-control th_select_folder">
+                        {{#folders}}
+                            <option value="{{Id}}">{{Name}}</option>
+                        {{/folders}}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </script>
+
+    <script type="text/template" id="docs-table_tmpl">
+        <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>File Size</th>
+                <th>Last Modified Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#documents}}
+                <tr class="row_{{documentRowCls}}">
+                    <td>
+                    {{#isSelectable}}
+                    <input type="checkbox" class="document-check" data-id="{{Doc.Id}}" value="th_check_{{Doc.Name}}" {{#IsSelected}}checked{{/IsSelected}}></input>
+                    {{/isSelectable}}
+                    </td>
+                    <td class="col_docname" align="left">{{Doc.Name}}</td>
+                    <td class="col_doctype">{{Doc.Type}}</td>
+                    <td class="col_docsize">{{size}}</td>
+                    <td class="col_lastmodifieddate">{{date}}</td>
+                </tr>
+            {{/documents}}
+        </tbody>
+        </table>
+    </script>
+
+</apex:component>

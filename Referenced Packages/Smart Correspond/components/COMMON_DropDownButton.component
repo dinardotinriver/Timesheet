@@ -1,0 +1,8 @@
+<apex:component >
+    <c:LoadJS module="ui/dropdown"/>
+    <script type="text/template" id="dropdown-button_tmpl">
+<div id="{{id}}" class="menuButton {{menuClass}}">
+    <div class="menuButtonButton hasDefault" id="runMuttonButton">{{buttonLabel}}</div>
+</div>
+    </script>
+</apex:component>

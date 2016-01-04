@@ -1,0 +1,288 @@
+<apex:page Controller="kugadd.ConfigurationController" action="{!initSettings}" id="pageId">
+	<script type="text/javascript">
+		function disableStartButton() {
+			document.getElementById('pageId:formid:configpbid:startSyncButton').disabled = true;
+			document.getElementById('pageId:formid:configpbid:startSyncButton').setAttribute("class", "btnDisabled");
+		}
+
+		function toggleAccountContactDisable() {
+			
+			var disableSync = document.getElementById('pageId:formid:configpbid:disableContactSync').checked;
+			console.log('*** disable sync = ' + disableSync);
+
+			if (disableSync) {
+				document.getElementById('pageId:formid:configpbid:disableContactPhoneSync').checked = true;
+				document.getElementById('pageId:formid:configpbid:disableContactPhoneSync').disabled = true;
+				document.getElementById('pageId:formid:configpbid:disableContactFaxSync').checked = true;
+				document.getElementById('pageId:formid:configpbid:disableContactFaxSync').disabled = true;
+
+			} else {
+				document.getElementById('pageId:formid:configpbid:disableContactPhoneSync').disabled = false;
+				document.getElementById('pageId:formid:configpbid:disableContactFaxSync').disabled = false;
+			}
+
+			console.log('val1 = ' + disableSync);
+			console.log('val2 = ' + document.getElementById('pageId:formid:configpbid:disableContactPhoneSync').checked);
+			console.log('val3 = ' + document.getElementById('pageId:formid:configpbid:disableContactFaxSync').checked);
+		}
+
+		//window.onload = function() {toggleAccountContactDisable();}
+		
+	</script>
+	<style>
+        td {
+            padding-left:10px;
+        }
+	</style>
+
+    <apex:sectionHeader title="Application Configuration" subtitle="Kugamon Account/Contact Sync" />
+    
+    <apex:outputPanel id="pageMessages" >
+    	<apex:pageMessage summary="Disabling both Step 3 and Step 4 has turned off the Account/Contact Sync application." severity="Warning" strength="2" rendered="{!disableBillingShippingAddressSync && disableAccountToContactSync}"/>
+    	<apex:pageMessages />
+    </apex:outputPanel>
+	<apex:outputPanel id="Title" layout="block" >
+       <div class="bOverviewSearch">
+           <div class="view">
+           Please email us at <a href="mailto:address@kugamon.com?subject=Kugamon Address Customer Question">address@kugamon.com</a>, if you have any feedback to improve the Kugamon Address application. We strive continuously to make it better.   
+           </div>
+       </div>
+	</apex:outputPanel>
+	
+	<apex:form id="formid" >
+	
+	<apex:pageBlock title="Configuration" id="configpbid" mode="edit" >	<!-- mode="edit"  -->
+			
+            <div class="pbSubheader brandTertiaryBgr first tertiaryPalette">
+            	<h3>Step 1: Initialize Account/Contact Sync</h3>
+            </div>
+                        
+			<table width="100%" class="detailList">
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+				<tr>
+				<td class="data2Col  last " colspan="2">Start the automated background process to sync Account and Contact information. If the addresses match or unfilled, sync occurs according to the following rule: <br/><br/>
+
+					<b>Account Record:</b><br/>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1) Account Billing Address to Account Shipping Address<br/><br/>	
+
+					<b>Contact Record:</b><br/>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) Account Billing Address to Contact Mailing Address<br/>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3) Account Shipping Address to Contact Other Address<br/><br/>
+					
+					Note: If the addresses do not match, there is no sync.
+				</td>
+				</tr>
+
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+				<tr>
+				<td class="data2Col " colspan="2">
+					
+					<apex:commandButton id="startSyncButton" value="Start" styleClass="btnSharing" action="{!startAccountContactSync}" rerender="configpbid,op,pageMessages" status="saveStatus" style="align:right;" onclick="disableStartButton();" oncomplete="disableStartButton();"/>
+					
+				</td>
+				</tr>
+
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</tbody>
+			</table>
+			
+            <div class="pbSubheader brandTertiaryBgr first tertiaryPalette">
+            	<h3>Step 2: Enable Manual Mass Update Feature</h3>
+            </div>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				
+				<tr>
+				<td class="data2Col  last " colspan="2">
+					<apex:outputText value="To perform manual mass updates to the Contact records for a particular Account, please add the <b>Contact Address Manager</b> button or link. To add this button or link, please click <b>Setup | Customize</b> under <b>App Setup | Accounts | Page Layouts</b>. Then click on each page layout and add the <b>Contact Address Manager</b> button or link. Click <b>Save</b>." escape="false" />					
+				</td>
+				</tr>
+				
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>				
+				
+				<tr>
+					<td>Shortcut to <a target="_top" href="/ui/setup/layout/PageLayouts?type=Account&setupid=AccountLayouts"><b>Accounts Page Layouts</b></a></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</tbody>
+			</table>
+	
+            <div class="pbSubheader brandTertiaryBgr first tertiaryPalette">
+            	<h3>Step 3: Set Account Sync Behaviour</h3>
+            </div>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">	<!-- class="detailList"  -->
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+				<td colspan="2">	<!-- class="labelCol  first " -->
+					<apex:inputCheckbox value="{!addressSettings.kugadd__DisableBillingShippingAddressSync__c}" id="disableAccountSync" dir="RTL" label=""/>
+					&nbsp;&nbsp;<apex:outputLabel value="Disable Account Billing Address to Shipping Address Auto Sync" for="disableAccountSync" />
+				</td>
+				<!-- class="data2Col  first " 
+				<td >	
+					<apex:outputLabel value="Disable Account Billing Address to Shipping Address Auto Sync" for="disableSync" />
+				</td>
+				-->
+				</tr>
+
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+				<tr>
+				<td class="data2Col  " colspan="2">Note: To disable automatic address update within a particular Account record, please add the <b>Disable Billing/Shipping Address Sync</b> field to the page layout. This will make sure the Billing Address does not change the Shipping Address. To enable this field, please click <b>Setup | Customize</b> under <b>App Setup | Accounts | Page Layouts</b>. Move the <b>Disable Billing/Shipping Address Sync</b> field to underneath the Billing Address and click <b>Save</b>.
+				</td>
+				</tr>
+
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+				<tr>
+				<td class="data2Col last" colspan="2">
+					<apex:commandButton value="Save" styleClass="btnSharing" action="{!save}" rerender="configpbid,op,pageMessages,checkboxToggle" status="saveStatus" style="align:right;" />
+				</td>
+				</tr>
+				
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>				
+			</tbody>
+			</table>
+
+
+            <div class="pbSubheader brandTertiaryBgr first tertiaryPalette">
+            	<h3>Step 4: Set Contact Sync Behaviour</h3>
+            </div>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">	<!-- class="detailList"  -->
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+				<td colspan="2">
+					<apex:inputCheckbox value="{!addressSettings.kugadd__DisableAccountToContactSync__c}" id="disableContactSync" dir="RTL" label="" onchange="toggleAccountContactDisable();"/>
+					&nbsp;&nbsp;<apex:outputLabel value="Disable Account to Contact Auto Sync" for="disableContactSync" />
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2">
+					<apex:inputCheckbox value="{!addressSettings.kugadd__DisableAccountPhonetoContactSync__c}" id="disableContactPhoneSync" dir="RTL" label="" />
+					&nbsp;&nbsp;<apex:outputLabel value="Disable Account Phone to Contact Auto Sync" for="disableContactPhoneSync" />
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2">
+					<apex:inputCheckbox value="{!addressSettings.kugadd__DisableAccountFaxtoContactSync__c}" id="disableContactFaxSync" dir="RTL" label="" />
+					&nbsp;&nbsp;<apex:outputLabel value="Disable Account Fax to Contact Auto Sync" for="disableContactFaxSync" />
+				</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+				<tr>
+				<td class="data2Col  " colspan="2">Note: To disable Account to Contact automatic address, phone and fax update within a particular Contact record, please add the <b>Disable Account to Contact Sync</b> field to the page layout. This will make sure the Mailing Address, Other Address, Phone, and Fax are not updated due to changes in the Account. To enable this field, please click <b>Setup | Customize</b> under <b>App Setup | Contacts | Page Layouts</b>. Move the <b>Disable Account to Contact Sync</b> field to underneath the Mailing Address and click <b>Save</b>.
+				</td>
+				</tr>
+
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+				<tr>
+				<td class="data2Col last" colspan="2">
+					<apex:commandButton value="Save" styleClass="btnSharing" action="{!save}" rerender="configpbid,op,pageMessages,checkboxToggle" status="saveStatus" style="align:right;" />
+				</td>
+				</tr>
+				
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>				
+			</tbody>
+			</table>
+
+			
+			
+            <div class="pbSubheader brandTertiaryBgr first tertiaryPalette">
+            	<h3>Step 5: Minimize Orphaned Contacts</h3>
+            </div>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				
+				<tr>
+				<td class="data2Col  last " colspan="2">
+					<apex:outputText value="To help ensure high quality data, make the Account field on the Contact object required. This will make sure you have no orphaned Contacts. To enable the required field, please click <b>Setup | Customize</b> under <b>App Setup | Contacts | Page Layouts</b>. Choose the Account field and select <b>Required</b>. Click <b>Save</b>." escape="false" />					
+				</td>
+				</tr>
+				
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>				
+				
+				<tr>
+					<td>Shortcut to <a target="_top" href="/ui/setup/layout/PageLayouts?type=Contact"><b>Contacts Page Layouts</b></a></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</tbody>
+			</table>
+
+			<apex:outputPanel id="checkboxToggle">
+				<script>
+					toggleAccountContactDisable();
+				</script>
+			</apex:outputPanel>
+	</apex:pageBlock>
+	</apex:form>
+
+</apex:page>

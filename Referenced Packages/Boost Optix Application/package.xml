@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Boost Optix Application</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>BoostOptix Canvas Application for Enterprise and Unlimited Editions</description>
+    <namespacePrefix>bocvsee</namespacePrefix>
+    <types>
+        <members>BoostOptixCanvas</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>BoostOptix</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>Contact.Average_Response_Time__c</members>
+        <members>Contact.Consecutive_Unanswered_Emails__c</members>
+        <members>Contact.Last_Email_Received__c</members>
+        <members>Contact.Last_Email_Response__c</members>
+        <members>Contact.Last_Email_Sent__c</members>
+        <members>Contact.Last_Look__c</members>
+        <members>Contact.Meetings_Accepted__c</members>
+        <members>Contact.Meetings_Declined__c</members>
+        <members>Contact.Received_Emails__c</members>
+        <members>Contact.Responsiveness__c</members>
+        <members>Contact.Sent_Emails__c</members>
+        <members>Lead.Average_Response_Time__c</members>
+        <members>Lead.Consecutive_Unanswered_Emails__c</members>
+        <members>Lead.Last_Email_Received__c</members>
+        <members>Lead.Last_Email_Response__c</members>
+        <members>Lead.Last_Email_Sent__c</members>
+        <members>Lead.Last_Look__c</members>
+        <members>Lead.Meetings_Accepted__c</members>
+        <members>Lead.Meetings_Declined__c</members>
+        <members>Lead.Received_Emails__c</members>
+        <members>Lead.Responsiveness__c</members>
+        <members>Lead.Sent_Emails__c</members>
+        <members>RulesActivityHistory__c.Account__c</members>
+        <members>RulesActivityHistory__c.ActivityURL__c</members>
+        <members>RulesActivityHistory__c.Case__c</members>
+        <members>RulesActivityHistory__c.Contact__c</members>
+        <members>RulesActivityHistory__c.Control_ID__c</members>
+        <members>RulesActivityHistory__c.Control_Value__c</members>
+        <members>RulesActivityHistory__c.Lead__c</members>
+        <members>RulesActivityHistory__c.Opportunity__c</members>
+        <members>RulesActivityHistory__c.Rule_ID__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>RulesActivityHistory__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>BoostOptix</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>BoostOptix_Dashboards</members>
+        <members>BoostOptix_Dashboards/x01_Leads</members>
+        <members>BoostOptix_Dashboards/x02_Contact_Opportunities</members>
+        <name>Dashboard</name>
+    </types>
+    <types>
+        <members>Account-Account Layout</members>
+        <members>Case-Case Layout</members>
+        <members>Contact-Contact Layout</members>
+        <members>Lead-Lead Layout</members>
+        <members>Opportunity-Opportunity Layout</members>
+        <members>RulesActivityHistory__c-Rules Activity History Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>BoostOptix_Reports</members>
+        <members>BoostOptix_Reports/X01_Lead_Boost_Analytics</members>
+        <members>BoostOptix_Reports/X06_Lead_Report</members>
+        <members>BoostOptix_Reports/x01_01a_Leads_AHA</members>
+        <members>BoostOptix_Reports/x01_01b_Lead_Metrics_AHA</members>
+        <members>BoostOptix_Reports/x01_01c_Lead_AHA_Competitors</members>
+        <members>BoostOptix_Reports/x01_01c_Lead_AHA_Rules</members>
+        <members>BoostOptix_Reports/x02_Deal_Size_Competitor_Stage</members>
+        <members>BoostOptix_Reports/x03_Contact_AHA</members>
+        <members>BoostOptix_Reports/x03_Contact_Email</members>
+        <members>BoostOptix_Reports/x03_Contact_Email_ColB</members>
+        <members>BoostOptix_Reports/x03_Contact_No_Response</members>
+        <members>BoostOptix_Reports/x04_Discussion_Deals_Pipeline</members>
+        <name>Report</name>
+    </types>
+    <types>
+        <members>x01_Contacts_AHA</members>
+        <members>x02_Leads_AHA</members>
+        <members>x03_AHA</members>
+        <name>ReportType</name>
+    </types>
+    <version>30.0</version>
+</Package>

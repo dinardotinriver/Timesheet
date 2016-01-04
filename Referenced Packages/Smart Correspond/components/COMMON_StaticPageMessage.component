@@ -1,0 +1,42 @@
+<apex:component controller="TH1.COMMON_CO_StaticPageMessage">
+	<apex:attribute name="MessageId"
+		description="This is the value for the component." type="String"
+		required="true" />
+	<apex:attribute name="Severity" description="severity attr of message"
+		type="String" required="true" />
+    <!--
+        TODO pjfh: Cannot use markup in pageMessage attributes and so controller provides
+        Summary = '<span class="summary"></span>'
+        Detail = '<span class="detail"></span>'
+        Forstyling, page can include css for
+        .message-{!MessageId} .summary/.detail { ... }
+     -->
+	<apex:outputPanel id="message" styleClass="message-{!JSENCODE(MessageId)}">
+		<apex:pageMessage escape="false" summary="{!Summary}"
+			detail="{!Detail}" severity="{!JSENCODE(Severity)}" strength="3" />
+	</apex:outputPanel>
+
+	<c:COMMON_JQueryLib />
+	<!-- TODO move JS to component -->
+	<script type="text/javascript">
+        (function() {
+            window.Thunderhead = window.Thunderhead || {};
+            var SF = window.Thunderhead.SF = window.Thunderhead.SF || {};
+            SF.PageMessage = SF.PageMessage || createConstructor();
+
+            function createConstructor() {
+                var ctor = function(id) {
+	                this._summary = $('.message-' + id + ' .summary');
+	                this._detail = $('.message-' + id + ' .detail');
+	            }
+	            ctor.prototype.setSummary = function(markup) {
+                    this._summary.html(markup);
+                }
+                ctor.prototype.setDetail = function(markup) {
+                    this._detail.html(markup);
+                }
+                return ctor;
+	        }
+        }).call(this);
+    </script>
+</apex:component>

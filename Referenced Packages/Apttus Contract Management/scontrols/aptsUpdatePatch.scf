@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	UpdatePatch
+	Performs scripted patche updates
+	=================================================================================================
+*/
+var cPATCH_ERROR = "ERROR applying patches:\n";
+
+function initPage() {
+	window.setTimeout("applyPatches();", 50);
+}
+
+function applyPatches() {
+	try {
+		var table = gAgreementObjName;
+		var field = "Id,Apttus__Agreement_Number__c,Apttus__Contract_Number__c";
+		var where = "Apttus__Agreement_Number__c = null";
+		
+		var q = "select " + field + " from " + table + " where " + where;
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+	
+		if (records.length==0) {
+			navigateTo(gHomePageURL);
+			return;
+		}
+		
+		var sObjs = new Array(records.length);
+		for (var i=0; i<records.length; i++) {
+			var sObj = new sforce.SObject(gAgreementObjName);
+			
+		    sObj.Id = records[i].Id;
+		    sObj.Apttus__Agreement_Number__c = records[i].Apttus__Contract_Number__c;
+			
+			sObjs[i] = sObj;
+		}
+	   	    
+		var result = sforce.connection.update(sObjs);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cPATCH_ERROR, result[0]);
+		}
+		
+		navigateTo(gAgreementObjURL);
+	}
+	catch(ex) {
+		alert(cPATCH_ERROR + ex);
+		navigateTo(gHomePageURL);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

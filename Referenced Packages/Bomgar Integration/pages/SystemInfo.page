@@ -1,0 +1,18 @@
+<apex:page id="SystemInfoPage" standardController="BGIntegration__BomgarSession__c" extensions="BGIntegration.SystemInfoControllerExtension" showHeader="false" sidebar="false">
+
+    <apex:pageBlock >
+        <apex:tabPanel switchType="client" selectedTab="GeneralTab" id="systemInfoTabPanel">
+            <apex:tab label="General" name="GeneralTab" id="GeneralTab">
+                <apex:repeat value="{!systemInfoMap['General']}" var="row">
+                    <dl>
+                    <apex:repeat value="{!row.Fields}" var="field">
+                        <dt><apex:outputText value="{!field.Name}" /></dt>
+                        <dd><apex:outputText value="{!field.Value}" /></dd>
+                    </apex:repeat>
+                    </dl>
+                </apex:repeat>
+            </apex:tab>
+        </apex:tabPanel>
+    </apex:pageBlock>
+
+</apex:page>

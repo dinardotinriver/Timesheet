@@ -1,0 +1,361 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+
+<script language="javascript" type="text/javascript"> 
+
+var gTargetCategoryStatus = "In Effect";
+var gTargetStatus = "Activated";
+var gAmendedTargetCategoryStatus = "Amended";
+var gAmendedTargetStatus = "Superseded";
+var gRenewedTargetCategoryStatus = "Renewed";
+var gRenewedTargetStatus = "Superseded";
+var gIsRenewedByRelation = "Is Renewed By";
+var gIsRenewalForRelation = "Is Renewal For";
+
+var gAttachmentName = "";
+var gAttachmentsSelected = "";
+var gDocuments = new Array();
+var gNumDocuments = 0;
+
+function initPage() {
+	window.setTimeout("doInit();",gTimeout);
+}
+
+function doInit() {
+	logonAsSuperUser();
+	queryAgreementDocuments();
+	queryAttachments();
+
+	if (gDocuments.length == 0) {
+		alert("No documents or attachments found.\nThis agreement must have a document or attachment before it can be activated.");
+		navigateTo(gContractIdURL);
+	} else {
+		selectAttachment();
+		showDocumentList();
+	}
+}
+
+function queryAgreementDocuments() {
+	try {
+		var q = "select Name from " + gAgreementDocumentObjName +
+			" where " + gAgreementDocumentObjKey + " = '" + gContractId + "'";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (records.length >= 1) {
+			for (var i=0; i<records.length; i++) {
+	            gDocuments[gNumDocuments++] = records[i].Name;
+			}
+     	}
+    	return records.length;
+	}
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function queryAttachments() {
+	try {
+		var q = "Select Id, ParentId, OwnerId, Name from Attachment where ParentId = '" + gContractId + "'";	
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (records.length >= 1) {
+			for (var i=0; i<records.length; i++) {
+	            gDocuments[gNumDocuments++] = records[i].Name;
+			}
+     	}
+    	return records.length;
+	}
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function showDocumentList() {
+	var output = "<select id=\"bTemplateId\" size=\"5\" name=\"bTemplateId\" multiple=\"true\">";
+	for (var i=0; i<gDocuments.length; i++) {
+		var docName = gDocuments[i];
+		var selectFirst = new Boolean(false);
+		
+		if (i==0 && selectFirst=="true") {
+			output += "<br><option value=\"" + docName + "\" selected>";
+		} else {
+			output += "<br><option value=\"" + docName + "\">";
+		}
+		output += docName;
+	}
+	output += "<br></select>";
+      	
+	document.getElementById("divTemplate").innerHTML = output;
+	document.getElementById("divTemplate").style.display = "";
+	
+	showMain();
+}
+
+function getSelectedItems() {
+    var items = new Array();
+	var itemList = document.getElementById("bTemplateId");
+	
+	for (var i=0; i<itemList.length; i++) {
+		var text = itemList.options[i].text;
+		var value = itemList.options[i].value;
+		var isSelected = itemList.options[i].selected;
+		
+		if (isSelected) {
+			items.push(value);
+		}
+	}
+	return items;
+}
+
+function activateAgreement() {
+	try {
+		//make sure the user selected at least one attachment
+		gAttachmentName = document.getElementById("bTemplateId").value;
+		var attachments = getSelectedItems();
+		for (var i=0; i<attachments.length; i++) {
+			gAttachmentsSelected += attachments[i] + "\n";
+		}
+		if (attachments.length == 0) {
+			alert("No attachments were selected.\nYou must select the appropriate attachment(s)\n" + 
+				"before the agreement can be activated.")
+			
+		} else {
+			showMsgProgress("Activating Agreement...Please Wait");
+			var contract = new sforce.SObject(gAgreementObjName);
+			
+			contract.Id = gContractId;
+			contract.Apttus__Status_Category__c = gTargetCategoryStatus;
+			contract.Apttus__Status__c = gTargetStatus;
+			contract.Apttus__Activated_Date__c = new Date();
+			contract.Apttus__Activated_By__c = "{!User.Id}";
+						
+			var result = sforce.connection.update([contract]);
+			if (result[0].getBoolean("success")) {
+				if (isAmendedAgreement(gContractId)) {
+					activateAmendedAgreement();
+				} else if (isRenewedAgreement(gContractId)) {
+					activateRenewedAgreement();
+				}
+				createActivityLogEntry();
+				
+				//perform any post activation processing
+				_postActivateAgreement();
+
+			} else {
+				erroralert(cERROR_EXECUTE_AGREEMENT,result[0]);
+			}
+			navigateTo(gContractIdURL);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function _postActivateAgreement() {
+	try {
+		postActivateAgreement();
+	}
+	catch(ex) {
+	}
+}
+
+function isRenewedAgreement() {
+	try {
+		var fieldList = getFieldList(gRelatedAgreementObjName);
+		var q = "select " + fieldList + " from " + gRelatedAgreementObjName +
+			" where " + gRelatedAgreementObjToKey + " = '" + gContractId + "'";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var fromRelation = record.Apttus__Relationship_From_Type__c;
+			var toRelation = record.Apttus__Relationship_To_Type__c;
+
+	    	if (fromRelation==gIsRenewedByRelation || toRelation==gIsRenewalForRelation) {
+	    		return true;
+	    	}
+		}
+		return false;
+	}	
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		return false;
+	}
+}
+
+function activateAmendedAgreement() {
+	try {
+  		//get related agreement link back to original
+		var fieldList = getFieldList(gRelatedAgreementObjName);
+		var q = "select " + fieldList + " from " + gRelatedAgreementObjName +
+			" where " + gRelatedAgreementObjToKey + " = '" + gContractId + "'";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var fromId = record.get(gRelatedAgreementObjFromKey);
+			var toId = record.get(gRelatedAgreementObjToKey);
+
+	 	    //update the original agreement
+	  		var agreement = new sforce.SObject(gAgreementObjName);
+		    agreement.Id = fromId;
+			agreement.Apttus__Status_Category__c = gAmendedTargetCategoryStatus;
+			agreement.Apttus__Status__c = gAmendedTargetStatus;
+		    agreement.Apttus__Activated_Date__c = new Date();
+		    	    
+			result = sforce.connection.update([agreement]);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_EXECUTE_AGREEMENT,result[0]);
+				navigateTo(gContractIdURL);
+			}
+		}
+	}	
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function activateRenewedAgreement() {
+	try {
+  		//get related agreement link back to original
+		var fieldList = getFieldList(gRelatedAgreementObjName);
+		var q = "select " + fieldList + " from " + gRelatedAgreementObjName +
+			" where " + gRelatedAgreementObjToKey + " = '" + gContractId + "'";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var fromId = record.get(gRelatedAgreementObjFromKey);
+			var toId = record.get(gRelatedAgreementObjToKey);
+
+	 	    //update the original agreement
+	  		var agreement = new sforce.SObject(gAgreementObjName);
+		    agreement.Id = fromId;
+			agreement.Apttus__Status_Category__c = gRenewedTargetCategoryStatus;
+			agreement.Apttus__Status__c = gRenewedTargetStatus;
+		    agreement.Apttus__Activated_Date__c = new Date();
+		    	    
+			result = sforce.connection.update([agreement]);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_EXECUTE_AGREEMENT,result[0]);
+				navigateTo(gContractIdURL);
+			}
+		}
+	}	
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createActivityLogEntry() {
+	try {		
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Activated Agreement {!APTS_Agreement__c.Contract_Number__c}." +
+			"\rUser confirmed one or more attachments were attached to the agreement." +
+			"\rStatus Category changed from '{!APTS_Agreement__c.Status_Category__c}' to '" + gTargetCategoryStatus + "'." +
+			"\nAttachment(s) selected include:\n" + gAttachmentsSelected;
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Activated Agreement";
+		task.WhatId = gContractId;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_ACTIVITY_LOG,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function selectAttachment() {
+	var html = "";
+
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<form name=\"editPage\" id=\"editPage\">";
+	html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<div class=\"bPageTitle\">";
+	html += "<div class=\"ptBody secondaryPalette\">";
+	html += "<div class=\"content\">";
+	html += "<img src=\"/img/icon/contracts32.png\" alt=\"Contract\" class=\"pageTitleIcon\">";
+	html += "<h1 class=\"pageType\">Activate Agreement<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "<h2 class=\"pageDescription\">Confirm Agreement Attachment</h2>";
+	html += "</div>";
+	html += "<div class=\"links\">";
+	html += "<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help";
+	html += "&body=%2Fhelp%2Fdoc%2Fen%2Fhelp2.jsp&target=mail_sending.htm&section=Mail_Merge&showSplash=true', ";
+	html += "'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=yes,";
+	html += "directories=no,location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\">";
+	html += "<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\"></a>";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"ptBreadcrumb\">";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"bDescription\">";
+	html += "Please confirm the list of attachments below contains an attached copy of the contract.<br>";
+	html += "Please select the appropriate attachment(s) and click Confirm.  Otherwise, click Cancel.";
+	html += "</div>";
+	html += "<table>";
+	html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\">";
+	html += "<input type=\"hidden\" name=\"id\" id=\"id\" value=\"{!APTS_Agreement__c.Id}\">";
+	html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\">";
+	html += "<tr>";
+	//html += "<td><label for=\"divTemplate\"><span class=\"requiredMark\">*</span>Attachments for this agreement:</label></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td>";
+	html += "<div id=\"divTemplate\">";
+	html += "</div>";
+	html += "</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td colspan=\"2\">&nbsp;</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td></td>";
+	html += "<td><input value=\"Confirm\" class=\"btn\" type=\"button\" title=\"Generate\" name=\"save\" ";
+	html += "onclick=\"activateAgreement()\">";
+	html += "<input value=\"Cancel\" class=\"btn\" type=\"button\" title=\"Cancel\" name=\"cancel\" ";
+	html += "onclick=\"navigateTo('/{!APTS_Agreement__c.Id}')\"></td>";
+	html += "</tr>";
+	html += "</table>";
+	
+	setMain(html);
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+ 
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

@@ -1,0 +1,330 @@
+<apex:page standardController="Contact" extensions="StrikeIronInter.ContactEditExtensionController" showHeader="true" sidebar="true">
+  <style>
+  .dateFormat { display: none; }
+  </style>
+  <apex:stylesheet value="{!$Resource.StrikeIronInter__styles}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__jQuery}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__json2}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__common}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__correctionDlg}"/>
+  <script type="text/javascript">
+    var j$ = jQuery.noConflict();
+    var buttonClicked;
+    var permissionError = <apex:outputText >{!permissionError}</apex:outputText>;
+    var changableObjects = [
+      {
+        "type": "phone",
+        "cssclass": "contactPhone",
+        "fieldname": "Phone", 
+        "changed": <apex:outputText >{!needValidatePhone}</apex:outputText>,
+        "imgcomp" : "phoneComponent",
+        "needDeleteResult" : "needDeletePhoneRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": "contactHomePhone",
+        "fieldname": "HomePhone", 
+        "changed": <apex:outputText >{!needValidateHomePhone}</apex:outputText>,
+        "imgcomp" : "homePhoneComponent",
+        "needDeleteResult" : "needDeleteHomePhoneRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": "contactMobilePhone",
+        "fieldname": "MobilePhone", 
+        "changed": <apex:outputText >{!needValidateMobilePhone}</apex:outputText>,
+        "imgcomp" : "mobilePhoneComponent",
+        "needDeleteResult" : "needDeleteMobilePhoneRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": "contactOtherPhone",
+        "fieldname": "OtherPhone", 
+        "changed": <apex:outputText >{!needValidateOtherPhone}</apex:outputText>,
+        "imgcomp" : "otherPhoneComponent",
+        "needDeleteResult" : "needDeleteOtherPhoneRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": "contactFax",
+        "fieldname": "Fax", 
+        "changed": <apex:outputText >{!needValidateFax}</apex:outputText>,
+        "imgcomp" : "faxComponent",
+        "needDeleteResult" : "needDeleteFaxRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": "contactAssistantPhone",
+        "fieldname": "AssistantPhone", 
+        "changed": <apex:outputText >{!needValidateAsstPhone}</apex:outputText>,
+        "imgcomp" : "assistPhoneComponent",
+        "needDeleteResult" : "needDeleteAsstPhoneRes"
+      },
+      {
+        "type": "email",
+        "cssclass": "contactEmail", 
+        "fieldname": "Email", 
+        "changed": <apex:outputText >{!needValidateEmail}</apex:outputText>,
+        "imgcomp" : "emailComponent",
+        "needDeleteResult" : "needDeleteEmailRes"
+      },
+      {
+        "type": "address",
+        "cssclass": "maillingAddress",
+        "fieldname": "MailingStreet", 
+        "changed": <apex:outputText >{!needValidateMailAddress}</apex:outputText>,
+        "cityclass" : "contMailCity",
+        "stateclass" : "contMailState",
+        "zipclass" : "contMailPostalCode",
+        "countryclass" : "contMailCountry",
+        "imgcomp" : "mailAddressComponent",
+        "needDeleteResult" : "needDeleteMailAddrRes"
+      },
+      {
+        "type": "address",
+        "cssclass": "otherAddress",
+        "fieldname": "OtherStreet", 
+        "changed": <apex:outputText >{!needValidateOthAddress}</apex:outputText>,
+        "cityclass" : 'contOthCity', 
+        "stateclass" : 'contOthState',
+        "zipclass" : 'contOthPostalCode',
+        "countryclass" : 'contOthCountry',
+        "imgcomp" : "otherAddressComponent",
+        "needDeleteResult" : "needDeleteOthAddrRes"
+      }
+    ];
+    
+    function changed(ident, fieldName, label){
+      if(!permissionError){
+        fieldChanged(changableObjects, ident, fieldName, label, true, 
+          '{!URLFOR($Resource.Images, 'question.png')}');
+      }
+    }
+    
+    function saveClicked(b) {
+      if (!buttonClicked) {
+        buttonClicked = b;
+      }
+      var params = [];
+      fillParams(params, changableObjects, '{!contact.id}', '{!JSENCODE(contact.name)}', 'Contact', 
+        '{!$Component.contactEditForm}:');
+      if(params.length > 0 && !permissionError){
+        sendAjax(params, '{!$Component.contactEditForm}:', 
+          '<apex:outputText >{!SiServerUrl}</apex:outputText>', 
+          '<apex:outputText >{!$Api.Session_ID}</apex:outputText>', 
+          '<apex:outputText >{!$Api.Partner_Server_URL_180}</apex:outputText>', 
+          'outPopUp', true, changableObjects, 
+          '{!JSENCODE($User.FirstName)}' + ' ' + '{!JSENCODE($User.LastName)}');
+        } else {
+          onResponse(buttonClicked);
+        }
+          return false;
+        }
+        
+    function copyAddress() {
+      j$('.otherAddress').val(j$('.maillingAddress').val());
+      j$('.contOthCity').val(j$('.contMailCity').val());
+      j$('.contOthState').val(j$('.contMailState').val());
+      j$('.contOthPostalCode').val(j$('.contMailPostalCode').val());
+      j$('.contOthCountry').val(j$('.contMailCountry').val());
+      changed('otherAddressComponent', 'OtherStreet', 'Other Address');
+    };
+    
+    j$(window).ready(function() {
+      readyPage(changableObjects, 'outPopUp', permissionError);
+      checkIfErrorExists(changableObjects);
+    });
+    
+  </script>
+  <apex:form id="contactEditForm">
+    <c:ModalDialog title="Please confirm correction"></c:ModalDialog>
+      <apex:actionFunction name="overridedSave" action="{!save}" />
+      <apex:actionFunction name="overridedSaveNew" action="{!savenew}" />
+      
+      <apex:inputHidden id="PhoneVerResult" value="{!phoneVerResult}" />
+      <apex:inputHidden id="HomePhoneVerResult" value="{!homePhoneVerResult}" />
+      <apex:inputHidden id="MobilePhoneVerResult" value="{!mobilePhoneVerResult}" />
+      <apex:inputHidden id="OtherPhoneVerResult" value="{!otherPhoneVerResult}" />
+      <apex:inputHidden id="FaxVerResult" value="{!faxVerResult}" />
+      <apex:inputHidden id="AssistantPhoneVerResult" value="{!asstPhoneVerResult}" />
+      <apex:inputHidden id="EmailVerResult" value="{!emailVerResult}" />
+      <apex:inputHidden id="MailingStreetVerResult" value="{!mailingAddressVerResult}"/>
+      <apex:inputHidden id="OtherStreetVerResult" value="{!otherAddressVerResult}"/>
+      
+      <apex:inputHidden id="needDeletePhoneRes" value="{!needDeletePhoneRes}" />
+      <apex:inputHidden id="needDeleteHomePhoneRes" value="{!needDeleteHomePhoneRes}" />
+      <apex:inputHidden id="needDeleteMobilePhoneRes" value="{!needDeleteMobilePhoneRes}" />
+      <apex:inputHidden id="needDeleteOtherPhoneRes" value="{!needDeleteOtherPhoneRes}" />
+      <apex:inputHidden id="needDeleteFaxRes" value="{!needDeleteFaxRes}" />
+      <apex:inputHidden id="needDeleteAsstPhoneRes" value="{!needDeleteAsstPhoneRes}" />
+      <apex:inputHidden id="needDeleteEmailRes" value="{!needDeleteEmailRes}" />
+      <apex:inputHidden id="needDeleteMailAddrRes" value="{!needDeleteMailAddrRes}" />
+      <apex:inputHidden id="needDeleteOthAddrRes" value="{!needDeleteOthAddrRes}" />
+      
+      <apex:sectionHeader title="Contact Edit" subtitle="{!Contact.Salutation} {!Contact.Name}" 
+        description="Contacts not associated with accounts are private and cannot be viewed by other users or included in reports." />
+      <apex:pageBlock mode="edit" title="Contact Edit">
+        <apex:pageMessages />
+        <apex:pageBlockButtons location="top">
+          <span>
+            <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+            <apex:commandButton value="Save" onclick="return saveClicked('save')" />
+          </span>
+          <apex:commandButton value="Save & New" rendered="{!createIsPermitted}" onclick="return saveClicked('savenew')" />
+          <apex:commandButton value="Cancel" action="{!cancel}"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection title="Contact Information" collapsible="false" columns="2" >
+          <apex:outputField value="{!contact.ownerId}" />
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Phone"/>
+              <apex:outputpanel >
+                <apex:inputField taborderhint="10" styleClass="contactPhone" value="{!contact.Phone}" onchange="changed('phoneComponent', 'Phone', 'Phone')" /> 
+                &nbsp;
+                <c:TooltipComponent id="phoneImage" imageName="{!phoneImage}" tableFields="{!phoneTableFields}" 
+                  identifier="phoneComponent" fieldName="Phone" label="Phone" />
+              </apex:outputpanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputLabel >First Name</apex:outputLabel>
+              <apex:panelGrid columns="2">
+                <apex:inputField taborderhint="1" value="{!contact.Salutation}" />
+                <apex:inputField taborderhint="2" value="{!contact.FirstName}" />
+              </apex:panelGrid>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Home Phone"/>
+              <apex:outputpanel >
+                <apex:inputField taborderhint="11" styleClass="contactHomePhone" value="{!contact.HomePhone}" 
+                  onchange="changed('homePhoneComponent', 'HomePhone', 'Home Phone')" /> 
+                &nbsp;
+                <c:TooltipComponent imageName="{!homePhoneImage}" tableFields="{!homePhoneTableFields}" 
+                  identifier="homePhoneComponent" fieldName="HomePhone" label="Home Phone" />
+              </apex:outputpanel>
+            </apex:pageBlockSectionItem>
+            <apex:inputField taborderhint="3" value="{!contact.LastName}" required="true" />
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Mobile"/>
+                <apex:outputpanel >
+                  <apex:inputField taborderhint="12" styleClass="contactMobilePhone" value="{!contact.MobilePhone}" 
+                    onchange="changed('mobilePhoneComponent', 'MobilePhone', 'Mobile')" /> 
+                  &nbsp;
+                  <c:TooltipComponent imageName="{!mobilePhoneImage}" tableFields="{!mobilePhoneTableFields}" 
+                    identifier="mobilePhoneComponent" fieldName="MobilePhone" label="Mobile" />
+                  </apex:outputpanel>
+            </apex:pageBlockSectionItem>
+            <apex:inputField taborderhint="4" value="{!contact.AccountId}" />
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Other Phone"/>
+              <apex:outputpanel >
+                <apex:inputField taborderhint="13" styleClass="contactOtherPhone" value="{!contact.OtherPhone}" 
+                  onchange="changed('otherPhoneComponent', 'OtherPhone', 'Other Phone')" /> 
+                &nbsp;
+                <c:TooltipComponent imageName="{!otherPhoneImage}" tableFields="{!otherPhoneTableFields}"
+                  identifier="otherPhoneComponent" fieldName="OtherPhone" label="Other Phone" />
+              </apex:outputpanel>
+            </apex:pageBlockSectionItem>
+            <apex:inputField taborderhint="5" value="{!contact.Title}" />
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Fax"/>
+              <apex:outputpanel >
+                <apex:inputField taborderhint="14" styleClass="contactFax" value="{!contact.Fax}" 
+                  onchange="changed('faxComponent', 'Fax', 'Fax')" /> 
+                &nbsp;
+                <c:TooltipComponent imageName="{!faxImage}" tableFields="{!faxTableFields}" 
+                  identifier="faxComponent" fieldName="Fax" label="Fax"/>
+              </apex:outputpanel>
+            </apex:pageBlockSectionItem>
+            <apex:inputField taborderhint="6" value="{!contact.Department}" />
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Email"/>
+              <apex:outputpanel >
+                <apex:inputField taborderhint="15" styleClass="contactEmail" value="{!contact.email}" 
+                  onchange="changed('emailComponent', 'Email', 'Email')" />
+                &nbsp;
+                <c:TooltipComponent imageName="{!emailImage}" tableFields="{!emailTableFields}" 
+                  identifier="emailComponent" fieldName="Email" label="Email" />
+              </apex:outputpanel>
+            </apex:pageBlockSectionItem>
+            <apex:inputField taborderhint="7" value="{!contact.BirthDate}" />
+            <apex:inputField taborderhint="16" value="{!contact.AssistantName}" />
+            <apex:inputField taborderhint="8" value="{!contact.ReportsToId}" />
+            <apex:pageBlockSectionItem >
+              <apex:outputlabel value="Asst. Phone"/>
+              <apex:outputpanel >
+                <apex:inputField taborderhint="17" styleClass="contactAssistantPhone" value="{!contact.AssistantPhone}" 
+                  onchange="changed('assistPhoneComponent', 'AssistantPhone', 'Asst. Phone')" /> 
+                &nbsp;
+                <c:TooltipComponent imageName="{!asstPhoneImage}" tableFields="{!asstPhoneTableFields}" 
+                  identifier="assistPhoneComponent" fieldName="AssistantPhone" label="Asst. Phone" />
+            </apex:outputpanel>
+          </apex:pageBlockSectionItem>
+          <apex:inputField taborderhint="9" value="{!contact.LeadSource}" />
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="Address Information" collapsible="false" columns="2">
+          <apex:facet name="header">
+            <span class="pbSubExtra">
+              <span class="bodySmall">
+                <a href="javascript:copyAddress();">Copy Mailing Address to Other Address</a>
+              </span>
+            </span>
+            <h3>Address Information<span class="titleSeparatingColon">:</span></h3>
+          </apex:facet>
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="Mailing Street"/>
+          <apex:outputpanel >
+            <apex:inputTextarea tabindex="180" rows="2" cols="27" styleClass="maillingAddress" value="{!contact.MailingStreet}" 
+              onchange="changed('mailAddressComponent', 'MailingStreet', 'Mailing Address')" />
+            &nbsp;
+            <c:TooltipComponent imageName="{!mailAddressImage}" tableFields="{!mailAddressTableFields}" 
+              identifier="mailAddressComponent" fieldName="MailingStreet" label="Mailing Address" />
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="Other Street"/>
+          <apex:outputpanel >
+            <apex:inputTextarea tabindex="230" rows="2" cols="27" styleClass="otherAddress" value="{!contact.OtherStreet}" 
+              onchange="changed('otherAddressComponent', 'OtherStreet', 'Other Address')" />
+            &nbsp;
+            <c:TooltipComponent imageName="{!otherAddressImage}" tableFields="{!otherAddressTableFields}" 
+              identifier="otherAddressComponent" fieldName="OtherStreet" label="Other Address" />
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:inputField taborderhint="19" value="{!contact.MailingCity}" styleClass="contMailCity" 
+          onchange="changed('mailAddressComponent', 'MailingStreet', 'Mailing Address')" />
+        <apex:inputField taborderhint="24" value="{!contact.OtherCity}" styleClass="contOthCity" 
+          onchange="changed('otherAddressComponent', 'OtherStreet', 'Other Address')" />
+        <apex:inputField taborderhint="20" value="{!contact.MailingState}" styleClass="contMailState" 
+          onchange="changed('mailAddressComponent', 'MailingStreet', 'Mailing Address')" />
+        <apex:inputField taborderhint="25" value="{!contact.OtherState}" styleClass="contOthState" 
+          onchange="changed('otherAddressComponent', 'OtherStreet', 'Other Address')" />
+        <apex:inputField taborderhint="21" value="{!contact.MailingPostalCode}" styleClass="contMailPostalCode" 
+          onchange="changed('mailAddressComponent', 'MailingStreet', 'Mailing Address')"/>
+        <apex:inputField taborderhint="26" value="{!contact.OtherPostalCode}" styleClass="contOthPostalCode" 
+          onchange="changed('otherAddressComponent', 'OtherStreet', 'Other Address')" />
+        <apex:inputField taborderhint="22" value="{!contact.MailingCountry}" styleClass="contMailCountry" 
+          onchange="changed('mailAddressComponent', 'MailingStreet', 'Mailing Address')"/>
+        <apex:inputField taborderhint="27" value="{!contact.OtherCountry}" styleClass="contOthCountry" 
+          onchange="changed('otherAddressComponent', 'OtherStreet', 'Other Address')" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection title="Additional Information" collapsible="false" columns="2">
+        <apex:repeat value="{!SobjectFields}" var="f">
+          <apex:inputField value="{!Contact[f]}"/>
+        </apex:repeat>
+      </apex:pageBlockSection> 
+      <apex:pageBlockSection title="Description Information" collapsible="false" columns="2">
+        <apex:inputTextArea tabindex="300" cols="75" value="{!contact.Description}" rows="6" />
+      </apex:pageBlockSection>
+      <apex:pageBlockButtons location="bottom">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+            <apex:commandButton tabindex="310" value="Save" onclick="return saveClicked('save')" />
+        </span>
+        <apex:commandButton tabindex="320" rendered="{!createIsPermitted}"  value="Save & New" onclick="return saveClicked('savenew')" />
+        <apex:commandButton tabindex="330" value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+    </apex:pageBlock>
+  </apex:form>
+  <script type="text/javascript">
+    beenFocused = true;
+  </script>
+</apex:page>

@@ -1,0 +1,5 @@
+<apex:page standardController="Contact" extensions="mpqc01.CT_EmbeddedInitAuthController" showChat="false" showHeader="false" sidebar="false" standardStylesheets="false">
+   
+    <iframe src="{!finalURL}" width="100%" height="430px" scrolling="auto" frameborder="0" align="middle"></iframe> 
+
+</apex:page>

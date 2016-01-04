@@ -1,0 +1,144 @@
+<!--
+* {Purpose} – Displays colleagues relationship information for any contact. This VF page
+* 		can be placed directly on any contact page layout to make it functional.
+*
+* @author	Shah Kadirmohideen
+* @version	2011-11-10
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2011-11-10	Shah Kadirmohideen		Created      
+* 2011-11-22	Mike Eaton				Added comment block and pageBlockSection
+* 2011-11-27	Mike Eaton				Commented out source image and more links for screen shots
+* 2011-11-29	Shah Kadirmohideen		Uncommented Mike's temporary changes and incorporated new skin for icons.
+* 2012-01-20	Shah Kadirmohideen		Incorporated enhanced list (go to list) functionality related changes.
+* 2012-07-12	Shah Kadirmohideen		Added support for calendar icon display     
+* 2012-10-05	Shah Kadirmohideen		Added escape parameter to apex:pageMessages tag
+* =============================================================================
+
+-->
+<apex:page standardController="Contact" extensions="ContactNet.CNContactRelationshipViewController" showHeader="{!IF(IsEnhancedList, true, false)}" 
+							sidebar="{!IF(IsEnhancedList, true, false)}" id="thePage" action="{!loadRelationships}">
+
+<apex:stylesheet value="{!$Resource.ContactNet__CN_CSS}"/>
+<apex:includeScript value="{!$Resource.ContactNet__CN_JS}"/>
+
+<script language="javascript">
+
+var previousOnload = window.onload;
+window.onload = function() {
+    if (previousOnload) { 
+         previousOnload();
+    }
+	resizeWindow('Colleague');
+}
+
+</script> 
+  
+<apex:outputPanel rendered="{!IsEnhancedList}">
+  <apex:sectionHeader title="Relationships from ContactNet" subtitle="{!cont.Name}"/>
+  <a href="/{!cont.Id}" style="text-decoration: none; color:blue;">Contact: {!cont.Name}</a>
+  <br/><br/>
+</apex:outputPanel>
+ 
+<apex:form id="theForm">
+	<c:CNDisplayPageLoadingMessage renderPage="{!showPageLoadingMsg}" pageLoadingMessage="Loading Colleagues from ContactNet..." 
+					vfPageName="CNContactRelationshipView" recordId="{!Contact.Id}" rendered="{!IsEnhancedList==false}"/>
+	  	
+	<apex:pageBlock id="theBlock" mode="mainDetail" rendered="{!showPageLoadingMsg==false}">
+		<apex:pageMessages escape="false"/>  
+		  
+		
+<apex:tabPanel tabClass="tabHeaderStyle" contentClass="tabBodyStyle" id="theTabPanel" rendered="{!errorsFound==false}" headerSpacing="2" activeTabClass="selectedTab">
+
+<apex:tab label="Colleagues {!paginator.RecordsCountOnTabName}" name="colTab" id="tabOne" switchType="client"> 
+		
+		<apex:outputPanel rendered="{!IsDisplayResultTable}" id="mainPanel">
+		<c:CNIndexFilter clickAction="{!paginator.oEListHandler}" paginationLocation="top" rendered="{!IsEnhancedList}" 
+							rerenderPanel="{!$Component.theBlock}" sortedColumnAPIName="{!paginator.oEListHandler.sSortBy}"/>
+		    
+		<apex:pageblockTable value="{!paginator.relationships}" var="relationship" width="100%" cellpadding="2px" 
+												style="border-width: 1px; border-style: solid; border-color:#B4B0B0;" id="tableId" >
+		     
+		     <apex:column rendered="{!relationship.display}" width="130px">
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Details" columnAPIName="Raw_Score__c" 
+												isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+					<c:CNDisplayIcons score="{!relationship.normalizedScore}" isEmailSource="{!relationship.IsEmailSource}" isAddressBookSource="{!relationship.IsAddressBookSource}" 
+								isPhoneSource="{!relationship.IsPhoneSource}" isCRMSource="{!relationship.IsCRMSource}" isBillingSource="{!relationship.IsBillingSource}"
+								isCalendarSource="{!relationship.IsCalendarSource}"/>
+		     		<apex:facet name="footer">
+		     			<apex:outputText value="No records to display." rendered="{!IsDisplayFooterRow}"/> 
+		     		</apex:facet>
+		     </apex:column>  
+		   
+		     <apex:column >
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Name" columnAPIName="Fullname__c" 
+												isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+		     		<apex:outputText value="{!relationship.colleague.fullNamePrepared}"/>
+		     </apex:column>        
+		             
+		     <apex:column >
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Title" columnAPIName="Title__c" 
+												isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+		     		<apex:outputText value="{!relationship.colleague.title}"/>&nbsp;
+		     </apex:column>                
+		
+		     <apex:column >
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Phone" columnAPIName="First_Phone__c" 
+												isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+			     	<c:CNExpandCollapse collapseData="{!relationship.colleague.collapsedPhones}" expandData="{!relationship.colleague.expandedPhones}" 
+								isEmail="false" uniqueId="relPhone{!relationship.colleague.CNID}" tabName="Colleague"/>
+		     </apex:column>       
+		
+		     <apex:column >
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Department" columnAPIName="Department__c" 
+											isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+		     		<apex:outputText value="{!relationship.colleague.department}"/>&nbsp;
+		     </apex:column>                
+		     
+		     <apex:column >
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Location" columnAPIName="Working_Location__c" 
+										isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+		     		<apex:outputText value="{!relationship.colleague.workingLocation}"/>&nbsp;
+		     </apex:column>                
+		                   
+		     <apex:column >
+					<apex:facet name="header">
+						<c:CNSortableHeaderFacet clickAction="{!paginator.oEListHandler}" columnHeaderLabel="Email" columnAPIName="First_Email__c" 
+											isSortable="{!IsEnhancedList}" rerenderPanel="{!$Component.theBlock}"/>
+					</apex:facet>
+				<c:CNExpandCollapse collapseData="{!relationship.colleague.collapsedEmails}" expandData="{!relationship.colleague.expandedEmails}" 
+								isEmail="true" uniqueId="relEmail{!relationship.colleague.CNID}" tabName="Colleague"/>
+		     </apex:column>  
+
+		</apex:pageblockTable>
+		<c:CNIndexFilter clickAction="{!paginator.oEListHandler}" paginationLocation="bottom" rendered="{!IsEnhancedList}" 
+					rerenderPanel="{!$Component.theBlock}" feedbackToEmail="{!appSetting.ContactNet__Feedback_Notification_Email__c}" 
+									feedbackSubject="{!appSetting.ContactNet__Feedback_Notification_Subject__c}" sortedColumnAPIName="{!paginator.oEListHandler.sSortBy}"/>
+		
+		<c:CNPaginationFooter tabName="Colleague" isDownloadMode="{!isDownloadMode}" paginator="{!paginator}" rerenderId="mainPanel" rendered="{!IsEnhancedList==false}"
+				feedbackToEmail="{!appSetting.ContactNet__Feedback_Notification_Email__c}" feedbackSubject="{!appSetting.ContactNet__Feedback_Notification_Subject__c}" 
+				id="paginationFooterId" gotoListURL="/apex/CNContactRelationshipView?id={!cont.Id}&mode=elist"/>		
+			      
+		</apex:outputPanel>
+		</apex:tab>
+		</apex:tabPanel>
+		</apex:pageBlock>
+	</apex:form>
+         
+</apex:page>

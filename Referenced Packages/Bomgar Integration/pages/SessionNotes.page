@@ -1,0 +1,9 @@
+<apex:page id="SessionNotesPage" standardController="BGIntegration__BomgarSession__c" extensions="BGIntegration.SessionNotesControllerExtension" showHeader="false" sidebar="false">
+    <apex:pageBlock id="SessionNotesPageBlock" mode="maindetail">
+        <apex:pageBlockTable id="SessionNotesTable" value="{!sessionNotesEvents}" var="sessionNotesEvent" width="100%">
+            <apex:column headerValue="Session Note Time" value="{!sessionNotesEvent.BGIntegration__Timestamp__c}" width="10%"/>
+            <apex:column headerValue="Performed By" value="{!sessionNotesEvent.BGIntegration__Performed_By__c}" width="15%"/>
+            <apex:column headerValue="Session Note" value="{!sessionNotesEvent.BGIntegration__Body__c}" width="75%"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,29 @@
+<apex:component controller="TH1.COMMON_CO_LoadJS">
+    <apex:attribute type="String" name="module" description="Optional module to load"/>
+
+    <apex:outputPanel rendered="{!Load}">
+        <c:COMMON_JQueryLib />
+        <c:COMMON_UnderscoreJSLib />
+        <c:COMMON_MustacheLib />
+        <script type="text/javascript" src="{!URLFOR($Resource[MainJs])}"></script>
+        <script type="text/javascript">
+            // Configure dynamic module loading in dev mode
+            if (!!Thunderhead.SF.dev) {
+                Thunderhead.SF.dev.configureModuleRegistry('{!URLFOR($Resource[MainJs])}', '{!MainJs}');
+            }
+            // Setup Session
+            Thunderhead.SF.require('session').done(function(Session) {
+                Thunderhead.SF.extend(Session, {
+                    sessionId: '{!JSENCODE($Api.Session_ID)}',
+                    sessionIdURLEncoded: '{!URLENCODE($Api.Session_ID)}',
+                    userId: '{!URLENCODE($User.Id)}'
+                });
+            });
+        </script>
+        <c:COMMON_GeneralSettingsJS />
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!NOT(ISNULL(module))}">
+        <script type="text/javascript"> Thunderhead.SF.require('{!module}'); </script>
+    </apex:outputPanel>
+</apex:component>

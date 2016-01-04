@@ -1,0 +1,3 @@
+<apex:page standardController="Chatify__ChatifySetting__c">
+<!-- deprecated an extension and action for this page that Enabled/Disabled Chatify Settings using page redirect. Found another solution. -->
+</apex:page>

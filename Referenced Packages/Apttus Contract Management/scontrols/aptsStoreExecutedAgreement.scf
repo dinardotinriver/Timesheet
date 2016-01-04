@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	Store Executed Agreement
+	This custom scontrol link from the home page takes the user to a custom record type
+	selection page and then stores an executed agreement
+	=================================================================================================
+*/
+var gTargetInitiationType = "Store Executed Contract";
+var gTargetStatusCategory = "In Filing";
+
+function initPage() {
+	window.setTimeout("doInit();", 50);
+}
+
+function doInit() {
+	gHasRecordTypes = hasCustomField("RecordTypeId", gAgreementObjName);
+	if (gHasRecordTypes==true) {
+		var cancelURL = gHomePageURL;
+		var retURL = gHomePageURL;
+		var entity = "";
+		var save = "1";
+		var saveNewURL = gAgreementObjURL + gEditMode + "?retURL=" + gAgreementObjURL + gViewMode;
+
+		//show custom recordtypeselect.jsp page
+		selectRecordType("doStoreExecutedAgreement()","doCancel()",cancelURL,retURL,entity,save,saveNewURL);
+	} else {
+		doStoreExecutedAgreement();
+	}
+}
+
+function doStoreExecutedAgreement() {
+	newAgreement();
+}
+
+function doCancel() {
+	navigateTo(gHomePageURL);
+}
+ 
+function doCommit(id) {
+	storeExecutedAgreement(id);
+}
+
+function doRollback(id) {
+	doCancel();
+}
+
+function storeExecutedAgreement(id) {
+	try {
+		//create agreement object
+		var contract = new sforce.SObject(gAgreementObjName);
+		contract.Id = id;
+		
+		//set agreement fields
+		contract.Apttus__Initiation_Type__c = gTargetInitiationType;
+		contract.Apttus__Status_Category__c = gTargetStatusCategory;
+		
+		//update the agreement and open in edit mode
+		var result = sforce.connection.update([contract]);
+		if (result[0].getBoolean("success")) {
+			createActivityLogEntry(id);
+			editAgreement(id);
+			
+		} else {
+			erroralert(cERROR_STORE_EXECUTED_AGREEMENT, result[0]);
+			navigateToHome();
+		}
+	}
+	catch(ex) {
+		alert(cERROR_STORE_EXECUTED_AGREEMENT + ex);
+		navigateToHome();
+	}
+}
+
+function createActivityLogEntry(id) {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Stored Executed Agreement";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Stored Executed Agreement";
+		task.WhatId = id;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

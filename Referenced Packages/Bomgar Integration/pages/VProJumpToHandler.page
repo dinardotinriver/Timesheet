@@ -1,0 +1,12 @@
+<apex:page id="VProJumpToHandler" 
+	action="{!VProJumpTo}"
+	applyBodyTag="false" 
+	cache="false"
+	controller="BGIntegration.RepConsoleScriptingController"
+	label="VProJumpToHandler"
+	name="VProJumpToHandler"
+	showHeader="false"
+	sidebar="false"
+	standardStylesheets="false"
+	title="VPro Jump To Handler">
+</apex:page>

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+
+var gObjectId = gContractId;
+var gObjectType = "Clause";
+var gUserId = "{!User.Id}";
+var gRecordIds = {!GETRECORDIDS($ObjectType.Agreement_Clause__c)};
+var gDebugApprovals = false;
+
+var gAgreementClauseTable = "Apttus__Agreement_Clause__c";
+var gAgreementClauseTablePK = "Name";
+var gAgreementClauseTableFK = "Apttus__Agreement__c";
+
+var cERROR_CHECK_FOR_CLAUSE_APPROVAL = "ERROR checking for clause approval:";
+
+function initPage() {
+	window.setTimeout("checkForClauseApproval();",gTimeout);
+}
+
+function checkForClauseApproval() {
+	if (gDebugApprovals) { writeDebugLn("<p>checkForClauseApproval"); }
+   	try {
+		var fieldList = getFieldList(gAgreementClauseTable);
+		var q = "select "+fieldList+" from "+gAgreementClauseTable+" "+
+				"where "+gAgreementClauseTableFK+"='"+gObjectId+"' "+
+				"order by "+gAgreementClauseTablePK;
+
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		var vclauses = new Array();
+		var nclauses = 0;
+    	
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var clauseId = record.Id;
+			if (gDebugApprovals) { writeDebugLn("<p>record="+record); }
+
+			var clause = new sforce.SObject(gAgreementClauseTable);
+			clause.Id = clauseId;
+			clause.Apttus__Status__c = "Not Submitted";
+			
+			vclauses[nclauses++] = clause;
+		}
+
+		if (vclauses.length>0) {
+			var result = sforce.connection.update(vclauses);
+			if (gDebugApprovals) writeDebugLn("<br>result[0]="+result[0]);
+			if (!result[0].getBoolean("success")) {
+				throw(result[0]);
+			}
+		}
+   	}
+   	catch(ex) {
+		erroralert(cERROR_CHECK_FOR_CLAUSE_APPROVAL,ex);
+  	}
+	finally {
+		if (!gDebugApprovals) {
+			navigateTo(gContractIdURL);
+		}
+	}
+}
+</script>
+</head>
+
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

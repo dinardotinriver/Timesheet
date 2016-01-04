@@ -1,0 +1,3 @@
+<apex:component >
+    <apex:includeScript value="{!URLFOR($Resource.TH1__ThirdParty, '/underscore/underscore-min.1.5.1.js')}"/>
+</apex:component>

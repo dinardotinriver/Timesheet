@@ -1,0 +1,178 @@
+<apex:component controller="dragdrop.DropZoneController" allowDml="true" access="global">
+    <apex:stylesheet value="{!URLFOR($Resource.dragdrop__javascript_libraries, '/css/dropzone.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.dragdrop__javascript_libraries, '/jquery-1.9.1.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.dragdrop__javascript_libraries, '/dropzone.js')}" />
+    <apex:includeScript value="/soap/ajax/24.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/24.0/apex.js"/> 
+    <apex:form id="my-awesome-dropzone" styleclass="dropzone" accept="">
+       
+        <div id="componentDropArea" class="dz-message">
+
+        </div>
+        <div class="fallback">
+            <input name="file" type="file" multiple="true" />
+        </div>
+    </apex:form>
+    <style>
+        #my-awesome-dropzone{
+            .padding:0px;
+        }
+
+        #componentDropArea {
+          opacity: 1;
+          -ms-filter: none;
+          filter: none;
+          -webkit-transition: opacity 0.3s ease-in-out;
+          -moz-transition: opacity 0.3s ease-in-out;
+          -o-transition: opacity 0.3s ease-in-out;
+          -ms-transition: opacity 0.3s ease-in-out;
+          transition: opacity 0.3s ease-in-out;
+          background-image: url("{!URLFOR($Resource.dragdrop__javascript_libraries, '/images/spritemap.png')}");
+          background-repeat: no-repeat;
+          background-position: 0 0;
+          position: absolute;
+          width: 428px;
+          height: 123px;
+          margin-left: -214px;
+          left: 50%;
+        }
+    </style>
+    <script>    
+    
+    
+    
+    var dz_jQuery = jQuery.noConflict(true);    
+    
+    var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
+    var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
+    var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 characters
+    //var origin = 'https://' + '{!baseURL}'.match(/https:\/\/dragdrop\.([^&]+)\.visual/)[1] + '.salesforce.com/{!$CurrentPage.parameters.Id}';
+    var origin = '*';
+    var countFiles = 0;
+    
+    var func = function upload(attachmentSF, attachmentNameSF, fileSizeSF, positionIndexSF, doneUploadingSF, fileDZ) {
+        var attach = new AttachmentFile(attachmentSF, attachmentNameSF, fileSizeSF, positionIndexSF, doneUploadingSF, fileDZ);
+        if (countFiles == 0) {
+            attach.uploadAttachment(null);
+        } else {
+            window.setTimeout(function() {
+                attach.uploadAttachment(null);
+            }, 5000); 
+        }
+        countFiles++;
+    } 
+    
+    
+    Dropzone.autoDiscover = false;
+    var myDropzone = new Dropzone("form.dropzone", { 
+        url: func
+    }); 
+    
+    function AttachmentFile(attachmentSF, attachmentNameSF, fileSizeSF, positionIndexSF, doneUploadingSF, fileDZ) {
+        this.attachment = attachmentSF;
+        this.attachmentName = attachmentNameSF;
+        this.fileSize = fileSizeSF;
+        this.positionIndex = positionIndexSF;
+        this.doneUploading = doneUploadingSF;
+        this.file = fileDZ;
+        this.progress = 1;
+        this.anim = function(progress) { this.file.previewElement.querySelector("[data-dz-uploadprogress]").style.width = "" + progress + "%"; };
+        this.clearDropZone = function() {
+            window.setTimeout(function() {
+                myDropzone.previewsContainer.removeChild(this.file.previewElement);
+            }, 5000); 
+        };
+        this.uploadAttachment = function (fileId) {
+            var attachmentBody = "";
+            if(this.fileSize <= this.positionIndex + chunkSize) {
+                attachmentBody = this.attachment.substring(this.positionIndex);
+                this.doneUploading = true;
+            } else {
+                attachmentBody = this.attachment.substring(this.positionIndex, this.positionIndex + chunkSize);
+            }
+            if (attachmentBody.length<this.fileSize) {
+                this.progress += attachmentBody.length/this.fileSize*100;
+            } else {
+                this.progress = 100;
+            }
+            if (this.progress>100) {
+                this.progress = 100;
+            }
+            this.anim (this.progress);
+            console.log("Uploading " + attachmentBody.length + " chars of " + this.fileSize);
+            var animCB = this.anim;
+            var progressCB = this.progress;
+            var doneUploadingCB = this.doneUploading;
+            var fileCB = this.file;
+            var clearDropZoneCB = this.clearDropZone;
+            var positionIndexCB = this.positionIndex;
+            var uploadAttachmentCB = this.uploadAttachment;
+            var attachmentCB = this.attachment;
+            var attachmentNameCB = this.attachmentName;
+            var fileSizeCB = this.fileSize;
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.DropZoneController.dropzonePost}',
+                '{!$CurrentPage.parameters.Id}', attachmentBody, this.attachmentName, fileId,
+                function(result, event) {
+                    console.log(result);
+                    if(event.type === 'exception') {
+                        console.log("exception");
+                        console.log(event);
+                    } else if(event.status) {
+                        if (doneUploadingCB == true) {
+                            if(result) {
+                                progressCB = 100;
+                                this.file = fileCB;
+                                animCB(progressCB); 
+                                result.parentId = '{!$CurrentPage.parameters.Id}';
+                                window.parent.postMessage(result, origin);
+                                fileCB.previewElement.classList.add("dz-success");
+                                fileCB.status = Dropzone.SUCCESS;
+                                myDropzone.processQueue();
+                                window.setTimeout(function() {
+                                    myDropzone.previewsContainer.removeChild(fileCB.previewElement);
+                                }, 5000); 
+                            } 
+                        } else {
+                            positionIndexCB += chunkSize;
+                            
+                            this.anim = animCB;
+                            this.progressCB = progressCB;
+                            this.doneUploading = doneUploadingCB;
+                            this.file = fileCB;
+                            this.clearDropZone = clearDropZoneCB;
+                            this.positionIndex = positionIndexCB;
+                            this.uploadAttachment = uploadAttachmentCB;
+                            this.attachment = attachmentCB;
+                            this.fileSize = fileSizeCB;
+                            this.attachmentName = attachmentNameCB;
+                            uploadAttachmentCB(result.Id);
+                        }
+                    } else {
+                        console.log(event.message);
+                    }   
+                },
+                {buffer: true, escape: true, timeout: 120000}
+            );
+        }
+    }
+    
+    var functDelete = function WebServiceDelete(idAtt) {
+        var myvar = sforce.apex.execute("dragdrop.WebServiceDeleteAttachment","deleteAttachment", {Id:idAtt});
+    }
+    
+    function receiveMessageFromDropzoneMessage(event) {
+        if (!event.data)
+            return;
+        functDelete(event.data);
+    }
+    
+    if (!window.addEventListener) {
+        window.attachEvent('message', receiveMessageFromDropzoneMessage, false);
+    } else {
+        window.addEventListener('message', receiveMessageFromDropzoneMessage, false);
+    }   
+    //window.addEventListener('message', receiveMessageFromDropzoneMessage, false);
+
+    </script>
+</apex:component>

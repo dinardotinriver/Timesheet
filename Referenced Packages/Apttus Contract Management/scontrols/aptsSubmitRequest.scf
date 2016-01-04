@@ -1,0 +1,1328 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeMail)}
+{!INCLUDE($SControl.aptsIncludeWizard)}
+
+<script id="aptsSubmitRequest" language="javascript" type="text/javascript"> 
+
+var gObjectId = gContractId;
+var gObjectIdURL = gContractIdURL;
+
+var gAgreementSObj = null;
+var gAgreementType = "";
+var gAgreementTypeId = "";
+var gAgreementRuleObj = "Apttus__Agreement_Rule__c";
+var gAgreementRuleObjType = "Apttus__Rule_Type__c";
+var gAgreementRuleActiveField = "Apttus__Active__c";
+var gAgreementRuleOrderField = "Apttus__Order__c";
+var gAgreementRuleConditionObj = "Apttus__Agreement_Rule_Condition__c";
+var gAgreementRuleConditionObjFK = "Apttus__Agreement_Rule__c";
+var gAgreementRuleConditionOrderField = "Apttus__Number__c";
+var gAgreementDetailTableFK = "Apttus__Agreement__c";
+var gAgreementOwnerId = "{!APTS_Agreement__c.OwnerId}";
+
+var gSControlOverrideField = "APTS_SubmitRequestOverride";
+var cADMIN_CODE = "Apttus__Code__c";
+
+var gLineItemTypes = new Array();
+var gLineItemSObjs = new Array();
+var nLineItemSObjs = 0;
+
+var gPrimaryContact = "{!APTS_Agreement__c.Primary_Contact__c}";
+var gPrimaryContactId = "{!APTS_Agreement__c.Primary_ContactId__c}";
+var gRequestor = "{!APTS_Agreement__c.Requestor__c}";
+var gRequestorId = "{!APTS_Agreement__c.RequestorId__c}";
+
+//rule types
+var cRULE_TYPE_SUBMIT_REQUEST_MODE = "Submit Request Mode";
+var cRULE_TYPE_AGREEMENT_TEMPLATE = "Agreement Template";
+var cRULE_TYPE_AGREEMENT_TYPE = "Agreement Type";
+var cRULE_TYPE_EMAIL_TEMPLATE = "Email Template";
+var cRULE_TYPE_QUEUE_ASSIGNMENT = "Queue Assignment";
+
+//default values
+var cDEFAULT_SUBMIT_REQUEST_MODE = "Manual";
+var cDEFAULT_AGREEMENT_TEMPLATE = "";
+var cDEFAULT_AGREEMENT_TYPE = "";
+var cDEFAULT_EMAIL_TEMPLATE = "";
+var cDEFAULT_QUEUE = "";
+
+//comparison operators
+var cOPERATOR_EQUAL_TO = "equal to";
+var cOPERATOR_NOT_EQUAL_TO = "not equal to";
+var cOPERATOR_GREATER_THAN = "greater than";
+var cOPERATOR_GREATER_THAN_EQUAL_TO = "greater than or equal to";
+var cOPERATOR_LESS_THAN = "less than";
+var cOPERATOR_LESS_THAN_EQUAL_TO = "less than or equal to";
+var cOPERATOR_INCLUDES = "includes";
+var cOPERATOR_EXCLUDES = "excludes";
+var cOPERATOR_STARTS_WITH = "starts with";
+var cOPERATOR_DOES_NOT_CONTAIN = "does not contain";
+
+var cMODE_AUTO = "Auto";
+var cMODE_MANUAL = "Manual";
+
+var cRULE_OP_MODE = "OR";
+var cRULE_OP_AND = "&&";
+var cRULE_OP_OR = "||";
+
+var cAUTO_UPDATE_AGREEMENT_TYPE = true;
+var cAUTO_TARGET_STATUS_CATEGORY = "In Signatures";
+var cAUTO_TARGET_STATUS = "Other Party Signatures";
+var cMANUAL_TARGET_STATUS_CATEGORY = "{!APTS_Agreement__c.Status_Category__c}";
+var cMANUAL_TARGET_STATUS = "Submitted Request";
+
+var cIGNORE_AGREEMENT_TYPE_ERRORS = false;
+var cIGNORE_AGREEMENT_TEMPLATE_ERRORS = false;
+var cIGNORE_EMAIL_TEMPLATE_ERRORS = false;
+var cIGNORE_QUEUE_ERRORS = false;
+
+var gDebugSR = false;
+var gDebugRules = false;
+var gDebugNotifications = false;
+
+//errors
+var cMANUAL_CONFIRMATION_MSG = "Your agreement has been submitted to the following queue:\n";
+var cAUTO_CONFIRMATION_MSG = "Your agreement conforms to all standard rules.\n"+
+	"A copy of the agreement will be emailed to you.";
+
+var cERROR_SUBMIT_REQUEST = "ERROR submitting request:";
+var cERROR_SELECT_AGREEMENT_TYPE = "ERROR selecting agreement type:\nNo rules fired or default type specified.";
+var cERROR_SELECT_AGREEMENT_TYPE_RULE_NOT_FOUND = "ERROR selecting agreement type.\nRule type not found:";
+var cERROR_SELECT_AGREEMENT_TYPE_DEFA_NOT_FOUND = "ERROR selecting agreement type.\nDefault type not found:";
+
+var cERROR_SELECT_AGREEMENT_TEMPLATE = "ERROR selecting agreement template:\nNo rules fired or default agreement template specified.";
+var cERROR_SELECT_AGREEMENT_TEMPLATE_RULE_NOT_FOUND = "ERROR selecting agreement template.\nRule agreement template not found.";
+var cERROR_SELECT_AGREEMENT_TEMPLATE_DEFA_NOT_FOUND = "ERROR selecting agreement template.\nDefault agreement template not found:";
+
+var cERROR_SELECT_EMAIL_TEMPLATE = "ERROR selecting email template:\nNo rules fired or default email template specified.";
+var cERROR_SELECT_EMAIL_TEMPLATE_RULE_NOT_FOUND = "ERROR selecting email template.\nRule email template not found:";
+var cERROR_SELECT_EMAIL_TEMPLATE_DEFA_NOT_FOUND = "ERROR selecting email template.\nDefault email template not found:";
+
+var cERROR_SELECT_QUEUE = "ERROR assigning agreement to queue:\nNo rules fired or default queue specified.";
+var cERROR_SELECT_QUEUE_RULE_NOT_FOUND = "ERROR selecting queue.\nRule queue not found:";
+var cERROR_SELECT_QUEUE_DEFA_NOT_FOUND = "ERROR selecting queue.\nDefault queue not found:";
+
+function initPage() {
+	window.setTimeout("submitRequest();",gTimeout);
+}
+
+function submitRequest() {
+	try {
+		logonAsSuperUser();
+
+		//check for debug mode
+		setDebugMode();
+		gDebugSR = gDebug;
+		
+		gObjectId = gContractId;
+		gObjectIdURL = gContractIdURL;
+		
+		//dynamically run the scontrol override code
+		var code = getSControlOverrideCode();
+		if (code!=null && code.length>0) {
+			try {
+				//create new <script> node to hold custom code
+				if (isRunningIE()) {
+					var sHTML = '<input type="hidden"/>';
+				    var sScript="<script defer>";
+				    sScript = sScript + code;
+				    sScript = sScript + "</script" + ">";
+				    divScript.innerHTML = sHTML + sScript;
+					
+				} else {
+					var scriptNode = document.createElement("script");
+					scriptNode.setAttribute("id",gSControlOverrideField);
+					var scriptTextNode = document.createTextNode(code);
+					
+					scriptNode.appendChild(scriptTextNode);
+					document.body.appendChild(scriptNode);
+				}
+
+				//run custom code
+				//eval(code);
+			}
+			catch(ex) {
+				alert(ex);
+			}
+		}
+		
+		if (gDebugSR) {
+			setMain("");
+			writeDebugLn("<p>submitRequest:");
+		}
+
+		//run custom code
+		_preSubmitRequest();
+		
+		//retrieve agreement fields
+		//var fieldList = getFieldList(gAgreementObjName);
+		var fieldList = getRuleObjectFieldnames(gAgreementObjName);
+		gAgreementSObj = sforce.connection.retrieve(fieldList,gAgreementObjName,[gObjectId]);
+		if (gAgreementSObj[0]==null) {
+			throw("Error retreiving agreement fields");
+		}
+
+		//select auto or manual mode
+		gSubmitRequestMode = selectAutoSubmitRequestMode();
+		
+		if (gSubmitRequestMode==cMODE_AUTO) {
+			//auto mode
+			if (gDebugSR) { writeDebugLn("<br><b>Auto Mode selected.</b>"); }
+			gTargetStatusCategory = cAUTO_TARGET_STATUS_CATEGORY;
+			gTargetStatus = cAUTO_TARGET_STATUS;
+
+			//select agreement type
+			gAgreementTypeId = autoSelectAgreementType();
+			if (gAgreementTypeId==null && !cIGNORE_AGREEMENT_TYPE_ERRORS) {
+				throw(cERROR_SELECT_AGREEMENT_TYPE);
+			}
+
+			//select agreement template
+			gTemplateId = autoSelectAgreementTemplate();
+			if ((gTemplateId==null || gTemplateId=="") && !cIGNORE_AGREEMENT_TEMPLATE_ERRORS) {
+				throw(cERROR_SELECT_AGREEMENT_TEMPLATE);
+			}
+
+			//generate the agreement
+			if (!gDebugSR && !gDebugRules) {
+				autoRunWizard(gTemplateId);
+			}
+			
+			//select email notification template
+			gEmailTemplateId = autoSelectEmailTemplate();
+			if ((gEmailTemplateId==null || gEmailTemplateId=="") && !cIGNORE_EMAIL_TEMPLATE_ERRORS) {
+				throw(cERROR_SELECT_EMAIL_TEMPLATE);
+			}
+			
+			//send email notification and update the agreement
+			if (!gDebugSR || gDebugNotifications) {
+				autoSendNotification();
+				updateRequestDate();
+
+				alert(cAUTO_CONFIRMATION_MSG);
+			}
+		} else {
+			//manual mode
+			if (gDebugSR) { writeDebugLn("<br><b>Manual Mode selected:</b>"); }
+			gTargetStatusCategory = cAUTO_TARGET_STATUS_CATEGORY;
+			gTargetStatus = cMANUAL_TARGET_STATUS;
+			
+			//select agreement queue
+			gAssignedQueueName = autoAssignToQueue();
+			if ((gAssignedQueueName==null || gAssignedQueueName=="") && !cIGNORE_QUEUE_ERRORS) {
+				throw(cERROR_SELECT_QUEUE);
+			}
+			
+			//select email notification template
+			gEmailTemplateId = autoSelectEmailTemplate();
+			if ((gEmailTemplateId==null || gEmailTemplateId=="") && !cIGNORE_EMAIL_TEMPLATE_ERRORS) {
+				throw(cERROR_SELECT_EMAIL_TEMPLATE);
+			}
+
+			//send email notification to queue members
+			autoSendQueueNotification();
+
+			//update the agreement
+			if (!gDebugSR) {
+				autoUpdateStatus();
+				updateRequestDate();
+
+				alert(cMANUAL_CONFIRMATION_MSG+gAssignedQueueName);
+			}	
+		}
+
+		//run custom code
+		_postSubmitRequest();
+	}
+	catch(ex) {
+		alert(ex);
+	}
+	finally {
+		if (gDebugSR || gDebugRules || gDebugNotifications) {
+			writeDebugLn("<p><b>Submit Request DONE.</b>");
+		} else {
+			navigateTo(gObjectIdURL);
+		}	
+	}
+}
+
+function arrayContainsValue(array,value) {
+	if (array==null || value==null || value=="") return -1;
+	var idx = -1;
+	
+	try {
+		for (var i=0; i<array.length; i++) {
+			if (array[i]==value) {
+				idx = i;
+				break;
+			}
+		}
+	}
+	catch(ex) {
+	}
+	finally {
+		return idx;
+	}
+}
+
+function getSControlOverrideName() {
+	var val = "";
+	try {
+		var f = gSControlOverrideField;
+		var q = "select "+cADMIN_VALUE+" from "+gAdminObjName+" where "+cADMIN_NAME+"='"+f+"'";
+		var result = sforce.connection.query(q);
+    	
+    	if (result.size>0) {
+    		var records = result.getArray("records");
+			val = records[0].get(cADMIN_VALUE);
+      	}
+
+		/*
+		//dynamically include the scontrol override code
+		var gSControlOverrideName = "{";
+		gSControlOverrideName += "!INCLUDE($SControl.";
+		gSControlOverrideName += getSControlOverrideName();
+		gSControlOverrideName += ")}";
+		alert("gSControlOverrideName="+gSControlOverrideName);
+
+		if (gSControlOverrideName!=null && gSControlOverrideName.length>0) {
+			try {
+				eval(gSControlOverrideName);
+			}
+			catch(ex) {
+				alert(ex);
+			}
+		}
+		*/
+	}
+	catch(ex) {
+	}
+	finally {
+		return val;
+	}
+}
+
+function getSControlOverrideCode() {
+	var val = "";
+	try {
+		var f = gSControlOverrideField;
+		var q = "select "+cADMIN_CODE+" from "+gAdminObjName+" where "+cADMIN_NAME+"='"+f+"'";
+		var result = sforce.connection.query(q);
+    	
+    	if (result.size>0) {
+    		var records = result.getArray("records");
+			val = records[0].get(cADMIN_CODE);
+      	}
+	}
+	catch(ex) {
+	}
+	finally {
+		return val;
+	}
+}
+
+function insertScript(code){
+	var sHTML = '<input type="hidden"/>';
+    var sScript="<script defer>";
+    sScript = sScript + code;
+    sScript = sScript + "</script" + ">";
+    ScriptDiv.innerHTML = sHTML + sScript;
+}    
+
+function _preSubmitRequest() {
+	try {
+		preSubmitRequest();
+	}
+	catch(ex) {
+	}
+}
+
+function _postSubmitRequest() {
+	try {
+		postSubmitRequest();
+	}
+	catch(ex) {
+	}
+}
+
+function postMerge() {
+	try {
+		/*
+			If you want Submit Request to automatically save the attachment back to the agreement,
+			(the default behavior in Auto mode), then do not implement postMergeOverride.
+			To customize the default behavior, you should implement postMergeOverride.
+		*/
+		postMergeOverride();
+	}
+	catch(ex) {
+		//showMsgProgress(gSaveProgressMsg);
+		//window.setTimeout("doSaveAttachment();",gTimeout);
+		doSaveAttachment();
+	}
+}
+
+function getRuleObjectFieldnames(ruleObjName) {
+	try {
+		var sb = new sforce.StringBuffer();
+		sb.append("Id");
+		
+		var fieldList = getFieldList(gAgreementRuleObj);
+		var q = "select "+fieldList+" from "+gAgreementRuleObj+" "+
+				"where "+gAgreementRuleActiveField+"=true order by "+gAgreementRuleOrderField+",Name";
+	
+		var result = sforce.connection.query(q);
+		var rules = result.getArray("records");
+		
+		//iterate over rules
+		for (var i=0; i<rules.length; i++) {
+			var rule = rules[i];
+			var ruleId = rule.Id;
+	
+			//get rule conditions
+			var cfieldList = getFieldList(gAgreementRuleConditionObj);
+			var cq = "select "+cfieldList+" from "+gAgreementRuleConditionObj+" "+
+					 "where "+gAgreementRuleConditionObjFK+"='"+ruleId+"' "+
+					 "order by "+gAgreementRuleConditionOrderField+",Name";
+			
+			var cresult = sforce.connection.query(cq);
+			var conditions = cresult.getArray("records");
+	
+			//iterate over rule conditions
+			for (var j=0; j<conditions.length; j++) {
+				var condition = conditions[j];
+				var condObj = condition.Apttus__Object__c;
+				var condFld = condition.Apttus__Field__c;
+				
+				var sbStr = sb.toString();
+				var sbLen = sbStr.length;
+				var sbExists = contains(sbStr,condFld)
+				
+				if (condObj==ruleObjName && !sbExists) {
+					if (sbLen>1) {
+						sb.append(",");
+					}
+					sb.append(condFld);
+				}
+			}
+		}
+		return sb.toString();
+	}
+	catch(ex) {
+	}
+}
+
+function evaluateRules(ruleType,ruleObject) {
+	if (gDebugSR) {
+		writeDebugLn("<p><b>evaluateRules:</b>");
+		writeDebugLn("<br>ruleType="+ruleType);
+		writeDebugLn("<br>ruleObject="+ruleObject);
+	}
+	
+	var rsObj = new Object();
+	rsObj.ruleExp = false;		
+
+	if (ruleType==null || ruleType=="") return rsObj;
+	if (ruleObject==null || ruleObject[0]==null) return rsObj;
+
+	try {
+		//select rules
+		var fieldList = getFieldList(gAgreementRuleObj);
+		var q = "select "+fieldList+" from "+gAgreementRuleObj+" "+
+				"where "+gAgreementRuleObjType+"='"+ruleType+"' "+
+				"and "+gAgreementRuleActiveField+"=true order by "+gAgreementRuleOrderField+",Name";
+
+		var result = sforce.connection.query(q);
+		var rules = result.getArray("records");
+		
+		if (gDebugSR) {
+			writeDebugLn("<br>q="+q); 
+			writeDebugLn("<br>rules="+rules.length); 
+		}
+		
+		var ruleObjType = ruleObject[0].type;
+		
+		//iterate over rules
+		for (var i=0; i<rules.length; i++) {
+			var rule = rules[i];
+			var rix = i+1;
+			if (gDebugSR) { writeDebugLn("<p><b>rule"+rix+"="+rule+"</b>"); }
+			
+			var ruleId = rule.Id;
+			var ruleTyp = rule.Apttus__Rule_Type__c;
+			var ruleObj = rule.Apttus__Rule_Object__c;
+			var ruleFld = rule.Apttus__Rule_Field__c;
+			var ruleVal = rule.Apttus__Rule_Value__c;
+			var ruleExp = rule.Apttus__Rule_Expression__c;
+	
+			//get rule conditions
+			var cfieldList = getFieldList(gAgreementRuleConditionObj);
+			var cq = "select "+cfieldList+" from "+gAgreementRuleConditionObj+" "+
+					 "where "+gAgreementRuleConditionObjFK+"='"+ruleId+"' "+
+					 "order by "+gAgreementRuleConditionOrderField+",Name";
+			
+			var cresult = sforce.connection.query(cq);
+			var conditions = cresult.getArray("records");
+			var cs = true;
+
+			if (gDebugSR) {
+				writeDebugLn("<br>cq="+cq);
+				writeDebugLn("<br>conditions="+conditions.length);
+			}
+		
+			var condResults = new Array();
+			var condResultsJoin = new Array();
+			var ncondResults = 0;
+
+			//iterate over rule conditions
+			for (var j=0; j<conditions.length; j++) {
+				var condition = conditions[j];
+				var condExpr = true;
+				var cix = j+1;
+
+				//get condition
+				var condId = condition.Id;
+				var condName = condition.Name;
+				var condNumber = condition.Apttus__Number__c;
+				var condObj = condition.Apttus__Object__c;
+				var condFld = condition.Apttus__Field__c;
+				var condOp = condition.Apttus__Operator__c;
+				var condVal = condition.Apttus__Value__c;
+				var condJoin = condition.Apttus__Join__c;
+				
+				if (gDebugSR) {
+					writeDebugLn("<p>condition="+condition);
+					writeDebugLn("<br><b>condition"+cix+"="+condName+" "+condNumber+" "+condObj+"."+condFld+" "+condOp+" "+condVal+" "+condJoin+"</b>");
+				}
+				
+				//get subconditions
+				var subCondVals = condVal.split(",");
+				if (gDebugSR) {
+					writeDebugLn("<br>subCondVals="+subCondVals.length);
+					writeDebugLn("<br>subCondVals="+subCondVals);
+				}
+				
+				//evaluate condition
+				if (condObj==ruleObjType) {
+					//rule object condition
+					var sObj = ruleObject[0];
+					var condFldVal = sObj.get(condFld);
+					var condExpr = condFld+" "+condOp+" '"+subCondVal+"'";	
+
+					if (gDebugSR) {
+						writeDebugLn("<br>condObj="+condObj);
+						writeDebugLn("<br>condFld="+condFld);
+						writeDebugLn("<br>"+condObj+"."+condFld+"="+condFldVal);
+					}
+
+					var subCondResults = new Array();
+					var nsubCondResults = 0;
+	
+					//iterate over subconditions
+					for (var jx=0; jx<subCondVals.length; jx++) {
+						var subCondVal = subCondVals[jx];
+						var subCondJoin = (subCondVals.length>1) ? "OR" : condJoin;
+						
+						if (gDebugSR) {
+							writeDebugLn("<br>subCondVal="+subCondVal);
+							writeDebugLn("<br>condition="+condName+" "+condNumber+" "+condObj+"."+condFld+" "+condOp+" "+subCondVal+" "+subCondJoin);
+						}
+
+						//evaluate subcondition
+						var cExpr = evaluateCondition(condOp,condFldVal,subCondVal);
+						subCondResults[nsubCondResults++] = cExpr;
+					}
+					
+					if (gDebugSR) {
+						writeDebugLn("<br>subCondResults="+nsubCondResults);
+						writeDebugLn("<br>subCondResults="+subCondResults);
+					}
+					
+					//OR subconditions together
+					cs = true;
+					for (var jy=0; jy<nsubCondResults; jy++) {
+						if (jy==0) {
+							cs = subCondResults[jy];
+						} else if (jy>0) {
+							var csp = cs;
+							cs = cs || subCondResults[jy];
+						}
+					}
+					
+					if (gDebugSR) {
+						writeDebugLn("<br><b>condition"+cix+"="+cs+"</b>");					
+					}
+					
+				} else {
+					//rule object lineitem condition
+					var lirecs = new Array();
+					var liidx = arrayContainsValue(gLineItemTypes,condObj);
+					
+					if (liidx>-1) {
+						//get lineitem records from cache
+						lirecs = gLineItemSObjs[liidx];
+
+						if (gDebugSR) {
+							writeDebugLn("<br>retrieving "+condObj+" lineitem records from cache...");
+							//writeDebugLn("<br>lirecs="+lirecs);
+						}
+					} else {
+						//query lineitem records
+						var lifieldList = getFieldList(condObj);
+						var liq = "select "+lifieldList+" from "+condObj+" "+
+								  "where "+gAgreementDetailTableFK+"='"+gObjectId+"'";	
+						
+						var liresult = sforce.connection.query(liq);
+						var lirecords = liresult.getArray("records");
+
+						//cache lineitem records
+						gLineItemTypes[nLineItemSObjs] = condObj;
+						gLineItemSObjs[nLineItemSObjs] = lirecords;
+						
+						lirecs = gLineItemSObjs[nLineItemSObjs];
+						nLineItemSObjs++;
+						
+						if (gDebugSR) {
+							writeDebugLn("<br>caching "+condObj+" lineitem records...");
+							//writeDebugLn("<br>gLineItemTypes="+gLineItemTypes);
+							//writeDebugLn("<br>gLineItemSObjs="+gLineItemSObjs);
+						}
+					}
+								
+					//evaluate lineitem condition
+					var lirs = true;
+					for (var k=0; k<lirecs.length; k++) {
+						var lirecord = lirecs[k];
+						if (gDebugSR) writeDebugLn("<br>lirecord("+k+")="+lirecord);
+						
+						var sObj = lirecord;
+						var condFldVal = sObj.get(condFld);
+						var condExpr = condFld+" "+condOp+" '"+subCondVal+"'";
+						
+						if (gDebugSR) {
+							writeDebugLn("<br>condObj="+condObj);
+							writeDebugLn("<br>condFld="+condFld);
+							writeDebugLn("<br>"+condObj+"."+condFld+"="+condFldVal);
+						}
+
+						var subCondResults = new Array();
+						var nsubCondResults = 0;
+		
+						//iterate over subconditions
+						for (var kx=0; kx<subCondVals.length; kx++) {
+							var subCondVal = subCondVals[kx];
+							var subCondJoin = (subCondVals.length>1) ? "OR" : condJoin;
+							
+							if (gDebugSR) {
+								writeDebugLn("<br>subCondVal="+subCondVal);
+								writeDebugLn("<br>condition="+condName+" "+condNumber+" "+condObj+"."+condFld+" "+condOp+" "+subCondVal+" "+subCondJoin);
+							}
+
+							//evaluate subcondition
+							var cExpr = evaluateCondition(condOp,condFldVal,subCondVal);
+							subCondResults[nsubCondResults++] = cExpr;
+						}
+						
+						if (gDebugSR) {
+							writeDebugLn("<br>subCondResults="+nsubCondResults);
+							writeDebugLn("<br>subCondResults="+subCondResults);
+						}
+						
+						//OR subconditions together
+						cs = true;
+						for (var ky=0; ky<nsubCondResults; ky++) {
+							if (ky==0) {
+								cs = subCondResults[ky];
+								if (gDebugSR) {
+									writeDebugLn("<br>cs"+ky+"="+cs);
+								}
+							} else if (ky>0) {
+								var csp = cs;
+								cs = cs || subCondResults[ky];
+								
+								if (gDebugSR) {
+									writeDebugLn("<br>cs"+ky+"="+csp+" OR "+subCondResults[ky]+"="+cs);
+								}
+							}
+						}
+
+						//condition must be true for every lineitem
+						var lirsprev = lirs;
+						lirs = lirs && cs;
+						
+						if (gDebugSR) {
+							if (k==0) {
+								writeDebugLn("<br>lirs"+k+"="+lirsprev);
+							} else {
+								writeDebugLn("<br>lirs"+k+"="+lirsprev+" AND "+cs+"="+lirs);
+							}
+						}
+						
+						if (!lirs) {
+							break;
+						}
+					}
+
+					if (gDebugSR) {
+						writeDebugLn("<br><b>condition"+cix+"="+cs+"</b>");					
+					}
+				}
+		
+				//append condition result
+				condResults[ncondResults] = cs;
+				condResultsJoin[ncondResults] = condJoin;
+				ncondResults++;
+			}
+			
+			if (gDebugSR) {
+				writeDebugLn("<p>");
+				writeDebugLn("<br>condResults="+condResults);
+				writeDebugLn("<br>condResultsJoin="+condResultsJoin);
+			}
+
+			//evaluate all conditions together
+			var cs = true;
+			for (var m=0; m<ncondResults; m++) {
+				if (m==0) {
+					cs = condResults[m];
+				} else if (m>0) {
+					var csp = cs;
+					if (condResultsJoin[m-1]=="AND") {
+						cs = cs && condResults[m];
+						if (gDebugSR) {
+							writeDebugLn("<br>cs"+m+"="+csp+" AND "+condResults[m]+"="+cs);
+						}
+					} else {
+						cs = cs || condResults[m];
+						if (gDebugSR) {
+							writeDebugLn("<br>cs"+m+"="+csp+" OR "+condResults[m]+"="+cs);
+						}
+					}
+				}
+			}
+
+			//get rule result fields to set
+			var ruleFired = cs;
+			if (ruleFired) {
+				rsObj.ruleExp = true;
+				rsObj.ruleObj = ruleObj;
+				rsObj.ruleFld = ruleFld;
+				rsObj.ruleVal = ruleVal;
+
+				if (gDebugSR) {
+					writeDebugLn("<p><b>RULE FIRED:</b>"+
+						"<br>ruleObj="+rsObj.ruleObj+
+						"<br>ruleFld="+rsObj.ruleFld+
+						"<br>ruleVal="+rsObj.ruleVal);
+				}
+				
+				//stop evaluating rules
+				break;
+				
+			} else {
+				if (gDebugSR) {
+					writeDebugLn("<br><b>rule"+i+"=false</b>");
+				}		
+			}
+		}
+	}
+	catch(ex) {
+		//throw ex;
+	}
+	finally {
+		return rsObj;
+	}
+}	
+
+function evaluateCondition(condOp,condFldVal,condTestVal) {
+	try {
+		var cExpr = false;
+		if (condOp==cOPERATOR_EQUAL_TO) {
+			cExpr = (condFldVal==condTestVal) ? true : false;
+		
+		} else if (condOp==cOPERATOR_NOT_EQUAL_TO) {
+			cExpr = (condFldVal!=condTestVal) ? true : false;
+		
+		} else if (condOp==cOPERATOR_GREATER_THAN) {
+			cExpr = (condFldVal>parseFloat(condTestVal)) ? true : false;
+		
+		} else if (condOp==cOPERATOR_GREATER_THAN_EQUAL_TO) {
+			cExpr = (condFldVal>=parseFloat(condTestVal)) ? true : false;
+		
+		} else if (condOp==cOPERATOR_LESS_THAN) {
+			cExpr = (condFldVal<parseFloat(condTestVal)) ? true : false;
+		
+		} else if (condOp==cOPERATOR_LESS_THAN_EQUAL_TO) {
+			cExpr = (condFldVal<=parseFloat(condTestVal)) ? true : false;
+			
+		} else if (condOp==cOPERATOR_INCLUDES) {
+			if (condFldVal!=null) {
+				cExpr = (condFldVal.indexOf(condTestVal)!=-1) ? true : false;
+			}
+		} else if (condOp==cOPERATOR_EXCLUDES) {
+			if (condFldVal!=null) {
+				cExpr = (condFldVal.indexOf(condTestVal)==-1) ? true : false;
+			}
+		} else if (condOp==cOPERATOR_STARTS_WITH) {
+			if (condFldVal!=null) {
+				cExpr = (condFldVal.indexOf(condTestVal)==0) ? true : false;
+			}
+		} else if (condOp==cOPERATOR_CONTAINS) {
+			if (condFldVal!=null) {
+				cExpr = (contains(condFldVal,condTestVal)) ? true : false;		
+			}
+		} else if (condOp==cOPERATOR_DOES_NOT_CONTAIN) {
+			if (condFldVal!=null) {
+				cExpr = (!contains(condFldVal,condTestVal)) ? true : false;
+			}
+		}
+	
+		if (gDebugSR) {
+			writeDebugLn("<br>evaluateCondition: "+condFldVal+" "+condOp+" "+condTestVal);
+			writeDebugLn("<br>evaluateCondition: cExpr="+cExpr);
+		}
+		
+		return cExpr;
+	}
+	catch(ex) {
+		if (gDebugSR) { writeDebugLn("<br>evaluateCondition ERROR: "+ex.message); }
+		return false;
+	}
+}
+				
+function _preSelectAutoSubmitRequestMode() {
+	try {
+		preSelectAutoSubmitRequestMode();
+	}
+	catch(ex) {
+	}
+}
+
+function selectAutoSubmitRequestMode() {
+	if (gDebugSR) { writeDebugLn("<p><b>selectAutoSubmitRequestMode:</b>"); }
+
+	//run custom code
+	_preSelectAutoSubmitRequestMode();
+
+	//evaluate user defined rules
+	var rsObj = evaluateRules(cRULE_TYPE_SUBMIT_REQUEST_MODE,gAgreementSObj);
+	if (rsObj==null) return;
+
+	var obj = rsObj.ruleObj;
+	var fld = rsObj.ruleFld;
+	var val = rsObj.ruleVal;
+	
+	if (rsObj.ruleExp) {
+		if (val!=null && val!="") {
+			setSubmitRequestMode(val);	
+		}
+	} else {
+		setSubmitRequestMode(cDEFAULT_SUBMIT_REQUEST_MODE);
+	}
+	gIsVisible = false;
+
+	if (gDebugSR) {
+		writeDebugLn("<br>gSubmitRequestMode="+gSubmitRequestMode);
+	}
+		
+	//run custom code
+	_postSelectAutoSubmitRequestMode();
+
+	return gSubmitRequestMode;
+}
+
+function _postSelectAutoSubmitRequestMode() {
+	try {
+		postSelectAutoSubmitRequestMode();
+	}
+	catch(ex) {
+	}
+}
+
+function setSubmitRequestMode(mode) {
+	if (gDebugSR) { writeDebugLn("<br>setSubmitRequestMode:"); }
+    gSubmitRequestMode = mode;
+    
+    var sObj = new sforce.SObject(gAgreementObjName);
+    sObj.Id = gObjectId;
+    sObj.Apttus__Submit_Request_Mode__c = mode;
+	if (gDebugSR) { writeDebugLn("<br>sObj="+sObj); }
+  	    
+	var result = sforce.connection.update([sObj]);
+	if (gDebugSR) { writeDebugLn("<br>result="+result); }
+	if (!result[0].getBoolean("success")) {
+		erroralert(cERROR_SUBMIT_REQUEST,result[0]);
+	}
+}
+
+function _preSelectAgreementType() {
+	try {
+		preSelectAgreementType();
+	}
+	catch(ex) {
+	}
+}
+
+function autoSelectAgreementType() {
+	if (gDebugSR) { writeDebugLn("<p><b>autoSelectAgreementType:</b>"); }
+	
+	//run custom code
+	_preSelectAgreementType();
+
+	gHasRecordTypes = hasCustomField("RecordTypeId",gAgreementObjName);
+	if (gHasRecordTypes==true) {
+		//evaluate user defined rules
+		var rsObj = evaluateRules(cRULE_TYPE_AGREEMENT_TYPE,gAgreementSObj);
+		if (rsObj==null) return;
+	
+		var obj = rsObj.ruleObj;
+		var fld = rsObj.ruleFld;
+		var val = rsObj.ruleVal;
+		
+		if (!rsObj.ruleExp) {
+			if (gDebugSR) { writeDebugLn("<br>NO rules fired.  Trying cDEFAULT_AGREEMENT_TYPE:"); }
+			
+			obj = "Apttus__APTS_Agreement__c";
+			fld = "RecordTypeId";
+			val = cDEFAULT_AGREEMENT_TYPE;
+		}
+	
+		//exit if no rules fired or the user didn't specify a default value
+		if (val==null || val=="") {
+			var rtDef = getRecordTypeDefault();
+			if (rtDef==null || rtDef=="") {
+				if (gDebugSR) {
+					writeDebugLn("<br>NO rules fired; cDEFAULT_AGREEMENT_TYPE not specified.");
+				}
+				return null;
+			} else {
+				val = rtDef;
+			}
+		}
+
+		//get recordtype id from name
+		gAgreementType = val;
+		gAgreementTypeId = getRecordTypeIdFromName(gAgreementType);
+		
+		if (gDebugSR) {
+			writeDebugLn("<br>gAgreementType="+gAgreementType);
+			writeDebugLn("<br>gAgreementTypeId="+gAgreementTypeId);
+		}
+		
+		if ((gAgreementTypeId==null || gAgreementTypeId=="") && !cIGNORE_AGREEMENT_TYPE_ERRORS) {
+			if (rsObj.ruleExp) {
+				throw(cERROR_SELECT_AGREEMENT_TYPE_RULE_NOT_FOUND+"\n'"+val+"'");
+			} else {
+				throw(cERROR_SELECT_AGREEMENT_TYPE_DEFA_NOT_FOUND+"\n'"+val+"'");
+			}
+		}
+
+		if (!gDebugSR && cAUTO_UPDATE_AGREEMENT_TYPE) {
+			setAgreementType(gAgreementTypeId);
+		}
+	}
+
+	//run custom code
+	_postSelectAgreementType();
+
+	return gAgreementType;
+}
+
+function _postSelectAgreementType() {
+	try {
+		postSelectAgreementType();
+	}
+	catch(ex) {
+	}
+}
+
+function setAgreementType(recordTypeId) {
+	if (gDebugSR) { writeDebugLn("<p>setAgreementType:"); }
+    gRecordTypeId = recordTypeId;
+    
+    var sObj = new sforce.SObject(gAgreementObjName);
+    sObj.Id = gObjectId;
+    sObj.RecordTypeId = recordTypeId;
+	if (gDebugSR) { writeDebugLn("<br>sObj="+sObj); }
+  	    
+	var result = sforce.connection.update([sObj]);
+	if (gDebugSR) { writeDebugLn("<br>result="+result); }
+	if (!result[0].getBoolean("success")) {
+		erroralert(cERROR_SELECT_AGREEMENT_TYPE,result[0]);
+		throw(result[0]);
+	}
+}
+
+function _preSelectAgreementTemplate() {
+	try {
+		preSelectAgreementTemplate();
+	}
+	catch(ex) {
+	}
+}
+
+function autoSelectAgreementTemplate() {
+	if (gDebugSR) { writeDebugLn("<p><b>autoSelectAgreementTemplate:</b>"); }
+	
+	//run custom code
+	_preSelectAgreementTemplate();
+
+	//evaluate user defined rules
+	var rsObj = evaluateRules(cRULE_TYPE_AGREEMENT_TEMPLATE,gAgreementSObj);
+	if (rsObj==null) return;
+
+	var obj = rsObj.ruleObj;
+	var fld = rsObj.ruleFld;
+	var val = rsObj.ruleVal;
+	
+	if (!rsObj.ruleExp) {
+		if (gDebugSR) { writeDebugLn("<br>NO rules fired.  Trying cDEFAULT_AGREEMENT_TEMPLATE:"); }
+		
+		obj = "Apttus__APTS_Template__c";
+		fld = "Name";
+		val = cDEFAULT_AGREEMENT_TEMPLATE;
+	}
+	
+	//exit if no rules fired or the user didn't specify a default value
+	if (val==null || val=="") {
+		if (gDebugSR) { writeDebugLn("<br>NO rules fired; cDEFAULT_AGREEMENT_TEMPLATE not specified."); }
+		return "";
+	}
+
+	//get template id
+	var q = "select Id,Name from "+obj+" where "+fld+"='"+val+"' limit 1";
+	var result = sforce.connection.query(q);
+	
+	if (gDebugSR) {
+		writeDebugLn("<br>q="+q);
+		writeDebugLn("<br>result="+result);
+	}
+	
+	if (result.size==0 && !cIGNORE_AGREEMENT_TEMPLATE_ERRORS) {
+		if (rsObj.ruleExp) {
+			throw(cERROR_SELECT_AGREEMENT_TEMPLATE_RULE_NOT_FOUND+"\n'"+val+"'");
+		} else {
+			throw(cERROR_SELECT_AGREEMENT_TEMPLATE_DEFA_NOT_FOUND+"\n'"+val+"'");
+		}
+	}
+	
+	var records = result.getArray("records");
+	var templateId = records[0].Id;
+	
+	if (gDebugSR) {
+		writeDebugLn("<br>records="+records[0]);
+	}
+
+	gTemplateId = records[0].Id;
+	gTemplateName = records[0].Name;
+
+	if (gDebugSR) {
+		writeDebugLn("<br>gTemplateId="+gTemplateId+"<br>gTemplateName="+gTemplateName);
+	}
+	
+	//run custom code
+	_postSelectAgreementTemplate();
+
+	return gTemplateId;
+}
+
+function _postSelectAgreementTemplate() {
+	try {
+		postSelectAgreementTemplate();
+	}
+	catch(ex) {
+	}
+}
+
+function _preSelectEmailTemplate() {
+	try {
+		preSelectEmailTemplate();
+	}
+	catch(ex) {
+	}
+}
+
+function autoSelectEmailTemplate() {
+	if (gDebugSR) { writeDebugLn("<p><b>autoSelectEmailTemplate:</b>"); }
+	
+	//run custom code
+	_preSelectEmailTemplate();
+
+	//evaluate user defined rules
+	var rsObj = evaluateRules(cRULE_TYPE_EMAIL_TEMPLATE,gAgreementSObj);
+	if (rsObj==null) return;
+	
+	var obj = rsObj.ruleObj;
+	var fld = rsObj.ruleFld;
+	var val = rsObj.ruleVal;
+	
+	if (!rsObj.ruleExp) {
+		if (gDebugSR) { writeDebugLn("<br>NO rules fired.  Trying cRULE_TYPE_EMAIL_TEMPLATE:"); }
+		
+		obj = "EmailTemplate";
+		fld = "Name";
+		val = cDEFAULT_EMAIL_TEMPLATE;
+	}
+
+	//exit if no rules fired or the user didn't specify a default value
+	if (val==null || val=="") {
+		if (gDebugSR) { writeDebugLn("<br>NO rules fired; cDEFAULT_EMAIL_TEMPLATE not specified."); }
+		return "";
+	}
+
+	//get template id
+	var q = "select Id,Name from "+obj+" where "+fld+"='"+val+"' limit 1";
+	var result = sforce.connection.query(q);
+	
+	if (gDebugSR) {
+		writeDebugLn("<br>q="+q);
+		writeDebugLn("<br>result="+result);
+	}
+	
+	if (result.size==0 && !cIGNORE_EMAIL_TEMPLATE_ERRORS) {
+		if (rsObj.ruleExp) {
+			throw(cERROR_SELECT_EMAIL_TEMPLATE_RULE_NOT_FOUND+"\n'"+val+"'");
+		} else {
+			throw(cERROR_SELECT_EMAIL_TEMPLATE_DEFA_NOT_FOUND+"\n'"+val+"'");
+		}
+	}
+
+	var records = result.getArray("records");
+	if (gDebugSR) { writeDebugLn("<br>records="+records); }
+	
+	gEmailTemplateId = records[0].Id;
+	gEmailTemplateName = records[0].Name;
+
+	if (gDebugSR) {
+		writeDebugLn("<br>result="+result+
+			"<br>gEmailTemplateId="+gEmailTemplateId+
+			"<br>gEmailTemplateName="+gEmailTemplateName);
+	}
+	
+	//run custom code
+	_postSelectEmailTemplate();
+
+	return gEmailTemplateId;
+}
+
+function _postSelectEmailTemplate() {
+	try {
+		postSelectEmailTemplate();
+	}
+	catch(ex) {
+	}
+}
+
+function _preSendNotification(ids) {
+	var newIds = ids;
+	try {
+		newIds = preSendNotification(ids);
+	}
+	catch(ex) {
+	}
+	finally {
+		return newIds;
+	}
+}
+
+function autoSendNotification() {
+	if (gDebugSR) { writeDebugLn("<p><b>autoSendNotification:</b>"); }
+	
+	//get default notification assignees
+	var nIds = 0;
+	var toIds = new Array();
+	
+	if (gPrimaryContactId!=null && gPrimaryContactId!="") {
+		toIds[nIds++] = gPrimaryContactId;
+	}
+	if (gRequestorId!=null && gRequestorId!="") {
+		toIds[nIds++] = gRequestorId;
+	}
+	if (gAgreementOwnerId!=null && gAgreementOwnerId!="") {
+		toIds[nIds++] = gAgreementOwnerId;
+	}
+	
+	if (gDebugSR) { writeDebugLn("<br>toIds="+toIds); }
+	
+	//run custom code
+	toIds = _preSendNotification(toIds);
+	if (gDebugSR) { writeDebugLn("<br>_preSendNotification:toIds="+toIds); }
+
+	//send notifications
+	try {
+		sendEmailFromTemplate(cID_LIST_TYPE,toIds,gEmailTemplateId);
+	}
+	catch(ex) {
+		if (!cIGNORE_EMAIL_TEMPLATE_ERRORS) {
+			throw(ex);
+		}
+	}
+
+	//run custom code
+	_postSendNotification();
+}
+
+function _postSendNotification() {
+	try {
+		postSendNotification();
+	}
+	catch(ex) {
+	}
+}
+
+function sendMailCallback() {
+	if (gDebugSR) { writeDebugLn("<p>sendMailCallback:"); }
+}
+
+function _preSelectQueue() {
+	try {
+		preSelectQueue();
+	}
+	catch(ex) {
+	}
+}
+
+function autoAssignToQueue() {
+	if (gDebugSR) { writeDebugLn("<p><b>autoAssignToQueue:</b>"); }
+
+	//run custom code
+	_preSelectQueue();
+
+	//evaluate user defined rules
+	var rsObj = evaluateRules(cRULE_TYPE_QUEUE_ASSIGNMENT,gAgreementSObj);
+	if (rsObj==null) return;
+	
+	var obj = rsObj.ruleObj;
+	var fld = rsObj.ruleFld;
+	var val = rsObj.ruleVal;
+
+	if (!rsObj.ruleExp) {
+		if (gDebugSR) { writeDebugLn("<br>NO rules fired.  Trying cDEFAULT_QUEUE:"); }
+		
+		obj = "QueueSObject";
+		fld = "Name";
+		val = cDEFAULT_QUEUE;
+	}
+	
+	//exit if no rules fired or the user didn't specify a default value
+	if (val==null || val=="") {
+		if (gDebugSR) { writeDebugLn("<br>NO rules fired; cDEFAULT_QUEUE not specified."); }
+		return "";
+	}
+
+	//get queue id
+	gAssignedQueueName = val;
+
+	var q = "select Id from Group where Type='Queue' and Name='"+val+"' limit 1";
+	var result = sforce.connection.query(q);
+
+	if (gDebugSR) {
+		writeDebugLn("<br>q="+q);
+		writeDebugLn("<br>result="+result);
+	}
+	
+	if (result.size==0 && !cIGNORE_QUEUE_ERRORS) {
+		if (rsObj.ruleExp) {
+			throw(cERROR_SELECT_QUEUE_RULE_NOT_FOUND+"\n'"+val+"'");
+		} else {
+			throw(cERROR_SELECT_QUEUE_DEFA_NOT_FOUND+"\n'"+val+"'");
+		}
+	}
+
+	var records = result.getArray("records");
+	var record = records[0];
+	var qid = record.Id;
+	if (gDebugSR) { writeDebugLn("<br>record="+record); }
+
+	//change agreement owner to the queue
+	var agreement = new sforce.SObject(gAgreementObjName);
+	agreement.Id = gObjectId;
+	agreement.OwnerId = qid;
+	if (gDebugSR) { writeDebugLn("<br>agreement="+agreement); }
+
+	var result = sforce.connection.update([agreement]);
+	if (gDebugSR) { writeDebugLn("<br>result="+result[0]); }
+	if (!result[0].getBoolean("success")) {
+		throw(result[0]);
+	}
+	
+	//run custom code
+	_postSelectQueue();
+	
+	return gAssignedQueueName;
+}
+
+function _postSelectQueue() {
+	try {
+		postSelectQueue();
+	}
+	catch(ex) {
+	}
+}
+
+function autoSendQueueNotification() {
+	try {
+		//send notifications to queue members
+		var fieldList = "Id,UserOrGroupId,Group.DoesSendEmailToMembers,"+
+			"Group.Email,Group.Type,Group.RelatedId,Group.Name,GroupId";
+		
+		var q = "select "+fieldList+" from GroupMember "+
+				"where Group.Type='Queue' and Group.Name='"+gAssignedQueueName+"'"
+				
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+	
+		var idList = new Array();
+		var addrList = new Array();
+
+		for (var i=0; i<records.length; i++) {
+			var qm = records[i];
+
+			var sendMailToMembers = qm.Group.DoesSendEmailToMembers;
+			var queueEmailAddr = qm.Group.Email;
+
+			if (sendMailToMembers=="true") {
+				idList.push(qm.UserOrGroupId);
+			} else {
+				if (i==0 && queueEmailAddr!=null && queueEmailAddr!="") {
+					addrList.push(qm.Group.Email);
+				}
+			}
+		}
+								
+		try {
+			if (idList.length>0) {
+				sendEmailFromTemplate(cID_LIST_TYPE,idList,gEmailTemplateId);
+				
+			} else if (addrList.length>0) {
+				sendEmailFromTemplate(cADDR_LIST_TYPE,addrList,gEmailTemplateId);
+			}
+		}
+		catch(ex) {
+			if (!cIGNORE_EMAIL_TEMPLATE_ERRORS) {
+				throw(ex);
+			}
+		}
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+</script>
+</head>
+
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+<div id="divScript"></div>
+
+</body>
+</html>

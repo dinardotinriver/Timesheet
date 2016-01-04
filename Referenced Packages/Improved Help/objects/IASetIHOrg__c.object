@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>The collection of Org-wide settings applicable to Improved Help</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>AllocatedSeats__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of Users whose accounts have been marked as allocated against an Improved Help Subscription</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of Users whose accounts have been marked as allocated against an Improved Help Subscription</inlineHelpText>
+        <label>Allocated Seats</label>
+        <precision>10</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AllowLayoutComments__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Controls the default setting for new Layouts regarding whether or not to allow comments</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls the default setting for new Layouts regarding whether or not to allow comments</inlineHelpText>
+        <label>Allow Layout Comments</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BrandCSS__c</fullName>
+        <defaultValue>&quot;http://&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Stylesheet to use as the source of Improved Help customer-specific style overrides</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Stylesheet to use as the source of Improved Help customer-specific style overrides</inlineHelpText>
+        <label>Brand CSS</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>BrandIHTooltip__c</fullName>
+        <defaultValue>&quot;Click for Improved Help...&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Tool tip to display when users hover over Helped Elements</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tool tip to display when users hover over Helped Elements</inlineHelpText>
+        <label>Brand IH Tooltip</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BrandImage__c</fullName>
+        <defaultValue>&quot;/resource/iahelp__IHResources/img/LogoToolsPage.png&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Logo to feature at the top of Help detail pages.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Logo to feature at the top of Help detail pages.</inlineHelpText>
+        <label>Brand Image</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>BrandSubTitle__c</fullName>
+        <defaultValue>&quot;...drive salesforce adoption...&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Branding strapline to feature at the top of Help detail pages, beneath the main Brand Title</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Branding strapline to feature at the top of Help detail pages, beneath the main Brand Title</inlineHelpText>
+        <label>Brand Sub Title</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BrandTitle__c</fullName>
+        <defaultValue>&quot;Improved Apps&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Branding text to feature at the top of Help detail pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Branding text to feature at the top of Help detail pages</inlineHelpText>
+        <label>Brand Title</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CalloutClosureBehaviour__c</fullName>
+        <defaultValue>&quot;1&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Defines the behaviour of Help Callouts as regards how they can be closed after opening</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines the behaviour of Help Callouts as regards how they can be closed after opening</inlineHelpText>
+        <label>Callout Closure Behaviour</label>
+        <length>1</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CalloutWidth__c</fullName>
+        <defaultValue>50</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Percentage width at which to display certain Improved Help callouts</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Percentage width at which to display certain Improved Help callouts</inlineHelpText>
+        <label>Callout Width (%)</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ConsoleResourceLinkTarget__c</fullName>
+        <defaultValue>&quot;1&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>When viewing Improved Help via a Console page, controls the target of Resource links</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When viewing Improved Help via a Console page, controls the target of Resource links</inlineHelpText>
+        <label>Console Resource Link Target</label>
+        <length>1</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CustomStyles__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Comma separated list of CSS style names that can be applied to Help Topics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Comma separated list of CSS style names that can be applied to Help Topics</inlineHelpText>
+        <label>Custom Styles</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultGuideTemplate__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Help Topic Template to use by default when adding new Help Topics for use in a Guide</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Help Topic Template to use by default when adding new Help Topics for use in a Guide</inlineHelpText>
+        <label>Default Guide Template</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultHelpActiveStatus__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The default status (active or inactive) to use when adding new Help Topics in Configuration Mode</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The default status (active or inactive) to use when adding new Help Topics in Configuration Mode</inlineHelpText>
+        <label>Default Help Active Status</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>DefaultHelpCalloutTemplate__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Help Topic Callout Template to use by default when adding new Help Topics in Configuration Mode</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Help Topic Callout Template to use by default when adding new Help Topics in Configuration Mode</inlineHelpText>
+        <label>Default Help Callout Template</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultHelpTopicHBS__c</fullName>
+        <defaultValue>400</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The default value to use for Height Before Scrolling when adding new Help Topics in Configuration Mode</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The default value to use for Height Before Scrolling when adding new Help Topics in Configuration Mode</inlineHelpText>
+        <label>Default Height Before Scrolling</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultHelpTopicTemplate__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Help Topic Template to use by default when adding new Help Topics in Configuration Mode</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Help Topic Template to use by default when adding new Help Topics in Configuration Mode</inlineHelpText>
+        <label>Default Help Topic Template</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultHelpTopic__c</fullName>
+        <deprecated>false</deprecated>
+        <description>ID of the Help Topic to be used as a default when requested record is unavailable or unspecified</description>
+        <externalId>false</externalId>
+        <inlineHelpText>ID of the Help Topic to be used as a default when requested record is unavailable or unspecified</inlineHelpText>
+        <label>Default Help Topic</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DefaultReadMoreOption__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Defines whether or not to show &quot;Read More&quot; links by default in callouts for new Help Topics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines whether or not to show &quot;Read More&quot; links by default in callouts for new Help Topics</inlineHelpText>
+        <label>Default Read More Option</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>DefaultVisibility__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Defines the default setting for sharing rules-based visibility of individual help topic records</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines the default setting for sharing rules-based visibility of individual help topic records</inlineHelpText>
+        <label>Default Visibility</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DocumentationInstallationDate__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The date upon which Improved Help documentation was last (re)installed</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date upon which Improved Help documentation was last (re)installed</inlineHelpText>
+        <label>Documentation Installation Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>DocumentationVersion__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The version of Improved Help documentation last installed</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The version of Improved Help documentation last installed</inlineHelpText>
+        <label>Documentation Version</label>
+        <length>15</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EnableExportDocHT__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check to allow experimental &quot;Export Topics to Word&quot; feature</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check to allow experimental &quot;Export Topics to Word&quot; feature</inlineHelpText>
+        <label>Enable Export to Word (Topics)</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableExportDocRL__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check to allow experimental &quot;Export Reading List to Word&quot; feature</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check to allow experimental &quot;Export Reading List to Word&quot; feature</inlineHelpText>
+        <label>Enable Export to Word (RLs)</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableExportXL__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check to allow experimental &quot;Export to Excel&quot; feature</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check to allow experimental &quot;Export to Excel&quot; feature</inlineHelpText>
+        <label>Enable Export to Excel</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedButtonHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for standard and custom Buttons</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for standard and custom Buttons</inlineHelpText>
+        <label>Enable Improved Button Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedDetailsHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for Details</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for Details</inlineHelpText>
+        <label>Enable Improved Details Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedFieldHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for individual Object Fields</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for Individual Object Fields</inlineHelpText>
+        <label>Enable Improved Field Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedLinkHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for custom Links</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for custom Links</inlineHelpText>
+        <label>Enable Improved Link Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedObjectHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for Objects</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for Objects</inlineHelpText>
+        <label>Enable Improved Object Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedPageHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to replace the default SalesForce page-level help with Improved Help</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to replace the default SalesForce page-level help with Improved Help</inlineHelpText>
+        <label>Enable Improved Page Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedRecordTitleHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for record titles</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for record titles</inlineHelpText>
+        <label>Enable Improved Record Title Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedRelatedListHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for Related Lists</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for Related Lists</inlineHelpText>
+        <label>Enable Improved Related List Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedSectionHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for Custom Section Heading Labels</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for Custom Section Heading Labels</inlineHelpText>
+        <label>Enable Improved Custom Section Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EnableImprovedTableHelp__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to show Improved Help for Tables</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to show Improved Help for Tables</inlineHelpText>
+        <label>Enable Improved Table Help</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>QuickLink1__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Hyperlink to feature on Help details pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hyperlink to feature on Help details pages</inlineHelpText>
+        <label>Quick Link 1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>QuickLink2__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Hyperlink to feature on Help details pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hyperlink to feature on Help details pages</inlineHelpText>
+        <label>Quick Link 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>QuickLink3__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Hyperlink to feature on Help details pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hyperlink to feature on Help details pages</inlineHelpText>
+        <label>Quick Link 3</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>QuickLink4__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Hyperlink to feature on Help details pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hyperlink to feature on Help details pages</inlineHelpText>
+        <label>Quick Link 4</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>QuickLink5__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Hyperlink to feature on Help details pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Hyperlink to feature on Help details pages</inlineHelpText>
+        <label>Quick Link 5</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>QuickText1__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Link text for hyperlink</description>
+        <externalId>false</externalId>
+        <label>Quick Text 1</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickText2__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Link text for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Link text for hyperlink</inlineHelpText>
+        <label>Quick Text 2</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickText3__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Link text for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Link text for hyperlink</inlineHelpText>
+        <label>Quick Text 3</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickText4__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Link text for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Link text for hyperlink</inlineHelpText>
+        <label>Quick Text 4</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickText5__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Link text for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Link text for hyperlink</inlineHelpText>
+        <label>Quick Text 5</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickTip1__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Tool tip for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tool tip for hyperlink</inlineHelpText>
+        <label>Quick Tip 1</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickTip2__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Tool tip for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tool tip for hyperlink</inlineHelpText>
+        <label>Quick Tip 2</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickTip3__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Tool tip for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tool tip for hyperlink</inlineHelpText>
+        <label>Quick Tip 3</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickTip4__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Tool tip for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tool tip for hyperlink</inlineHelpText>
+        <label>Quick Tip 4</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuickTip5__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Tool tip for hyperlink</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tool tip for hyperlink</inlineHelpText>
+        <label>Quick Tip 5</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RLShowNextPrev__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Controls whether or not the Next / Previous links will be rendered as part of the Reading List navigation bar</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls whether or not the Next / Previous links will be rendered as part of the Reading List navigation bar</inlineHelpText>
+        <label>Show Next/Previous Links</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ReviewWithinDays__c</fullName>
+        <defaultValue>90</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The interval in days at which Help Topics should have their content reviewed for ongoing accuracy</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The interval in days at which Help Topics should have their content reviewed for ongoing accuracy</inlineHelpText>
+        <label>ReviewWithinDays</label>
+        <precision>2</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SFObjectIds__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Capek (^) separated list of the 3 character Salesforce codes representing key Improved Help objects</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Capek (^) separated list of the 3 character Salesforce codes representing key Improved Help objects</inlineHelpText>
+        <label>SF Object Ids</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SFPod__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The name of the server pod hosting the Org&apos;s SF and VF pages</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the server pod hosting the Org&apos;s SF and VF pages</inlineHelpText>
+        <label>SFPod</label>
+        <length>4</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ShowGuidesLinks__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Controls which, if any, on-page links will be displayed for available Guides</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls which, if any, on-page links will be displayed for available Guides</inlineHelpText>
+        <label>Show Guides Links</label>
+        <length>1</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ShowReferringTopics__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If checked, portal will always show Topics that refer TO the current one in the Related Help Topics listing</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, portal will always show Topics that refer TO the current one in the Related Help Topics listing</inlineHelpText>
+        <label>Show Referring Topics</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>TrackDaysCallouts__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days of log data to retain for help callout views</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days of log data to retain for help callout views</inlineHelpText>
+        <label>Track Days Callouts</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackDaysComments__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days to retain comments on Help Topics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days to retain comments on Help Topics</inlineHelpText>
+        <label>Track Days Comments</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackDaysErrors__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days to retain help configuration error records</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days to retain help configuration error records</inlineHelpText>
+        <label>Track Days Errors</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackDaysResources__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days to retain records of use of Help Resources</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days to retain records of use of Help Resources</inlineHelpText>
+        <label>Track Days Resources</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackDaysSearches__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days to retain records of user searches</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days to retain records of user searches</inlineHelpText>
+        <label>Track Days Searches</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackDaysTopics__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days of log data to retain for help topic full views</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days of log data to retain for help topic full views</inlineHelpText>
+        <label>Track Days Topics</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackDaysVotes__c</fullName>
+        <defaultValue>30</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of days to retain records of Votes</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of days to retain records of Votes</inlineHelpText>
+        <label>Track Days Votes</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrackErrors__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to log a Help Interaction record when there are configuration or other errors affecting Help Topics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to log a Help Interaction record when there are configuration or other errors affecting Help Topics</inlineHelpText>
+        <label>Track Errors</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>TrackInteractions__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Check this box to enable tracking of user interactions with Improved Help</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to enable tracking of user interactions with Improved Help</inlineHelpText>
+        <label>Track Interactions</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>UpdateMarkerHours__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The number of hours from an Improved Help record&apos;s last modified date for which to flag it as updated</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of hours from an Improved Help record&apos;s last modified date for which to flag it as updated</inlineHelpText>
+        <label>Update Marker Duration</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserAdviceCommentLogged__c</fullName>
+        <defaultValue>&quot;Your comment has been logged&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Message to present to users when a comment is logged successfully</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Message to present to users when a comment is logged successfully</inlineHelpText>
+        <label>User Advice Comment Logged</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserAdviceMissingElement__c</fullName>
+        <defaultValue>&quot;No Helped Element found&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Text to display to Helped Users when Improved Help is called but Helped Element is missing</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Text to display to Helped Users when Improved Help is called but Helped Element is missing</inlineHelpText>
+        <label>User Advice Missing Element</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserAdviceMissingTemplate__c</fullName>
+        <defaultValue>&quot;Error locating the Template specified for this Help Topic&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Text to display to Helped Users when Improved Help is called but Helped Element&apos;s Topic does not specify a valid Template</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Text to display to Helped Users when Improved Help is called but Helped Element&apos;s Topic does not specify a valid Template</inlineHelpText>
+        <label>User Advice Missing Template</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserAdviceMissingTopic__c</fullName>
+        <defaultValue>&quot;No Topic matching that specified in Helped Element &quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Text to display to Helped Users when Improved Help is called but Helped Element has a missing Topic</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Text to display to Helped Users when Improved Help is called but Helped Element has a missing Topic</inlineHelpText>
+        <label>User Advice Missing Topic</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserAdvicePrintShelfLife__c</fullName>
+        <defaultValue>&quot;Warning: The accuracy of printed information is not guaranteed. Always refer to online Help if in any doubt.&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Text to include on prinitable views of Help Topics as a warning regarding their limited shelf life</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Text to include on prinitable views of Help Topics as a warning regarding their limited shelf life</inlineHelpText>
+        <label>User Advice Print Shelf Life</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>jQNCMode__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Controls the use of jQuery nonConflict throughout Improved Help</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls the use of jQuery nonConflict throughout Improved Help</inlineHelpText>
+        <label>jQNCMode</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Improved Help Org Settings</label>
+</CustomObject>

@@ -1,0 +1,193 @@
+<apex:page standardController="Chatify__ChatifySetting__c" extensions="Chatify.ChatifyConfigController">
+    <apex:includeScript value="{!$Resource.Chatify__jquery}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.Chatify__ChatifyResources, 'css/style.css')}"/>
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+    
+        $j(document).ready(function() {
+            $j(".rich-tabhdr-side-border").remove();
+            $j(".rich-tab-header.step1").html("<span class='stepNum'>1</span> Fields");
+            $j(".rich-tab-header.step2").html("<span class='stepNum'>2</span> Filters");
+            $j(".rich-tab-header.step3").html("<span class='stepNum'>3</span> Options");
+            
+            $j(".finishButton").css({"display": "none"});
+            
+            $j(".nextButton").click(function(e) {
+                e.preventDefault();
+            });
+                   
+        });
+        
+        function removeNext() {
+            $j(".nextButton").css({"display": "none"});
+            $j(".finishButton").css({"display": ""});
+        }
+
+        function addNext() {
+            $j(".nextButton").css({"display": ""});
+            $j(".finishButton").css({"display": "none"});
+        }
+
+        function moveNext(AccountTabPanel) {
+            
+            if (RichFaces && RichFaces.panelTabs[AccountTabPanel]) {
+                var tabs = RichFaces.panelTabs[AccountTabPanel];
+                if($j(".rich-tab-active.step1").length) {
+                    RichFaces.switchTab(AccountTabPanel, tabs[1].id, tabs[1].name);
+                    addNext();
+                }
+                else if($j(".rich-tab-active.step2").length) {
+                    RichFaces.switchTab(AccountTabPanel, tabs[2].id, tabs[2].name);
+                    removeNext();
+                }
+            }
+        }    
+    </script>
+
+    <div id="Detail-Page-Title">
+        <h1>Configure</h1>
+        <br/>
+        <h2>Chatify Settings: {!setting.Name} {!setting.Chatify__RecordTypes__c}</h2>
+    </div>
+
+    <apex:form id="MainForm">
+        <apex:tabPanel switchType="client" selectedTab="step1" id="AccountTabPanel"
+            tabClass="activeTab" inactiveTabClass="inactiveTab">
+            <!--    
+            <apex:tab label="Step 1: Enabled" name="step1" id="step1">
+            <h1>Enabled:</h1>
+            <apex:inputCheckbox value="{!setting.Enabled__c}"/>
+            </apex:tab>
+
+            <apex:tab label="Step 2: Parent Account" name="step2" id="step2">
+                <apex:selectList value="{!setting.ParentAccount__c}" size="1">
+                    <apex:selectOptions value="{!Fields}"></apex:selectOptions>
+                </apex:selectList>
+            </apex:tab>
+            -->
+            <apex:tab name="step1" ontabenter="addNext()" styleClass="step1" id="step1">
+                <br/>
+                <p class="subSectionTitle">
+                    Select the fields you'd like to appear in your Chatter notification from the list below. You can use the up/down arrows to the right of "Selected Fields" box to change the order in which the information in these fields will appear in the Chatter post. Save your choices, and click "Next" to proceed to the next tab.
+                </p>
+
+                <br/>
+                <br/>
+
+                <c:MultiselectPicklist leftLabel="Unselected Fields"
+                                leftOptions="{!unselectedFields}"
+                                rightLabel="Selected Fields"
+                                rightOptions="{!selectedFields}"
+                                size="10"
+                                width="160px"/>
+                <!--<apex:InputField value="{!setting.Fields__c}" style="width: 60%"/>
+                -->
+            </apex:tab>
+
+            <apex:tab label="Filters" name="step2" ontabenter="addNext()" styleClass="step2" id="step2">
+                <p class="subSectionTitle">
+                    Create filters in order to define which new records will result in a Chatter notification. Use the "Add Row" button to create multiple filters. The "Remove Row" button will eliminate a filter.
+                </p>
+
+                <!--
+                        <p class="subSectionTitle">Current Setting: {!setting.Chatify__FilterFields__c}</p>
+                -->
+                <p class="subSectionTitle">Filter By Additional Fields (Optional):</p>
+                <div>
+                    <span id="fieldLabel" class="subSectionTitle">Field</span>
+                    <span id="operatorLabel" class="subSectionTitle">Operator</span>
+                    <span id="valueLabel" class="subSectionTitle">Value</span>
+                </div>
+                <div id="filterComponent">
+                    <c:SOQLQueryFilter FilterResultReturnObject="{!FilterResult}" ObjectToFilter1="{!Object2Filter}" WhereClause1="{!setting.Chatify__FilterFields__c}"/>
+                </div>
+            </apex:tab>
+
+            <apex:tab label="Options" name="step3" ontabenter="removeNext()" styleClass="step3" id="step3">
+                <p class="subSectionTitle">
+                    Enable Auto Follow in order to follow all new records that fit the criteria defined in the first three tabs. When Auto Follow is enabled, you will receive regular Chatter updates as the record is edited.
+                </p>
+                <p class="subSectionTitle">
+                    Enable Email Alerts in order to sent automatic email of your Chatify posts to a user or group of users. Select the email recipient from the list below. Populate the "Reply To" field with the email address from which the notification will be sent. Use the "Sender Display Name" field to determine how that email will appear to recipients.
+                </p>
+
+                <p class="subsectionLabel">Auto Follow</p>
+
+                <div class="subsectionBody" id="followEnabled">
+                    <div class="input-group">
+                        <span class="input-label">
+                            <h1>Auto Follow Enabled</h1>
+                        </span>
+                        <span class="input-input">
+                            <apex:inputCheckbox value="{!setting.Chatify__AutoFollowEnabled__c}"/>
+                        </span>
+                    </div>
+                </div>
+
+                <p class="subsectionLabel">Email</p>
+                <div class="subsectionBody">
+                    <div class="input-group">
+                        <span class="input-label">
+                            <h1>Email Alerts Enabled</h1>
+                        </span>
+                        <span class="input-input">
+                            <apex:inputCheckbox value="{!setting.Chatify__EmailAlertsEnabled__c}"/>
+                        </span>
+                    </div>
+                    <!--
+                                <div class="input-group">
+                    <span class="input-label picklist inline">
+                        <h1>Email Groups</h1>
+                    </span>
+                    <span class="input-input inline">
+                        <c:MultiselectPicklist leftLabel="Unselected Groups"
+                                    leftOptions="{!unselectedGroups}"
+                                    rightLabel="Selected Groups"
+                                    rightOptions="{!selectedGroups}"
+                                    size="10"
+                                    width="160px"/>
+                    </span>
+                    -->
+                </div>
+                
+                <div class="input-group">
+                    <span class="input-label picklist inline">
+                        <h1>Email Groups</h1>
+                    </span>
+                    <span class="input-input inline">
+
+                        <c:MultiselectPicklist leftLabel="Unselected Groups"
+                                    leftOptions="{!unselectedGroups}"
+                                    rightLabel="Selected Groups"
+                                    rightOptions="{!selectedGroups}"
+                                    size="10"
+                                    width="160px"/>
+
+                    </span>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">
+                        <h1>Reply To</h1>
+                    </span>
+                    <apex:InputField value="{!setting.Chatify__ReplyTo__c}" styleClass="step4Fields"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-label">
+                        <h1>Sender Display Name</h1>
+                    </span>
+                    <apex:InputField value="{!setting.Chatify__SenderDisplayName__c}" styleClass="step4Fields"/>
+                </div>
+
+            </apex:tab>
+
+        </apex:tabPanel>
+        <div class="button-group">
+            <apex:commandButton value="Save" action="{!Save}" styleClass="saveButton blueButton"/>
+            <apex:commandButton value="Cancel" action="{!Cancel}"/>
+
+            <apex:commandButton value="Next" disabled="disabled" onclick="moveNext('{!$Component.AccountTabPanel}');" styleClass="nextButton greenButton" />
+            <apex:commandButton value="Finish" action="{!Save}" styleClass="finishButton greenButton" />
+        </div>
+    </apex:form>
+</apex:page>

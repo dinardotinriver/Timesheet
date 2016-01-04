@@ -1,0 +1,52 @@
+<!--
+* {Purpose} – This custom component can we used to provide a Find outputLink that
+*				redirects to the Salesforce Search feature with the appropriate
+				criteria searching against Contacts, Leads or Both
+*
+* @author	Mike Eaton
+* @version	2012-01-20
+*/
+ 
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name			Description
+* 2012-01-20	Mike Eaton		Created      
+* 2012-01-26	Mike Eaton		Reorganized attributes and added comments
+* =============================================================================
+-->
+<apex:component controller="ContactNet.CNFindContactController" selfClosing="true">
+	<apex:attribute name="_Overview" type="string" 
+					description="This is a custom component designed to create a hyperlink that will redirect users to
+					the native Salesforce Search feature using the supplied criteria. It is most useful to leverage
+					this component when needing an Action column link." />
+	<!-- Required attributes -->
+	<apex:attribute name="searchCriteria" type="string" required="true" assignTo="{!searchCriteria}"
+					description="The criteria to search for (eg. email address)" />
+	<!-- Optional attributes with default values -->
+	<apex:attribute name="searchContacts" type="boolean" required="false" assignTo="{!includeContact}"
+					description="Search for matches in the Contact object?" 
+					default="true"/>
+	<apex:attribute name="searchLeads" type="boolean" required="false" assignTo="{!includeLead}"
+					description="Search for matches in the Lead object?"
+					default="false" />	
+	<apex:attribute name="searchAccounts" type="boolean" required="false" assignTo="{!includeAccount}"
+					description="Search for matches in the Account object?" 
+					default="false"/>
+	<apex:attribute name="useGlobalSearch" type="boolean" required="false" assignTo="{!useGlobal}"
+					description="What native search feature should be used Basic or Global (requires Chatter enabled)?"
+					/>
+	<!-- UI related attributes -->					
+	<apex:attribute name="hyperlinkTitle" type="string" required="false" 
+					description="The value of the hyperlink Title"
+					default="Search" />
+	<apex:attribute name="hyperlinkHelpText" type="string" required="false"  
+					description="The value of the hyperlink hover Help Text"
+					default="Search for contact in Salesforce" />
+	<apex:attribute name="styleClass" type="string" required="false" 
+					description="Custom styleClass to use for the hyperlink" 
+					default="actionLink" />
+	<!-- Render Logic -->
+  	<apex:outputLink value="{!searchURL}" title="{!hyperlinkHelpText}" styleClass="{!styleClass}" target="_blank"> 
+	{!hyperlinkTitle}</apex:outputLink>  
+</apex:component>

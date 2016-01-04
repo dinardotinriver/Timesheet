@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeDate)}
+{!INCLUDE($SControl.aptsIncludeTable)}
+{!INCLUDE($SControl.aptsIncludeWizard)}
+
+<script language="javascript" type="text/javascript"> 
+
+var cCREATE_DRAFT_AGREEMENT = "Creating preview...Please wait";
+var cERROR_CREATE_DRAFT_AGREEMENT = "ERROR previewing agreement:\n";
+
+function initPage() {
+	//doRemoveTasks();
+	window.setTimeout("doInit();",gTimeout);
+}
+
+function doInit() {
+	gDebug = false;
+	gAction = cACTION_PREVIEW_AGREEMENT;
+	
+	gDebugTime = false;
+	gIsDraft = true;
+	gIsVisible = true;
+	
+	gMergeType = "Draft";
+	gMergeTypeMsg = cCREATE_DRAFT_AGREEMENT;
+	gMergeTypeErr = cERROR_CREATE_DRAFT_AGREEMENT;
+	
+	gPageTitle = "Preview Agreement";
+	gPageDescription = "Apttus can generate a draft version of your agreement from your data.<br>" +
+		"Please choose an agreement template.";
+		
+	getWizardMode();
+	doMakeFormRequest();
+	initWizard();
+}
+
+function preMerge() {}
+
+function postMerge() {
+	if (gLogActivity) {
+		createActivityLogEntry();
+	}
+
+	if (!gUseMergeServer) {
+		gMMObj = null;
+	}
+	
+	navigateTo(gObjectIdURL);
+}
+</script>
+</head>
+
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

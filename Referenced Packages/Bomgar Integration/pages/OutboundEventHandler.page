@@ -1,0 +1,12 @@
+<apex:page id="OutboundEventHandler" 
+	action="{!RecordOutboundEvent}"
+	applyBodyTag="false" 
+	cache="false"
+	controller="BGIntegration.OutboundEventController"
+	label="SessionUpdateHandler" 
+	name="SessionUpdateHandler"
+	showHeader="false"
+	sidebar="false"
+	standardStylesheets="false"
+	title="Session Update Handler">
+</apex:page>

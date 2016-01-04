@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Nominative</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Accusative</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Genitive</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Dative</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Instrumental</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Instrumental</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Prepositional</caseType>
+        <plural>false</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <caseValues>
+        <caseType>Prepositional</caseType>
+        <plural>true</plural>
+        <value><!-- DocuSign Envelope Document --></value>
+    </caseValues>
+    <fields>
+        <help><!-- Attachment ID --></help>
+        <label>Идентификатор вложения</label>
+        <name>Attachment_ID__c</name>
+    </fields>
+    <fields>
+        <label>Расширенное имя вложения</label>
+        <name>Attachment_NameEx__c</name>
+    </fields>
+    <fields>
+        <help><!-- Attachment Name --></help>
+        <label>Имя вложения</label>
+        <name>Attachment_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- DocuSign Envelope ID --></help>
+        <label>Идентификатор конверта DocuSign</label>
+        <name>DocuSign_EnvelopeID__c</name>
+        <relationshipLabel>Документы в конверте DocuSign</relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Document ID --></help>
+        <label>Идентификатор документа</label>
+        <name>Document_ID__c</name>
+    </fields>
+    <fields>
+        <label>Название документа</label>
+        <name>Document_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Document Order --></help>
+        <label>Порядок документов</label>
+        <name>Document_Order__c</name>
+    </fields>
+    <fields>
+        <label>Внешний идентификатор документа</label>
+        <name>External_Document_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- Saleforce Document Type --></help>
+        <label>Тип документа</label>
+        <name>SFDocument_Type__c</name>
+        <picklistValues>
+            <masterLabel>Attachment</masterLabel>
+            <translation><!-- Attachment --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Content</masterLabel>
+            <translation><!-- Content --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>DSTemplate</masterLabel>
+            <translation><!-- DSTemplate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Document</masterLabel>
+            <translation><!-- Document --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Quote</masterLabel>
+            <translation><!-- Quote --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Validation Message --></help>
+        <label>Сообщение для проверки правильности</label>
+        <name>Validation_Message__c</name>
+    </fields>
+    <gender><!-- Neuter --></gender>
+    <layouts>
+        <layout>DocuSign Envelope Document Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel><!-- DocuSign Document Name --></nameFieldLabel>
+</CustomObjectTranslation>

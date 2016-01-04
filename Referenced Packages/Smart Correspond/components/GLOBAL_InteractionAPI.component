@@ -1,0 +1,87 @@
+<apex:component controller="TH1.GLOBAL_CO_InteractionAPI" allowDML="true" access="global">
+    <apex:attribute access="global" name="interaction" type="String" description="The interaction parameter for the API call"/>
+    <apex:attribute access="global" name="path" type="String" description="Optionally filter the response for a specific path"/>
+    <apex:attribute access="global" name="responseTarget" type="String" description="Determines where the response is loaded. THIS, TOP or NEW."   />
+    <apex:attribute access="global" name="postResponsesToChatter" type="boolean" default="false" description="Posts responses to next best action to chatter feed" />
+    <apex:attribute access="global" name="includeJQuery" type="boolean" default="true" description="If false prevents this component from loading its own copy of jquery" />
+    <apex:attribute access="global" name="debugOn" default="false" description="If true displays console log entries" type="boolean"/>
+    <apex:attribute access="global" name="collectResponses" default="true" description="Determines if responses trigger notification back to the ONE platform" type="boolean"/>
+    
+    <apex:pageMessage summary="{!ConnectFeatureMessage}" severity="info" strength="3" rendered="{!NOT(ConnectIsLicensed)}" escape="false" />
+    <apex:outputPanel rendered="{!ConnectIsLicensed}">
+    <script>
+    var debugOn = {!debugOn};
+    var defaultInteraction = '{!interaction}';
+    var defaultPath = '{!path}';
+    var customerKey;
+    var postResponsesToChatter = {!postResponsesToChatter};
+
+    var tid;
+    
+    //Get content using the interaction and path specified in the component attributes
+    function getContent(customerKey, callback){
+        getContentForInteraction(customerKey, defaultInteraction, defaultPath, callback)
+    }
+    
+    //Get content specifying interaction and path with each call
+    function getContentForInteraction(customerKey, interaction, path, callback){
+        debug(interaction + ' get content for customerKey: ' + customerKey);
+        debug(callback);
+        if(customerKey && interaction){
+            // This remoting call will use the page's timeout value
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.GLOBAL_CO_InteractionAPI.getInteractionContent}',
+                customerKey, interaction, path, 
+                    function(result, event){
+                        debug(interaction + ' received content..', result);
+                        if (!event.status) {
+                           logError(event.message, event);
+                        }
+                        callback(result, event.status);
+                    },
+                { buffer: true, escape: false, timeout: 30000 }
+            );
+        }
+    }
+    
+    function sendResponseInteraction(interactionParam, tidParam, responseIdParam, chatterFeedId, chatterText, callback){
+        if(!chatterText){
+            chatterText = '';
+        }
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.GLOBAL_CO_InteractionAPI.sendResponse}',
+            chatterFeedId, responseIdParam, tidParam, interactionParam, postResponsesToChatter,
+            chatterText, 
+                function(result, event){
+                        if (!event.status) {
+                           logError(event.message, event); 
+                        }
+                           
+                        callback(event.status);
+                },
+            { buffer: true, escape: false, timeout: 30000 }
+        );
+    }
+    
+    function debug(logText, logObject){
+        if(debugOn == true && window.console){
+            console.info('%c ** ONE Connect ' + logText, 'color: orange');
+            if(logObject){
+                console.info(logObject);
+            }
+        }
+    }
+    
+    function logError(logText, logObject){
+        if(window.console){
+            console.error('%c ** ONE Connect error: ' + logText, 'color: red');
+            if(logObject){
+                console.info(logObject);
+            }
+        }else{
+            alert(logText);
+        }
+    }
+    </script>
+    </apex:outputPanel>
+</apex:component>

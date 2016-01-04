@@ -1,0 +1,774 @@
+<script language="javascript" type="text/javascript"> 
+
+function getNumMonths(datearray) {
+	try {
+		var debug = false;
+		
+		var yr = datearray[0];
+		var mo = datearray[1];
+		var dy = datearray[2];
+		var hh = datearray[3];
+		var mm = datearray[4];
+		var ss = datearray[5];
+		
+		var numMths = yr*12;
+		numMths += mo;
+		if (dy>0) numMths += 1;
+
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss+"\nnumMths="+numMths);
+
+		return numMths;
+	}
+	catch(ex) {
+		return new Date();
+	}
+}
+
+function getMonthStartDate(dateVal) {
+	try {
+		var debug = false;
+		if (debug) alert("dateVal="+dateVal+"\ndltypeof="+dltypeof(dateVal));
+		
+		var d = dateVal;
+		if (dltypeof(dateVal)!="date") {
+			d = parseDate(dateVal);
+			if (debug) alert("d="+d);
+		}
+		
+		var yr = d.getYear();
+		var mo = d.getMonth();
+		var dy = d.getDate();
+		var hh = d.getHours();
+		var mm = d.getMinutes();
+		var ss = d.getSeconds();
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss);
+
+		dy = 1;
+		var msd = new Date(yr,mo,dy,hh,mm,ss);
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss+"\nmsd="+msd);		
+
+		return msd;
+	}
+	catch(ex) {
+		return new Date();
+	}
+}
+
+function getMonthEndDate(dateVal) {
+	try {
+		var debug = false;
+		if (debug) alert("dateVal="+dateVal+"\ndltypeof="+dltypeof(dateVal));
+		
+		var d = dateVal;
+		if (dltypeof(dateVal)!="date") {
+			d = parseDate(dateVal);
+			if (debug) alert("d="+d);
+		}
+		
+		var yr = d.getYear();
+		var mo = d.getMonth();
+		var dy = d.getDate();
+		var hh = d.getHours();
+		var mm = d.getMinutes();
+		var ss = d.getSeconds();
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss);
+
+		//hard coded days in month is not correct
+		if (mo==0) dy = 31;
+		else if (mo==1) dy = 28;
+		else if (mo==2) dy = 31;
+		else if (mo==3) dy = 30;
+		else if (mo==4) dy = 31;
+		else if (mo==5) dy = 30;
+		else if (mo==6) dy = 31;
+		else if (mo==7) dy = 31;
+		else if (mo==8) dy = 30;
+		else if (mo==9) dy = 31;
+		else if (mo==10) dy = 30;
+		else if (mo==11) dy = 31;
+		
+		var med = new Date(yr,mo,dy,hh,mm,ss);
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss+"\nmed="+med);		
+
+		return med;
+	}
+	catch(ex) {
+		return new Date();
+	}
+}
+
+function getNextMonth(dateVal) {
+	try {
+		var debug = false;
+		if (debug) alert("dateVal="+dateVal+"\ndltypeof="+dltypeof(dateVal));
+		
+		var d = dateVal;
+		if (dltypeof(dateVal)!="date") {
+			d = parseDate(dateVal);
+			if (debug) alert("d="+d);
+		}
+		
+		var yr = d.getYear();
+		var mo = d.getMonth();
+		var dy = d.getDate();
+		var hh = d.getHours();
+		var mm = d.getMinutes();
+		var ss = d.getSeconds();
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss);
+
+		mo += 1;
+		var nextMonth = new Date(yr,mo,dy,hh,mm,ss);
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss+"\nnextMonth="+nextMonth);		
+
+		return nextMonth;
+	}
+	catch(ex) {
+		return new Date();
+	}
+}
+
+function getNextDay(dateVal) {
+	try {
+		var debug = false;
+		if (debug) alert("dateVal="+dateVal+"\ndltypeof="+dltypeof(dateVal));
+		
+		var d = dateVal;
+		if (dltypeof(dateVal)!="date") {
+			d = parseDate(dateVal);
+			if (debug) alert("d="+d);
+		}
+		
+		var yr = d.getYear();
+		var mo = d.getMonth();
+		var dy = d.getDate();
+		var hh = d.getHours();
+		var mm = d.getMinutes();
+		var ss = d.getSeconds();
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss);
+
+		dy += 1;
+		var nextDay = new Date(yr,mo,dy,hh,mm,ss);
+		
+		if (debug) alert("yr="+yr+"\nmo="+mo+"\ndy="+dy+"\nhh="+hh+"\nmm="+mm+"\nss="+ss+"\nnextDay="+nextDay);		
+
+		return nextDay;
+	}
+	catch(ex) {
+		return new Date();
+	}
+}
+
+function getDateDiff(date1,date2) {
+	try {
+		var yr1 = date1.getYear();
+		var mo1 = date1.getMonth();
+		var dy1 = date1.getDate();
+		var hh1 = date1.getHours();
+		var mm1 = date1.getMinutes();
+		var ss1 = date1.getSeconds();
+		
+		var yr2 = date2.getYear();
+		var mo2 = date2.getMonth();
+		var dy2 = date2.getDate();
+		var hh2 = date2.getHours();
+		var mm2 = date2.getMinutes();
+		var ss2 = date2.getSeconds();
+								
+		//yr-mo-dy hh:mm:ss
+		var d_ss = ss2 - ss1;
+		if (d_ss < 0) {
+			ss2 += 60;
+			mm2 -= 1;
+			d_ss = ss2 - ss1;
+		}	
+		
+		var d_mm = mm2 - mm1;
+		if (d_mm < 0) {
+			mm2 += 60;
+			hh2 -= 1;
+			d_mm = mm2 - mm1;
+		}
+
+		var d_hh = hh2 - hh1;
+		if (d_hh < 0) {
+			hh2 += 24;
+			dy2 -= 1;
+			d_hh = hh2 - hh1;
+		}
+		
+		var d_dy = dy2 - dy1;
+		if (d_dy < 0) {
+			dy2 += 30;
+			mo2 -= 1;
+			d_dy = dy2 - dy1;
+		}
+		
+		var d_mo = mo2 - mo1;
+		if (d_mo < 0) {
+			mo2 += 12;
+			yr2 -= 1;
+			d_mo = mo2 - mo1;
+		}
+		
+		var d_yr = yr2 - yr1;
+		if (d_yr < 0) {
+			yr2 += 1;
+			d_yr = yr2 - yr1;
+		}
+		
+		var debug = false;
+		if (debug) {
+			alert("date1="+date1+"\ndate2="+date2+
+				"\nd_yr="+d_yr+"\nd_mo="+d_mo+"\nd_dy="+d_dy+
+				"\nd_hh="+d_hh+"\nd_mm="+d_mm+"\nd_ss="+d_ss);
+		}
+
+		var diff = new Array(6);
+		
+		diff[0] = d_yr;
+		diff[1] = d_mo;
+		diff[2] = d_dy;
+		diff[3] = d_hh;
+		diff[4] = d_mm;
+		diff[5] = d_ss;
+		
+		return diff;
+	}
+	catch(ex) {
+		return new Array();
+	}
+}
+
+function addDateDuration(date,duration) {
+	try {
+		var yr1 = date.getYear();
+		var mo1 = date.getMonth();
+		var dy1 = date.getDate();
+		var hh1 = date.getHours();
+		var mm1 = date.getMinutes();
+		var ss1 = date.getSeconds();
+		
+		var yr2 = duration[0];
+		var mo2 = duration[1];
+		var dy2 = duration[2];
+		var hh2 = duration[3];
+		var mm2 = duration[4];
+		var ss2 = duration[5];
+								
+		var d_yr = yr2 + yr1;
+		var d_mo = mo2 + mo1;
+		var d_dy = dy2 + dy1;
+		var d_hh = hh2 + hh1;
+		var d_mm = mm2 + mm1;
+		var d_ss = ss2 + ss1;
+		
+		var d = new Date(d_yr,d_mo,d_dy,d_hh,d_mm,d_ss);
+		return d;
+	}
+	catch(ex) {
+		return new Array();
+	}
+}
+
+function getElapsedTime(date1,date2) {
+	try {
+		var h1 = date1.getHours();
+		var m1 = date1.getMinutes();
+		var s1 = date1.getSeconds();
+		
+		var h2 = date2.getHours();
+		var m2 = date2.getMinutes();
+		var s2 = date2.getSeconds();
+								
+		var s = s2 - s1;
+		if (s < 0) {
+			s2 += 60;
+			s = s2 - s1;
+			m2 -= 1;
+		}
+		
+		var m = m2 - m1;
+		if (m < 0) {
+			m2 += 60;
+			m = m2 - m1;
+			h2 -= 1;
+		}
+
+		var h = h2 - h1;
+		if (h < 0) {
+			h2 += 24;
+			h = h2 - h1;
+		}
+
+		return m + " min " + s + " secs"
+	}
+	catch(ex) {
+		alert(ex);
+		return ""
+	}
+}
+
+function parseDate(val) {
+	if (dltypeof(val) == "date") return val;
+	var preferEuro = (arguments.length==2) ? arguments[1] : false;
+	
+	generalFormats = new Array('y-M-d','MMM d, y','MMM d,y','y-MMM-d','d-MMM-y','MMM d');
+	monthFirst = new Array('M/d/y','M-d-y','M.d.y','MMM-d','M/d','M-d');
+	dateFirst = new Array('d/M/y','d-M-y','d.M.y','d-MMM','d/M','d-M');
+	
+	var checkList = new Array(generalFormats,preferEuro?dateFirst:monthFirst,preferEuro?monthFirst:dateFirst);
+	var d = null;
+	for (var i=0; i<checkList.length; i++) {
+		var l = checkList[i];
+		for (var j=0; j<l.length; j++) {
+			d = getDateFromFormat(val,l[j]);
+			if (d!=0) {
+				return new Date(d);
+			}
+		}
+	}
+	return null;
+}
+
+function toIsoDate(theDate) {
+	var returnString = theDate.getFullYear();
+
+	var mth = theDate.getMonth() + 1;
+	var mthStr = mth.toString();
+	returnString += "-" + padLeft(mthStr, "0", 2);
+
+	var day = theDate.getDate();
+	var dayStr = day.toString();
+	returnString += "-" + padLeft(dayStr, "0", 2);	
+
+	return returnString;
+}
+
+function toIsoDateTime(theDate) {
+	var today = theDate;
+	var year = today.getYear();
+
+	if (year < 2000) {
+		year = year + 1900;
+	}
+
+	var month = today.getMonth() + 1;
+	var day = today.getDate();
+	var hour = today.getHours();
+	var hourUTC = today.getUTCHours();
+	var diff = hour - hourUTC;
+	var hourdifference = Math.abs(diff);
+	var minute = today.getMinutes();
+	var minuteUTC = today.getUTCMinutes();
+	var minutedifference;
+	var second = today.getSeconds();
+	var timezone;
+	
+	if (minute != minuteUTC && minuteUTC < 30 && diff < 0) { hourdifference--; }
+	if (minute != minuteUTC && minuteUTC > 30 && diff > 0) { hourdifference--; }
+	if (minute != minuteUTC) { 
+		minutedifference = ":30";
+	} else {
+		minutedifference = ":00";
+	}
+	
+	if (hourdifference < 10) { 
+		timezone = "0" + hourdifference + minutedifference;
+	} else {
+		timezone = "" + hourdifference + minutedifference;
+	}
+	
+	if (diff < 0) {
+		timezone = "-" + timezone;
+	} else {
+		timezone = "+" + timezone;
+	}
+	
+	if (month <= 9) month = "0" + month;
+	if (day <= 9) day = "0" + day;
+	if (hour <= 9) hour = "0" + hour;
+	if (minute <= 9) minute = "0" + minute;
+	if (second <= 9) second = "0" + second;
+	
+	return year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + timezone;
+}
+
+function getDateRange(form) {
+	var el = document.forms[form].elements;
+	var start = null; 
+	var end = null;
+	var ret = '';
+	
+	for (var i=0; i<el.length; i++) { 
+		if (/Start.*Date/.test(el[i].name)) { 
+			start = el[i];	// the start element
+		}
+		if (/End.*Date/.test(el[i].name)) { 
+			end = el[i];	// the end element
+		}
+	} 
+	if (start && start.value) {  
+		var s = parseDate(trim(start.value));
+		if (!s) {
+			alert('could not parse '+start.value);
+		} else { 
+			ret += " and ActivityDate >= " + toIsoDate(s);
+		}
+	} 
+	if (end && end.value) {  
+		var s = parseDate(trim(end.value));
+		if (!s) {
+			alert('could not parse '+end.value);
+		} else { 
+			ret += " and ActivityDate <= " + toIsoDate(s);
+		}
+	} 
+	return ret;
+} 
+
+var MONTH_NAMES = new Array('January','February','March','April','May','June','July','August','September','October','November','December','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+var DAY_NAMES = new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+
+function getDateFromFormat(val,format) {
+	val=val+"";
+	format=format+"";
+	var i_val=0;
+	var i_format=0;
+	var c="";
+	var token="";
+	var token2="";
+	var x,y;
+	
+	var now=new Date();
+	var year=now.getYear();
+	var month=now.getMonth()+1;
+	var date=1;
+	var hh=now.getHours();
+	var mm=now.getMinutes();
+	var ss=now.getSeconds();
+	var ampm="";
+	
+	while (i_format < format.length) {
+		c=format.charAt(i_format);
+		token="";
+		while ((format.charAt(i_format)==c) && (i_format < format.length)) {
+			token += format.charAt(i_format++);
+		}
+		if (token=="yyyy" || token=="yy" || token=="y") {
+			if (token=="yyyy") {
+				x=4;y=4;
+			}
+			if (token=="yy") {
+				x=2;y=2;
+			}
+			if (token=="y") {
+				x=2;y=4;
+			}
+			year=getInt(val,i_val,x,y);
+			if (year==null) {
+				return 0;
+			}
+			i_val += year.length;
+			if (year.length==2) {
+				if (year > 70) {
+					year=1900+(year-0);
+				}else {
+					year=2000+(year-0);
+				}
+			}
+		} else if (token=="MMM"||token=="NNN"){
+			month=0;
+			for (var i=0; i<MONTH_NAMES.length; i++) {
+				var month_name=MONTH_NAMES[i];
+				if (val.substring(i_val,i_val+month_name.length).toLowerCase()==month_name.toLowerCase()) {
+					if (token=="MMM"||(token=="NNN"&&i>11)) {
+						month=i+1;
+						if (month>12) { 
+							month -= 12;
+						}
+						i_val += month_name.length;
+						break;
+					}
+				}
+			}
+			if ((month < 1)||(month>12)) {
+				return 0;
+			}
+		} else if (token=="EE"||token=="E") {
+			for (var i=0; i<DAY_NAMES.length; i++) {
+				var day_name=DAY_NAMES[i];
+				if (val.substring(i_val,i_val+day_name.length).toLowerCase()==day_name.toLowerCase()) {
+					i_val += day_name.length;
+					break;
+				}
+			}
+		} else if (token=="MM"||token=="M") {
+			month=getInt(val,i_val,token.length,2);
+			if(month==null||(month<1)||(month>12)) {
+				return 0;
+			}
+			i_val+=month.length;
+			
+		} else if (token=="dd"||token=="d") {
+			date=getInt(val,i_val,token.length,2);
+			if(date==null||(date<1)||(date>31)) {
+				return 0;
+			}
+			i_val+=date.length;
+			
+		} else if (token=="hh"||token=="h") {
+			hh=getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<1)||(hh>12)) {
+				return 0;
+			}
+			i_val+=hh.length;
+			
+		} else if (token=="HH"||token=="H") {
+			hh=getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<0)||(hh>23)) {
+				return 0;
+			}
+			i_val+=hh.length;
+			
+		} else if (token=="KK"||token=="K") {
+			hh=getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<0)||(hh>11)) {
+				return 0;
+			}
+			i_val+=hh.length;
+			
+		} else if (token=="kk"||token=="k") {
+			hh=getInt(val,i_val,token.length,2);
+			if(hh==null||(hh<1)||(hh>24)) {
+				return 0;
+			}
+			i_val+=hh.length;
+			hh--;
+			
+		} else if (token=="mm"||token=="m") {
+			mm=getInt(val,i_val,token.length,2);
+			if(mm==null||(mm<0)||(mm>59)) {
+				return 0;
+			}
+			i_val+=mm.length;
+			
+		} else if (token=="ss"||token=="s") {
+			ss=getInt(val,i_val,token.length,2);
+			if(ss==null||(ss<0)||(ss>59)) {
+				return 0;
+			}
+			i_val+=ss.length;
+			
+		} else if (token=="a") {
+			if (val.substring(i_val,i_val+2).toLowerCase()=="am") {
+				ampm="AM";
+			} else if (val.substring(i_val,i_val+2).toLowerCase()=="pm") {
+				ampm="PM";
+			} else {
+				return 0;
+			}
+			i_val+=2;
+		} else {
+			if (val.substring(i_val,i_val+token.length)!=token) {
+				return 0;
+			} else {
+				i_val+=token.length;
+			}
+		}
+	}
+	if (i_val != val.length) {
+		return 0;
+	}
+	if (month==2) {
+		if (((year%4==0)&&(year%100 != 0)) || (year%400==0)) {
+			if (date > 29){
+				return 0;
+			}
+		} else {
+			if (date > 28) {
+				return 0;
+			}
+		}
+	}
+	if ((month==4)||(month==6)||(month==9)||(month==11)) {
+		if (date > 30) {
+			return 0;
+		}
+	}
+	if (hh<12 && ampm=="PM") {
+		hh=hh-0+12;
+	} else if (hh>11 && ampm=="AM") {
+		hh-=12;
+	}
+	var newdate=new Date(year,month-1,date,hh,mm,ss);
+	return newdate.getTime();
+}
+
+function startsWith(str,prefix)	{
+	return (str.substr(0,prefix.length)==prefix);
+}
+
+function trimLeft(str) {
+	return str.replace(/^\s*/,"");
+}
+
+function trimRight(str) {
+	return str.replace(/\s*$/,"");
+}
+
+function trim(str) {
+	return str.trimRight().trimLeft();
+}
+
+function padLeft(str, padChar, totalLength) {
+	var thisLen = str.length;
+	var out = str;
+	if (thisLen < totalLength) {
+		var diff = totalLength - thisLen;
+		for (var i=0;i<diff;i++) {
+			out = padChar + out;
+		}
+	}
+	return out;
+}
+
+function padRight(str, padChar, totalLength) {
+	var thisLen = str.length;
+	var out = str;
+	if (thisLen < totalLength) {
+		var diff = totalLength - thisLen;
+		for (var i=0;i<diff;i++) {
+			out = out + padChar;
+		}
+	}
+	return out;
+}
+
+function dltypeof(vExpression) {	
+	if (vExpression != null && vExpression.className) {
+		return vExpression.className;
+	}
+	
+	var sTypeOf = typeof vExpression;
+	if( sTypeOf == "function" ){
+		var sFunction = vExpression.toString();
+		if( ( /^\/.*\/$/ ).test( sFunction ) ){
+			return "regexp";
+		} else if ( ( /^\[object.*\]$/i ).test( sFunction ) ){
+			sTypeOf = "object"}
+		}
+		if ( sTypeOf != "object" ){
+			return sTypeOf;
+		}
+		switch( vExpression ){
+			case null:
+				return "null";
+			case window:
+				return "window";
+			case window.event:	
+				return "event";
+		}
+		if( window.event && ( event.type == vExpression.type ) ){
+			return "event";
+		}
+		var fConstructor = vExpression.constructor;
+		if( fConstructor != null ){
+			switch( fConstructor ){
+				case Array:
+					sTypeOf = "array";
+					break;
+				case Date:
+					return "date";
+				case RegExp:
+					return "regexp";
+				case Object:
+					sTypeOf = "jsobject";
+					break;
+				case ReferenceError:
+					return "error";
+				default:
+					var sConstructor = fConstructor.toString();
+					var aMatch = sConstructor.match( /\s*function (.*)\(/ );
+					if( aMatch != null ){
+						return aMatch[ 1 ];
+					}
+			}
+		}
+		var nNodeType = vExpression.nodeType;
+		if( nNodeType != null ){	
+			switch( nNodeType ){
+				case 1:
+					if( vExpression.item == null ){
+						return "domelement";
+					}
+					break;
+				case 3:
+					return "textnode";
+			}
+		}
+	/*if( vExpression.toString != null ){
+		var sExpression = vExpression.toString();
+		var aMatch = sExpression.match( /^\[object (.*)\]$/i );
+		if( aMatch != null ){
+			var sMatch = aMatch[ 1 ];
+			switch( sMatch.toLowerCase() ){
+				case "event":
+					return "event";
+				case "math":
+					return "math";
+				case "error":	
+					return "error";
+				case "mimetypearray":
+					return "mimetypecollection";
+				case "pluginarray":
+					return "plugincollection";
+				case "windowcollection":
+					return "window";
+				case "nodelist":
+				case "htmlcollection":
+				case "elementarray":
+					return "domcollection";
+			}
+		}
+	}*/
+	if( vExpression.moveToBookmark && vExpression.moveToElementText ){
+		return "textrange";
+	} else if( vExpression.callee != null ){
+		return "arguments";
+	} else if ( vExpression.item != null ){
+		return "domcollection";
+	}
+	return sTypeOf;
+}
+
+function getInt(str,i,minlength,maxlength) {
+	for (var x=maxlength; x>=minlength; x--) {
+		var token=str.substring(i,i+x);
+		if (token.length < minlength) {
+			return null;
+		}
+		if (isInteger(token)) {
+			return token;
+		}
+	}
+	return null;
+}
+
+function isInteger(val) {
+	var digits="1234567890";
+	for (var i=0; i < val.length; i++) {
+		if (digits.indexOf(val.charAt(i))==-1) {
+			return false;
+		}
+	}
+	return true;
+}
+
+</script>

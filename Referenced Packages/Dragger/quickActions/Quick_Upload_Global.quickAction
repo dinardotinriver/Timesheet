@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows users to quickly upload multiple files at once using drag-and-drop.</description>
+    <height>36</height>
+    <label>Quick Upload</label>
+    <page>DraggerAction_Global</page>
+    <type>VisualforcePage</type>
+    <width>-100</width>
+</QuickAction>

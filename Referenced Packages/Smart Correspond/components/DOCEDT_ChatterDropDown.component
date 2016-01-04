@@ -1,0 +1,77 @@
+<apex:component >
+
+<style>
+.chatter_drop_down {
+    display: none;
+    width: 500px;
+    height: 350px;
+    border: solid 1px gray;
+    padding: 5px;
+    background-color: #eeeeee;
+}
+.chatter_iframe iframe {
+    height:330px;
+    width: 498px
+}
+div.tabArea {
+  font-size: 80%;
+  font-weight: bold;
+}
+a.tab {
+  color: black
+  background-color: #f0f0f0;
+  border: 1px solid #000000;
+  border-bottom-width: 0px;
+  padding: 2px 1em 2px 1em;
+  text-decoration: none;
+  position: relative;
+  top: 0px;
+  left: 15px;
+}
+a.active_tab{
+  background-color: white;
+  border: 1px solid #000000;
+  border-bottom-width: 0px;
+  padding: 2px 1em 2px 1em;
+  text-decoration: none;
+  position: relative;
+    top: 0px;
+    left: 15px;
+}
+
+a.tab, a.tab:visited {
+  color: black;
+}
+
+a.tab:hover {
+  background-color: #d0d0d0;
+  color: #606060;
+}
+</style>
+    <c:COMMON_JQueryLib />
+    <c:COMMON_MustacheLib />
+    <c:COMMON_DropDownButton />
+    <c:LoadJS module="docedt/chatter-dropdown" />
+
+    <script type="text/template" id="chatter-dropdown-area_tmpl">
+<div class="chatter_drop_down drop_down_area" style="height:358px;width:507px">
+   <div class="tab-area">
+        <a class="active_tab tab" href="#post-tab_{{id}}">Share</a>
+        <a class="tab" href="#frame-tab_{{id}}">Discuss</a>
+    </div>
+    <div id="post-tab_{{id}}" class="chatter_iframe tab_content">
+        <iframe name="chatter_post" id="chatter_post" frameborder="0"/>
+    </div>
+    <div id="frame-tab_{{id}}" class="chatter_iframe tab_content">
+        <iframe name="chatter_frame" id="chatter_frame" frameborder="0" onload="frameLoaded('frame-tab_{{id}}');"/>
+		<img id="frame-loading" src="/img/loading.gif" style="padding: 10px;"/>
+    </div>
+</div>
+    </script>
+	<script>
+		var frameLoaded = function(id) {
+			$('#' + id + ' img').hide();
+			$('#' + id + ' iframe').attr('style', '');
+		}
+	</script>
+</apex:component>

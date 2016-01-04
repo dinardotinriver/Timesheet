@@ -1,0 +1,9 @@
+<apex:component >
+ 	<apex:includeScript value="/support/console/28.0/integration.js"/>
+    <c:REMOTE_Docbox />
+    <c:LoadJS module="docgen/collaborate" />
+    <apex:outputPanel id="collaboratePanel">
+    	<div id="collab_messages"></div>
+		<div id="collab_container"></div>
+	</apex:outputPanel>
+</apex:component>

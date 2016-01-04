@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script type="text/javascript" src="/library.js"></script>
+<script src="/email/wysiwyg/controls.js"></script>
+<script src="/email/wysiwyg/editor.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeWizard)}
+{!INCLUDE($SControl.aptsIncludeMail)}
+{!INCLUDE($SControl.aptsDesktopAjax)}
+
+<script language="javascript" type="text/javascript"> 
+
+var gTargetStatusCategory = "In Signatures";
+var gTargetStatus = "Other Party Signatures";
+
+function initPage() {
+	window.setTimeout("sendToOtherPartyForSignatures();",gTimeout);
+}
+
+function sendToOtherPartyForSignatures() {
+	try {
+		gAction = cACTION_SEND_TO_OTHER_PARTY_FOR_SIGNATURES;
+		gPageTitle = "Send To Other Party For Signatures";
+		gPageDescription = "Select Agreement Protection";
+
+		sendToOtherPartyInit();
+	}
+	catch(ex) {
+	   alert(ex);
+	}
+}
+
+function sendMailCallback() {
+	try {
+		var subj = "Sent To Other Party For Signatures";
+		var desc = "Agreement {!APTS_Agreement__c.FF_Agreement_Number__c} "+
+			"Sent To Other Party For Signatures";
+			
+		createActionActivityHistory(subj,desc);
+
+		sendToOtherPartyUpdateStatusCategory();
+		sendToOtherPartyPost();
+	}
+	catch(ex) {
+       alert(ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+ 
+<div id="divMain"><h1>Please wait...</h1></div>
+
+<div id="gEmailBody" style="position:absolute; visibility:hidden">{!$Request.p7}</div>
+<form name="dummy" method="post">
+<textarea id="gEmailBodyTA" name="gEmailBodyTA" style="visibility:hidden">
+{!$Request.p7}
+</textarea>
+</form>
+
+</body>
+</html>

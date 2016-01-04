@@ -1,0 +1,4 @@
+<apex:component >
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThirdParty, '/jquery-ui-1.8.21/ui/minified/jquery-ui.min.js')}"/>
+	<apex:stylesheet value="{!URLFOR($Resource.TH1__ThirdParty, '/jquery-ui-1.8.21/themes/smoothness/jquery-ui.css')}"/>
+</apex:component>

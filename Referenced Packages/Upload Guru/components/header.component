@@ -1,0 +1,115 @@
+<apex:component id="pgfrm" controller="vish_file.UploadController">
+
+<apex:form id="compofrm">
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.vish_file__SLDS080, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>    
+<!-- <apex:styleSheet value="{!URLFOR($Resource.UploadGuru,'UploadGuru/css/bootstrap.min.css')}" />
+<apex:styleSheet value="{!URLFOR($Resource.UploadGuru,'UploadGuru/css/bootstrap-theme.min.css')}" />
+<script src="{!URLFOR($Resource.UploadGuru,'UploadGuru/js/bootstrap.min.js')}"></script> -->
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<style>
+    .dropdown{
+        background-color:#2A94D6;
+    }
+    .dropdown-menu{
+        background-color:#2A94D6;
+    }
+    .body{
+        background-color:#2A94D6;
+    }
+    .h2{
+        background-color:#2A94D6;
+    }
+    .dropdown-toggle{
+        background-color:#2A94D6;
+    }
+    /* Large desktop */
+    @media (min-width: 1200px) { ... }
+    
+    /* Portrait tablet to landscape and desktop */
+    @media (min-width: 768px) and (max-width: 979px) { ... }
+    
+    /* Landscape phone to portrait tablet */
+    @media (max-width: 767px) { ... }
+    
+    /* Landscape phones and down */
+    @media (max-width: 680px) { 
+        .is640{
+            display:none;
+        }        
+    }  
+    
+    /* Landscape phones and down */
+    @media (min-width: 681px) {         
+        .isNot640{
+            display:none;
+        }
+    }   
+
+    .dropdown-submenu > a:focus, .dropdown-submenu > a:hover, .dropdown-submenu:focus>a, r, .dropdown-submenu:hover>a,
+    .dropdown-menu > li a:hover,
+    .dropdown-menu > li a:focus { 
+        background-color: #2A94D6;
+        color:#333; background-image: none; 
+        filter: none; 
+        text-decoration: none; 
+        border: none; 
+    } 
+    .simple-pagination-page-numbers a{
+        margin-left: 8px;
+    }
+</style>
+</head>
+<div class="slds"> 
+<div class="slds-page-header" role="banner">
+  <div class="slds-grid">
+    <div class="slds-col slds-has-flexi-truncate">
+      <div class="slds-media">
+        <div class="slds-media__figure">
+          <img src="{!URLFOR($Resource.UploadGuru,'UploadGuru/UploadGuruLogo.png')}" style="height:31px;"/>
+        </div>
+        <div class="slds-media__body">
+          <h1 class="slds-text-heading--medium slds-m-right--small slds-truncate slds-align-middle" title="Record Title">Upload Guru</h1>
+          
+        </div>
+    </div>
+    </div>
+    <div class="slds-col slds-no-flex slds-align-bottom">
+      <div class="slds-button-group" role="group">
+        <apex:outputPanel layout="none" rendered="{!showGoTo }">
+        <a href="/{!JSENCODE(sid)}" title="Go back" class="slds-button slds-button--neutral">
+         Back To Record
+         </a></apex:outputPanel>
+      </div>
+   </div>
+</div>
+<div class="slds-grid slds-page-header__detail-row">
+    <div class="slds-col--padded slds-size--1-of-4">
+      <dl>
+        <dt>
+          <p class="slds-truncate" title="Field 1">Powered by</p>
+        </dt>
+        <dd>
+          <p class="slds-text-heading--small" title="Description that demonstrates truncation with a long text field">Cloud Certitude Pvt. Ltd.</p>
+        </dd>
+      </dl>
+    </div>
+    </div>
+</div>
+<div class="slds-tabs--default">  
+
+  <ul class="slds-tabs--default__nav" role="tablist">
+    <li id="multilink" class="slds-tabs__item slds-text-heading--label" title="Item Two" role="presentation"><apex:outputPanel layout="none" rendered="{!showMultiUpload}">
+      <a href="/apex/vish_file__fileupload?id={!JSENCODE(sid)}">Multi Uploder</a></apex:outputPanel></li>
+    <li id="weblink" class="slds-tabs__item slds-text-heading--label" title="Item Three" role="presentation"><apex:outputPanel layout="none" rendered="{!showWebcam}">
+           <a href="/apex/vish_file__webcam?id={!JSENCODE(sid)}">Webcam</a></apex:outputPanel></li>
+  </ul>
+</div>
+
+
+</div>
+</apex:form>
+</apex:component>

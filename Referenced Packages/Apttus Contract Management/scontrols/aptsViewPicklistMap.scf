@@ -1,0 +1,85 @@
+<script language="javascript" type="text/javascript"> 
+
+var gPicklistMap = new Array();
+var gcpValues = new Array();
+var gdpValues = new Array();
+var gcpName = "";
+var gdpName = "";
+
+function baseInit(table,dpfield) {
+	if (table=="" || table==null) { return; }
+	if (dpfield=="" || dpfield==null) { return; }
+
+	createDependentPicklistMap(table,dpfield);
+	viewDependentPicklistMap(table);
+}
+
+function createDependentPicklistMap(table,dpfield) {
+    var dso = sforce.connection.describeSObject(table);
+    var b64 = new sforce.Base64Binary("");
+    
+    //get dependent picklist values
+    for (var i=0; i<dso.fields.length; i++){
+        var fld = dso.fields[i];
+        if (fld.name == dpfield) {
+        	gcpName = fld.controllerName;
+        	gdpName = fld.name;
+        	gdpValues = fld.picklistValues;
+        	i = dso.fields.length;
+        }
+    }
+    
+    //get controller picklist values
+    for (var i=0; i<dso.fields.length; i++){
+        var fld = dso.fields[i];
+        if (fld.name == gcpName) {
+        	gcpValues = fld.picklistValues;
+        	i = dso.fields.length;
+        }
+    }
+    
+    //create picklist map
+    gPicklistMap = new Array(gdpValues.length);
+
+	//build validfor bitset map
+	for (var dpi=0; dpi<gdpValues.length; dpi++) {
+		var dplv = gdpValues[dpi];
+		var dpLabel = dplv.label;
+		var dpValue = dplv.value;
+		
+		var vf = b64.decode(dplv.validFor);
+
+		gPicklistMap[dpi] = new Array(gcpValues.length);
+
+		for (var cpi=0; cpi<gcpValues.length; cpi++) {
+			var bits = vf.charCodeAt(cpi >> 3);
+			var bit = (bits & (0x80 >> (cpi%8))) != 0;
+			var vfbit = (bit == true) ? 1 : 0;
+			
+			gPicklistMap[dpi][cpi] = vfbit;
+		}
+	}
+}
+
+function viewDependentPicklistMap(table) {
+    var output = "";
+
+	for (var cpi=0; cpi<gcpValues.length; cpi++) {
+		var cplv = gcpValues[cpi];
+		
+		output += "<p>" + cplv.label + "<br>";
+		output += "<ul>";
+		
+		for (var dpi=0; dpi<gdpValues.length; dpi++) {
+			if (gPicklistMap[dpi][cpi] == 1) {
+				var dplv = gdpValues[dpi];
+				
+				output += "<li>" + dplv.label + "</li>";
+			}
+		}
+		output += "</ul>";
+	}
+
+    setMain(output);
+}
+</script>

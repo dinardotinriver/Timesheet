@@ -1,0 +1,31 @@
+<!--
+============================================================================================== 
+REDIRECTS A USER TO THE TEMPLATE SPECIFIED FOR A HELP TOPIC.
+IN OTHER WORDS, THIS PAGE CAN BE USED TO SEND A USER TO THE CORRECT TEMPLATE WHEN ONLY
+TOPIC ID IS KNOWN
+
+REQUIRES A HELP TOPIC (HTID), I.E:
+
+    [SF base URL]/Apex/IHRedirector?HTID=[topic id]
+
+Martin Little for Improved Apps
+October 2012
+Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.
+============================================================================================== 
+ -->
+
+<apex:page standardStylesheets="False" showHeader="False" sidebar="False" 
+                title="{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['MessageRedirecting']}"
+                controller="iahelp.ControllerHelpContent"
+                action="{!gotoTopicTemplate}" >
+
+	<head>
+		<title>{!BrandingLocalisations['ProductName']} - {!GlobalLocalisations['MessageRedirecting']}</title>
+		<meta name='Description' content='Improved Help Copyright (c.) Improved Apps Limited 2012. All Rights Reserved.' />		
+	    <apex:stylesheet value="{!BrandCSS}" />
+	    <apex:stylesheet value="{!URLFOR($Resource.iahelp__IHResources, '/css/help_main.css')}" />	
+	</head>    
+    
+    {!GlobalLocalisations['MessageRedirecting']}...
+
+</apex:page>

@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+var gTargetCatStatus = "Request";
+var gTargetStatus = "Request";
+
+var cCLONE_AGREEMENT = "Cloning agreement...Please Wait";
+var cERROR_CLONE_AGREEMENT = "ERROR cloning agreement:\n";
+
+function initPage() {
+	showMsgProgress(cCLONE_AGREEMENT);
+	window.setTimeout("cloneAgreement();",gTimeout);
+}
+
+function cloneAgreement() {
+	try {
+		//get the mode the wizard is running in (client or server)
+		getWizardMode();
+		
+		//clone the agreement
+		var cloneId = cloneObject(gAgreementObjName, gContractId);
+		var fieldList = getFieldList(gAgreementObjName);
+		var ids = new Array(1);
+		ids[0] = cloneId;
+		
+		var result = sforce.connection.retrieve(fieldList, gAgreementObjName, ids);
+		if (result[0] == null) {
+			alert(cERROR_CLONE_AGREEMENT + result);
+			navigateTo(gContractIdURL);
+		}
+		
+  		var clone = new sforce.SObject(gAgreementObjName);
+	    clone.Id = cloneId;
+	    clone.Name = result[0].Name + " Copy";
+	    clone.Apttus__Status_Category__c = gTargetCatStatus;
+	    clone.Apttus__Status__c = gTargetStatus;
+	    clone.Apttus__Version__c = 0;
+	    
+	    clone.Apttus__Agreement_Number__c = result[0].Apttus__Contract_Number__c;
+		clone.Apttus__Version_Number__c = 0;
+	    	    
+		var result = sforce.connection.update([clone]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CLONE_AGREEMENT, result[0]);
+			navigateTo(gContractIdURL);
+		}
+
+		//make a note in the original agreement
+		createActivityLogEntry(cloneId);
+		
+		//open the agreement in edit mode
+		navigateTo("/" + cloneId + "/e?retURL=%2F" + cloneId);
+	}
+	catch(ex) {
+		alert(cERROR_CLONE_AGREEMENT + ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createActivityLogEntry(id) {
+	try {
+		var task = new sforce.SObject("Task");
+		task.Description = "Cloned From {!APTS_Agreement__c.FF_Agreement_Number__c}";
+		task.ActivityDate = new Date();
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = task.Description;
+		task.WhatId = id;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Drag%2C Drop %26 Upload Multiple Attachments %2F Documents %2F Contents</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <description>Drag &amp; Drop will allow your company to quickly add multiple attachments (like screen shots of cases, email from files, PDFs and more) against any standard or custom object.  Just Drag and Drop them inside of your Salesforce today.
+
+Select &apos;Drag, Drop &amp; Upload&apos; from the top right of your Salesforce account to get started on the configuration steps.  Quickly add a button to your accounts, opportunities, contact or lead layout with ease using our &apos;Generate URL&apos; for any object or custom object button for Drag &amp; Drop.
+
+Find &apos;Generate URL&apos; tab in your Salesforce tabs for use on any object or custom object button for Drag &amp; Drop.
+
+Be sure you have enabled Salesforce Content too:  http://gsfn.us/t/340qz
+
+Now you are ready to start dragging documents into Salesforce.</description>
+    <namespacePrefix>DragDropAttach</namespacePrefix>
+    <types>
+        <members>AttachContent</members>
+        <members>AttachDocuments</members>
+        <members>AttachFiles</members>
+        <members>GenerateURLController</members>
+        <members>TestAttachContent</members>
+        <members>TestAttachController</members>
+        <members>TestAttchfiles</members>
+        <members>TestGenerateURLController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>AttachContentComponent</members>
+        <members>AttachDocumentsComponent</members>
+        <members>AttachFilesComponent</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>About</members>
+        <members>AttachContent</members>
+        <members>AttachDocuments</members>
+        <members>AttachFiles</members>
+        <members>GenerateURL</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>Drag_Drop_Upload</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>Configuration__c.Community_Url__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Configuration__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>About</members>
+        <members>Generate_Url</members>
+        <members>Upload_Contents</members>
+        <members>Upload_Documents</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>JqueryNew</members>
+        <members>jquery</members>
+        <name>StaticResource</name>
+    </types>
+    <version>30.0</version>
+</Package>

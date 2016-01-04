@@ -1,0 +1,184 @@
+<apex:component controller="TH1.DRAFTS_CO_DraftsList" allowDML="true">
+    <apex:attribute type="Boolean" name="isInline" assignTo="{!IsInlineList}" description="True if list is inline"/>
+    <apex:attribute type="String" name="objectId" assignTo="{!ContextObjectId}" description="Id of object in context"/>
+	<apex:attribute type="String" name="statusFilter" assignTo="{!ContextStatusFilter}" description="Status filter for the draft in context"/>
+    <style>
+        .pagingToolBar {
+            background-color: #f2f3f3;
+            background-image: none;
+            border: none;
+        }
+        .listViewLabel {
+            font-weight: bold;
+            margin-left: 20px;
+        }
+    </style>
+    <apex:outputPanel rendered="{!IsInlineList}">
+        <style>     
+        .pbHeader {
+            height: 0px;
+        }   
+        .hasMotif {
+            margin: 0px;
+        }
+        </style>
+    </apex:outputPanel>
+    <c:COMMON_JQueryLib />
+    <script>
+        function multiDelete(){
+            var selectedRowsCount = $('input.row_select:checked').size();
+            if (selectedRowsCount == 0) {
+                alert('You have not selected any rows to delete');
+            } else if (selectedRowsCount == 1){ 
+                return window.confirm('Are you sure you want to delete this Draft?');
+            } else if (!window.confirm('Are you sure you want to delete these Drafts?')){ 
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
+    <apex:pageMessage summary="{!DraftEditingFeatureMessage}" severity="info" strength="3" rendered="{!NOT(DraftEditingIsLicensed)}" escape="false" />
+    <apex:form rendered="{!DraftEditingIsLicensed}">
+    	<c:COMMON_Mask />
+        <apex:outputPanel layout="block" styleClass="bPageTitle" rendered="{!NOT(IsInlineList)}">
+            <apex:sectionHeader title="{!$ObjectType.TH1__Draft__c.LabelPlural}" subtitle="Home" />
+            <apex:pageMessage summary="{!ObjectNotAccessibleMessage}" severity="info" strength="3" rendered="{!NOT($ObjectType.TH1__Draft__c.Accessible)}"/>
+            <div class="ptBody">
+                <apex:outputLabel value="View: " styleClass="listViewLabel"/>
+                <apex:selectList id="th_select_view_mode" value="{!ListView}" size="1">
+                    <apex:selectOptions value="{!ListViewOptionList}"/>
+                    <apex:actionSupport event="onchange" action="{!resetPage}" reRender="draft_list"/>
+                </apex:selectList>
+                <apex:outputLabel value="Primary Object: " styleClass="listViewLabel"/>
+                <apex:selectList id="th_select_primary_object" value="{!PrimaryObject}" size="1">
+                    <apex:selectOptions value="{!PrimaryObjectOptionList}"/>
+                    <apex:actionSupport event="onchange" action="{!resetPage}" reRender="draft_list"/>
+                </apex:selectList>      
+                <c:COMMON_PageHelpLink helpUrlPath="index.htm#DraftsPage.htm" showText="true"/>
+            </div>
+        </apex:outputPanel>
+        <apex:pageBlock id="draft_list" mode="{!IF(IsInlineList, 'maindetail', 'detail')}">
+            <apex:pageMessages />
+            <apex:pageBlockButtons location="top" rendered="{!NOT(IsInlineList)}">
+                <apex:commandButton id="th_btn_delete" value="Delete" action="{!deleteSelectedDrafts}" reRender="draft_list" onclick="if (!multiDelete()){return false;} showMask();" oncomplete="$('.all_rows_select').attr('checked', false); hideMask();" rendered="{!$ObjectType.TH1__Draft__c.Deletable}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!draftsList}" var="DL" rendered="{!$ObjectType.TH1__Draft__c.Accessible}">
+                <apex:column id="checkbox" rendered="{!AND(NOT(IsInlineList), $ObjectType.TH1__Draft__c.Deletable)}" styleClass="col_select_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:inputCheckbox id="th_check_select_all" value="{!AllRowsSelect}" styleClass="all_rows_select"/>
+                    </apex:facet>
+                    <apex:inputCheckbox id="th_check_select_row" value="{!DL.isSelected}" styleClass="{!IF(DL.RecordAccess.HasDeleteAccess, 'row_select', '')}" disabled="{!NOT(DL.RecordAccess.HasDeleteAccess)}" title="{!IF(NOT(DL.RecordAccess.HasDeleteAccess), 'You do not have permissions to delete this record.', '')}"/>
+                </apex:column>
+                <apex:column headerValue="Action" styleClass="actionColumn col_action_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:OutputLink id="th_link_view_row" value="/apex/DOCEDT_EditDocument?id={!DL.draft.Id + IF(NOT(IsInlineList), '&returnTo=draftsList', '')}" target="{!IF(IsInlineList, '_parent', '_self')}" rendered="{!AND(DL.RecordAccess.HasReadAccess, OR(DL.draft.TH1__Status__c == 'Finalised', DL.draft.TH1__Status__c == 'Final'), NOT(DL.PrimaryObjectIsNotFound))}" styleClass="actionLink">
+                        <span style="display:inline-block; width:26px">View</span>
+                    </apex:OutputLink>
+                    <apex:OutputLink id="th_link_edit_row" value="/apex/DOCEDT_EditDocument?id={!DL.draft.Id + IF(NOT(IsInlineList), '&returnTo=draftsList', '')}" target="{!IF(IsInlineList, '_parent', '_self')}" rendered="{!AND(DL.RecordAccess.HasEditAccess, AND(DL.draft.TH1__Status__c != 'Finalised', DL.draft.TH1__Status__c != 'Final'), NOT(DL.PrimaryObjectIsNotFound))}" styleClass="actionLink">
+                        <span style="display:inline-block; width:26px">Edit</span>
+                    </apex:OutputLink>
+                    <apex:outputLabel value=" | " rendered="{!AND(DL.RecordAccess.HasDeleteAccess, NOT(DL.PrimaryObjectIsNotFound))}"/>
+                    <apex:commandLink id="th_link_delete_row" action="{!deleteDraft}" reRender="draft_list" rendered="{!DL.RecordAccess.HasDeleteAccess}" onclick="if (!window.confirm('Are you sure?')) return false;" styleClass="actionLink">                        
+                        <apex:param name="actiondraftid" value="{!DL.draft.Id}" assignTo="{!ActionDraftID}"/>
+                        <span>Del</span>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column styleClass="col_recordname_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Draft__c.Fields.TH1__Draft_name__c.Label} {!IF(SortField=='Draft_Name__c',IF(SortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="Draft_Name__c" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputLink id="th_link_draft_name_row" value="/apex/DOCEDT_EditDocument?id={!DL.draft.Id + IF(NOT(IsInlineList), '&returnTo=draftsList', '')}" rendered="{!AND(NOT(DL.PrimaryObjectIsNotFound), OR(AND(AND(DL.draft.TH1__Status__c != 'Finalised', DL.draft.TH1__Status__c != 'Final'), DL.RecordAccess.HasEditAccess), AND(OR(DL.draft.TH1__Status__c == 'Finalised', DL.draft.TH1__Status__c == 'Final'), DL.RecordAccess.HasReadAccess)))}" target="{!IF(IsInlineList, '_parent', '_self')}" styleClass="actionLink" title="{!DL.draft.TH1__Draft_name__c}">
+                        {!IF(DL.draft.TH1__Draft_name__c=='', DL.draft.Name, IF(LEN(DL.draft.TH1__Draft_name__c)>100, LEFT(DL.draft.TH1__Draft_name__c, 100)+'...', DL.draft.TH1__Draft_name__c) )}
+                    </apex:outputLink>
+                    <apex:outputText value="{!IF(DL.draft.TH1__Draft_name__c=='', DL.draft.Name, DL.draft.TH1__Draft_name__c)}" rendered="{!OR(DL.PrimaryObjectIsNotFound, AND(AND(DL.draft.TH1__Status__c != 'Finalised', DL.draft.TH1__Status__c != 'Final'), NOT(DL.RecordAccess.HasEditAccess)), AND(OR(DL.draft.TH1__Status__c == 'Finalised', DL.draft.TH1__Status__c == 'Final'), NOT(DL.RecordAccess.HasReadAccess)) )}"/>
+                </apex:column>
+                <apex:column styleClass="col_recordname_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Draft__c.Fields.TH1__Primary_Object_Record_Name__c.Label} {!IF(SortField=='Primary_Object_Record_Name__c',IF(SortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="Primary_Object_Record_Name__c" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputLink id="th_link_name_row" value="/{!DL.draft.TH1__Primary_Object_Record_Id__c}" rendered="{!NOT(DL.PrimaryObjectIsNotFound)}" target="{!IF(IsInlineList, '_parent', '_self')}" >
+                        {!DL.Draft.TH1__Primary_Object_Record_Name__c}
+                    </apex:OutputLink>
+                    <apex:outputText id="th_text_name_row" value="{!IF(NOT(DL.SobjectExists), '**Primary object no longer exists**', '**Record not found**')}" rendered="{!DL.PrimaryObjectIsNotFound}" />
+                </apex:column>
+                <apex:column value="{!DL.draft.Document_Setting__r.TH1__Primary_Object__c}" styleClass="col_primaryobject_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}" rendered="{!NOT(IsInlineList)}" >
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Document_Setting__c.Fields.TH1__Primary_Object__c.Label} {!IF(SortField=='Document_Setting__r.Primary_Object__c',IF(SortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="Document_Setting__r.Primary_Object__c" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column styleClass="col_docsettingname_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Document_Setting__c.Fields.Name.Label} {!IF(SortField=='Document_Setting__r.Name',IF(SortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="Document_Setting__r.Name" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputLink id="th_link_docset_row" value="/{!DL.draft.TH1__Document_Setting__c}" target="{!IF(IsInlineList, '_parent', '_self')}" rendered="{!DL.SobjectExists}">{!DL.draft.Document_Setting__r.Name}</apex:outputLink>
+                    <apex:outputText id="th_text_docset_row" value="{!DL.draft.Document_Setting__r.Name}" rendered="{!NOT(DL.SobjectExists)}"/>
+                </apex:column>
+                <apex:column styleClass="col_status_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Draft__c.Fields.TH1__Status__c.Label} {!IF(SortField=='Status__c',IF(SortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="Status__c" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputText value="{!IF(OR(DL.draft.TH1__Status__c == 'Finalised', DL.draft.TH1__Status__c == 'Final'), 'Final', 'Draft')}" />
+                </apex:column>
+                <apex:column styleClass="col_lastmoddate_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Draft__c.Fields.LastModifiedDate.Label} {!IF(LmdOrder=='desc','↓','↑')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="LastModifiedDate" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputField value="{!DL.draft.LastModifiedDate}"/>
+                </apex:column>
+                <apex:column value="{!DL.draft.Name}" styleClass="col_draftname_{!SUBSTITUTE(DL.draft.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Draft__c.Fields.Name.Label} {!IF(SortField=='Name',IF(SortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="draft_list">
+                            <apex:param name="sortField" value="Name" assignTo="{!SortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+            </apex:pageBlockTable>            
+            <apex:outputPanel >
+                <apex:outputText value="no records to display" rendered="{!NOT(recordsToDisplay)}"/>
+            </apex:outputPanel>
+            <apex:toolbar styleClass="pagingToolBar" rendered="{!$ObjectType.TH1__Draft__c.Accessible}">
+                <apex:toolbarGroup itemSeparator="none" location="left">
+                    <apex:outputPanel rendered="{!totalRecords > IF(IsInlineList, 5, 10)}">
+                        <apex:outputText >Display </apex:outputText>
+                        <apex:selectList id="th_select_rows_per_page" value="{!rowsPerPage}" size="1">
+                            <apex:selectOptions value="{!rowsPerPageOptionList}"/>
+                            <apex:actionSupport event="onchange" action="{!resetPage}" reRender="draft_list"/>
+                        </apex:selectList>
+                        <apex:outputText > records per page</apex:outputText>
+                    </apex:outputPanel>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup itemSeparator="none" location="right">
+                    <apex:commandLink id="th_btn_previous" value="<Previous page" action="{!previousPage}"  rendered="{!hasPrevious}" reRender="draft_list"/>
+                    <apex:commandLink id="th_btn_next" value="Next page>" action="{!nextPage}" rendered="{!hasNext}" reRender="draft_list"/>
+                </apex:toolbarGroup>
+            </apex:toolbar>
+            <script>
+                jQuery(document).ready(function($){
+                    $('.all_rows_select').click(function() {
+                        var checkBoxState = false;
+                        if($(this).is(':checked')){
+                            checkBoxState = true;
+                        }
+                        
+                        $('input.row_select').each(function(){
+                            $(this).attr("checked", checkBoxState);
+                        });
+                    });
+                });
+            </script>           
+        </apex:pageBlock>
+    </apex:form>
+    <c:COMMON_HelpUtil rendered="{!NOT(IsInlineList)}"/>
+</apex:component>

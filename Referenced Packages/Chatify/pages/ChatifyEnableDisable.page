@@ -1,0 +1,13 @@
+<apex:page controller="Chatify.ChatifyController">
+  <apex:pageBlock title="Enable/Disable Chatify">
+      <apex:pageBlockSection >
+          <apex:form >
+          <p>Chatify is currently
+          <font style="color:{!IF(isEnabled,"green","red")}">{!IF(isEnabled,"Enabled","Disabled")}</font>
+          </p>
+          <hr/>
+          <apex:commandButton action="{!EnableDisable}" value="{!IF(isEnabled,"Disable","Enable")}" style="height:40px; width:100px;"/>
+          </apex:form>
+      </apex:pageBlockSection>
+  </apex:pageBlock>
+</apex:page>

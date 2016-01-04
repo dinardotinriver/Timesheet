@@ -1,0 +1,10 @@
+<apex:page id="ChatPage" standardController="BGIntegration__BomgarSession__c" extensions="BGIntegration.ChatControllerExtension" showHeader="false" sidebar="false">
+    <apex:pageBlock id="ChatPageBlock" mode="maindetail">
+        <apex:pageBlockTable id="ChatTable" value="{!chatEventList}" var="ce" width="100%">
+            <apex:column headerValue="Chat Message Time" value="{!ce.BGIntegration__Timestamp__c}" width="10%"/>
+            <apex:column headerValue="Performed By" value="{!ce.BGIntegration__Performed_By__c}" width="15%"/>
+            <apex:column headerValue="Destination" value="{!ce.BGIntegration__Destination__c}" width="15%"/>
+            <apex:column headerValue="Chat Message" value="{!ce.BGIntegration__Body__c}" width="60%"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

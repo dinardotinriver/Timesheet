@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)} 
+
+<script language="javascript" type="text/javascript"> 
+
+ gTargetCatStatus = "Terminated";
+var gTargetStatus = "Terminated";
+
+function initPage() {
+	showMsgProgress("Terminating Agreement...Please Wait");
+	logonAsSuperUser();
+	terminateAgreement();
+}
+ 
+function terminateAgreement() {
+	try {
+		var contract = new sforce.SObject(gAgreementObjName);
+		
+		contract.Id = gContractId;
+		contract.Apttus__Status_Category__c = gTargetCatStatus;
+		contract.Apttus__Status__c = gTargetStatus;
+		
+		var result = sforce.connection.update([contract]);
+		if (result[0].getBoolean("success")) {
+			createActivityLogEntry();
+		} else {
+			erroralert(cERROR_TERMINATE_AGREEMENT,result[0]);
+		}
+
+		updateAgreementVersions();
+	}
+	catch(ex) {
+		erroralert(cERROR_TERMINATE_AGREEMENT,ex);
+	}
+	finally {
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createActivityLogEntry() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Terminated Agreement {!APTS_Agreement__c.Contract_Number__c}" +
+			"\rStatus Category changed from '{!APTS_Agreement__c.Status_Category__c}' to '" + gTargetCatStatus + "'";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Terminated Agreement";
+		task.WhatId = gContractId;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_ACTIVITY_LOG,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+ 
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

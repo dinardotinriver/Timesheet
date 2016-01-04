@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsIncludeDate)}
+{!INCLUDE($SControl.aptsEditLineItems)}
+
+<script language="javascript" type="text/javascript"> 
+
+var cEDIT_AGREEMENT_CLAUSE = "Editing agreement clauses...Please Wait";
+var cERROR_EDIT_AGREEMENT_CLAUSE = "ERROR editing agreement clauses:\n";
+
+function initPage() {
+	window.setTimeout("doInit();",gTimeout);
+}
+
+function doInit() {
+	//set grid specific properties
+	gObjectId = gContractId;
+	gObjectIdURL = gContractIdURL;
+	
+	gTable = "Apttus__Agreement_Clause__c";
+	gTitlePl = "Agreement Clauses";
+	gTitle = "Agreement Clause";
+	
+	cEDIT_LINEITEM = cEDIT_AGREEMENT_CLAUSE;
+	cERROR_EDIT_LINEITEM = cERROR_EDIT_AGREEMENT_CLAUSE;
+
+	//get selected ids
+	gRecordIds = {!GETRECORDIDS($ObjectType.Agreement_Clause__c)};
+	
+	//specify editable columns
+	addEditColumn("Apttus__Action__c");
+	addEditColumn("Apttus__Clause__c");
+	addEditColumn("Apttus__Category__c");
+	addEditColumn("Apttus__Risk_Rating__c");
+	addEditColumn("Apttus__Text__c",40,2);
+	addEditColumn("Apttus__Comments__c",40,2);
+
+	setAgreementRefField("Apttus__Agreement__c");
+	
+	buildPage();
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

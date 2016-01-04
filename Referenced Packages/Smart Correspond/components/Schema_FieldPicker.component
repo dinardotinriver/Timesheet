@@ -1,0 +1,15 @@
+<apex:component controller="TH1.SCHEMA_CO_DataModel">
+	<c:COMMON_UnderscoreJSLib />
+	<script>
+	    Visualforce.remoting.timeout = 120000;
+		var CONTROLLER = {!JSENCODE(OrgNamespaceJs)}SCHEMA_CO_DataModel;
+		var addIconURL = "{!URLFOR($Resource.ThunderheadResources, 'images/add_icon.png')}";
+	</script>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/StringUtil.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/ScriptUtil.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/MessagesUtil.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/DataModelObjects.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/DataModelController.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/DataModelViewExt.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.TH1__ThunderheadResources, '/scripts/FilterView.js')}"/>
+</apex:component>

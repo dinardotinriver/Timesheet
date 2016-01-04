@@ -1,0 +1,32 @@
+<apex:component >
+  <apex:attribute name="imageName" description="Text of the tooltip"
+    type="String" required="false" />
+  <apex:attribute name="tableFields" description="Table fields"
+    type="StrikeIronInter.Pair[]" required="false" />
+  <apex:attribute name="identifier"
+    description="Identifier for dynamically generated components"
+    type="String" required="false" />
+  <apex:attribute name="fieldName" description="Name of the field"
+    type="String" required="false" />
+  <apex:attribute name="label" description="Label for tooltip"
+    type="String" required="false" />
+  <a class="hoverTooltip">
+    <img id="{!identifier}" src="{!imageName}" />
+    <apex:outputPanel styleClass="{!identifier}"
+      rendered="{!NOT(ISNULL(tableFields))}">
+      <apex:dataTable value="{!tableFields}" var="pair" border="1"
+        rowClasses="odd,even" styleClass="tableClass">
+        <apex:column >
+          <apex:outputText value="{!pair.fieldName}"/>
+        </apex:column>
+        <apex:column >
+          <apex:outputText value="{!pair.title}"/>
+        </apex:column>
+      </apex:dataTable>
+    </apex:outputPanel>
+    <apex:outputPanel styleClass="{!identifier}"
+      rendered="{!ISNULL(tableFields)}">
+      {!label} has not been verified
+    </apex:outputPanel>
+  </a>
+</apex:component>

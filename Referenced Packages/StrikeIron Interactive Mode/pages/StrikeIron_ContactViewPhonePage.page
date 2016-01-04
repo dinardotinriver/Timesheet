@@ -1,0 +1,7 @@
+<apex:page extensions="StrikeIronInter.ContactViewExtFldPhoneController" standardController="Contact" showHeader="false" >
+  <apex:stylesheet value="{!$Resource.StrikeIronInter__styles}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__jQuery}"/>
+  <c:VerificationViewComponent imageName="{!image}" tableFields="{!tableFields}" 
+    identifier="phoneComponent" fieldName="Phone" label="Phone" 
+    tooltip="{!tooltip}" hideClass="{!hideClass}" />
+</apex:page>

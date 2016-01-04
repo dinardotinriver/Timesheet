@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeDate)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	Renew
+	Renew, like Amend, should only be available if Agreement is "In Effect".
+	It can do everything Amend does (create a copy, etc.) with the following differences:
+	
+	- Status of original should be set to "Being Renewed"
+	- Status of new should be set to "In Renewal"
+	- New Agreement Start Date should default to Original Agreement End Date + 1
+	- If Renewal Term in original is not null, copy to New Agreement Term
+	- If Renewal Term in original is null, set Agreement End Date to be
+	      New Start Date + (Old End Date - Old Start Date)
+	- Upon Renewal Activation set status category/status of original to Renewed/Superseded
+	- Renewal Cancel should behave just like Amendment Cancel.
+	=================================================================================================
+*/
+var gOriginalTargetCatStatus = "In Effect";
+var gOriginalTargetStatus = "Being Renewed";
+var gRenewedTargetCatStatus = "Request";
+var gRenewedTargetStatus = "In Renewal";
+
+var gIsRenewedByRelation = "Is Renewed By";
+var gIsRenewalForRelation = "Is Renewal For";
+
+var cRENEW_AGREEMENT = "Renewing agreement...Please Wait";
+var cERROR_RENEW_AGREEMENT = "ERROR renewing agreement:\n";
+
+function initPage() {
+	showMsgProgress(cRENEW_AGREEMENT);
+	window.setTimeout("doInit();", 10);
+}
+
+function doInit() {
+	logonAsSuperUser();
+	renewAgreement();
+}
+
+function renewAgreement() {
+	try {
+		//clone the agreement
+		var cloneId = cloneObject(gAgreementObjName,gContractId);
+		var fieldList = getFieldList(gAgreementObjName);
+		var ids = new Array(1);
+		ids[0] = cloneId;
+		
+		var result = sforce.connection.retrieve(fieldList,gAgreementObjName,ids);
+		if (result[0]==null) {
+			erroralert(cERROR_RENEW_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+ 	    //renew the agreement
+		var clone = new sforce.SObject(gAgreementObjName);
+	    clone.Id = cloneId;
+	    clone.Name = result[0].Name + "_Renewed";
+	    clone.Apttus__Status_Category__c = gRenewedTargetCatStatus;
+	    clone.Apttus__Status__c = gRenewedTargetStatus;
+	    clone.Apttus__Agreement_Number__c = "{!APTS_Agreement__c.Agreement_Number__c}";
+	    clone.Apttus__Version_Number__c = 1*(result[0].Apttus__Version_Number__c) + 1;
+		clone.OwnerId = "{!User.Id}";
+		
+		//populate both new start and end dates only if the Old End Date is not blank.
+		if (result[0].Apttus__Contract_End_Date__c!=null && result[0].Apttus__Contract_End_Date__c!="")	{
+			var oldStartDate = new Date("{!APTS_Agreement__c.Contract_Start_Date__c}");
+			var oldEndDate = new Date("{!APTS_Agreement__c.Contract_End_Date__c}");
+			var oldDateDiff = getDateDiff(oldStartDate,oldEndDate);
+			var newStartDate = getNextDay(oldEndDate);
+			var newEndDate = addDateDuration(newStartDate,oldDateDiff);
+			var isoEndDate = toIsoDate(newEndDate);
+			var isoStartDate = toIsoDate(newStartDate);			
+
+			//alert("oldStartDate="+oldStartDate+"\noldEndDate="+oldEndDate+"\noldDateDiff="+oldDateDiff+
+			//	"\nnewStartDate="+newStartDate+"\nnewEndDate="+newEndDate+"\nisoEndDate="+isoEndDate);			
+			clone.Apttus__Contract_Start_Date__c = isoStartDate;
+			clone.Apttus__Contract_End_Date__c = isoEndDate;			
+		}
+		
+		// Copy the renew term if it is not blank.		
+    	if(result[0].Apttus__Auto_Renew_Term_Months__c!=null && result[0].Apttus__Auto_Renew_Term_Months__c!="") {
+    		clone.Apttus__Term_Months__c = result[0].Apttus__Auto_Renew_Term_Months__c;
+    	}  
+    	
+		var result = sforce.connection.update([clone]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_RENEW_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+ 	    //update the original agreement
+  		var agreement = new sforce.SObject(gAgreementObjName);
+	    agreement.Id = gContractId;
+	    agreement.Apttus__Status_Category__c = gOriginalTargetCatStatus;
+	    agreement.Apttus__Status__c = gOriginalTargetStatus;
+	    	    
+		result = sforce.connection.update([agreement]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_RENEW_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+  		//store link back to original
+  		var relation = new sforce.SObject(gRelatedAgreementObjName);
+	    relation.Name = "Current Agreement";
+	    relation.Apttus__APTS_Contract_From__c = gContractId;
+	    relation.Apttus__Relationship_From_Type__c = gIsRenewedByRelation;
+	    relation.Apttus__APTS_Contract_To__c = cloneId;
+	    relation.Apttus__Relationship_To_Type__c = gIsRenewalForRelation;
+	    
+ 		result = sforce.connection.create([relation]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_RENEW_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}		
+			
+		//make a note in the original agreement
+		createActivityLogEntry(gContractId,"Renewed Agreement","Renewed Agreement","Completed");
+
+		//make a note in the amended agreement
+		var subj = "Renewed From {!APTS_Agreement__c.FF_Agreement_Number__c}";
+		createActivityLogEntry(cloneId,subj,subj,"Completed");
+
+		//open the renewed agreement in edit mode
+		navigateTo("/" + cloneId + "/e?retURL=%2F" + cloneId);
+	}
+	catch(ex) {
+		erroralert(cERROR_RENEW_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createActivityLogEntry(id,subj,desc,status) {
+	try {
+		var task = new sforce.SObject("Task");
+		task.Description = desc;
+		task.ActivityDate = new Date();
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = status;
+		task.Subject = subj;
+		task.WhatId = id;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_ACTIVITY_LOG,ex);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

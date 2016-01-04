@@ -1,0 +1,534 @@
+<apex:page sidebar="false" controller="PassportV2.PassportAdminController" action="{!initialize}" id="page">
+
+    <apex:includeScript value="{!$Resource.PassportV2__jquery}" />
+    <apex:includeScript value="{!$Resource.PassportV2__jquery_ui}/js/jquery-ui-1.8.17.custom.min.js" />
+    <apex:includeScript value="{!$Resource.PassportV2__ui_multiselect}/js/plugins/jquery.tmpl.1.1.1.js" />
+    <apex:includeScript value="{!$Resource.PassportV2__ui_multiselect}/js/plugins/jquery.blockUI.js" />
+    <apex:includeScript value="{!$Resource.PassportV2__ui_multiselect}/js/ui.multiselect.js" />
+
+    <apex:stylesheet value="{!$Resource.PassportV2__jquery_ui}/css/redmond/jquery-ui-1.8.17.custom.css"/>
+    <apex:stylesheet value="{!$Resource.PassportV2__ui_multiselect}/css/ui.multiselect.css" />
+    
+    <style type="text/css">
+        .pbSubheader h3 { color: black; }
+        .activeTab { background-color: cornflowerblue; color: white; background-image: none; }
+        .inactiveTab { background-color: lightgrey; color: black; background-image: none; }
+        .ui-dialog .ui-dialog-content { background-color: powderblue; }
+    </style>
+    
+    <apex:sectionHeader title="Passport Admin Panel" />
+    <apex:pageMessages id="messages" />
+    <div id="tooltip" style="display:none;" />
+	
+	<apex:pageBlock id="iprangesblock" rendered="{!NOT(ISBLANK(ipRanges))}">
+			<apex:pageBlockButtons location="bottom">
+				<input id="closebutton" class="btn" type="submit" value="Close" />
+            </apex:pageBlockButtons>
+			<apex:pageBlockTable value="{!ipRanges}" var="x" rendered="{!NOT(ISBLANK(ipRanges))}">
+	        <apex:column >
+	            <apex:facet name="header">IP Ranges to be whitelisted (Passport Integration Profile)</apex:facet>
+	            <apex:outputLink value="/02w/e?prf={!c2cIntProfileId}&IpStartAddress={!x.range_from}&IpEndAddress={!x.range_to}" target="_blank">
+	                {!HTMLENCODE(x.range_from)}&nbsp;-&nbsp;{!HTMLENCODE(x.range_to)}
+	            </apex:outputLink>
+	        </apex:column>
+	        <apex:column >
+	            <apex:facet name="header">IP Ranges to be whitelisted (Passport Chatter Profile)</apex:facet>
+	            <apex:outputLink value="/02w/e?prf={!cfuProfileId}&IpStartAddress={!x.range_from}&IpEndAddress={!x.range_to}" target="_blank">
+	                {!HTMLENCODE(x.range_from)}&nbsp;-&nbsp;{!HTMLENCODE(x.range_to)}
+	            </apex:outputLink>
+	        </apex:column>
+	        <apex:column >
+	            <apex:facet name="header">IP Ranges to be whitelisted (Passport Chatter External Profile)</apex:facet>
+	            <apex:outputLink value="/02w/e?prf={!ceuProfileId}&IpStartAddress={!x.range_from}&IpEndAddress={!x.range_to}" target="_blank">
+	                {!HTMLENCODE(x.range_from)}&nbsp;-&nbsp;{!HTMLENCODE(x.range_to)}
+	            </apex:outputLink>
+	        </apex:column>
+		</apex:pageBlockTable>
+	</apex:pageBlock>
+    <!--  <apex:tabPanel switchType="client" selectedTab="tab_2" tabClass="activeTab" inactiveTabClass="inactiveTab"> -->
+
+        <!-- Chatter tab -->
+        <!-- 
+        <apex:tab name="tab_1" label="Chatter"></apex:tab>
+ 		-->
+        <!-- Passport Admin tab -->
+       <!--  <apex:tab name="tab_2" label="Passport Admin"> -->
+            <apex:tabPanel switchType="client" selectedTab="tab_2_1" tabClass="activeTab" inactiveTabClass="inactiveTab">
+
+                <!-- Company Profile tab -->
+                <apex:tab name="tab_2_1" label="Company Profile">
+                    <apex:form id="formCompanyProfile">
+                        <apex:actionFunction name="saveStep1_M" action="{!saveCompanyProfile}" reRender="messages" oncomplete="if (!messagePresent()) saveStep2_M();" />
+                        <apex:actionFunction name="saveStep2_M" action="{!publishToPassport}" />
+                        <apex:actionFunction name="closeRanges_M" action="{!closeRanges}" reRender="messages" />
+						
+                        <apex:pageBlock id="pageBlockCompanyProfile" mode="{!IF(companyProfileMode=='edit','edit','detail')}">
+                            <apex:pageBlockButtons id="buttonsCompanyProfile" location="bottom">
+                                <apex:commandButton value="Create Integration User" action="{!createIntegrationUser}" rendered="{!companyProfileMode=='view'}" disabled="{!NOT(ISBLANK(integrationUserId))}" reRender="messages,pageBlockCompanyProfile" />
+                                <apex:commandButton value="Schedule Passport Jobs" action="{!scheduleJobs}" rendered="{!AND(companyProfileMode=='view',NOT(isJobsScheduled))}" disabled="{!ISBLANK(integrationUserId)}" id="schedulebutton"/>
+                                <apex:commandButton value="Unschedule Passport Jobs" action="{!unscheduleJobs}" rendered="{!AND(companyProfileMode=='view',isJobsScheduled)}" disabled="{!ISBLANK(integrationUserId)}" id="unschedulebutton"  />
+                                <apex:commandButton value="Perform Configuration Check" action="{!checkConfiguration}" rendered="{!companyProfileMode=='view'}" reRender="messages" />
+                                <apex:commandButton value="Edit" action="{!editCompanyProfile}" rendered="{!companyProfileMode=='view'}" disabled="{!ISBLANK(integrationUserId)}" />
+                                <input type="submit" class="btn" value="Publish to Passport" style="display:{!IF(companyProfileMode=='edit','','none')};" onclick="saveStep1_M();return false;" />
+                                <apex:commandButton value="Cancel" action="{!cancelEditCompanyProfile}" rendered="{!companyProfileMode=='edit'}" />
+                            </apex:pageBlockButtons>
+                            
+                            <!-- CompanyProfile View Mode -->
+                            <apex:pageBlockSection title="Company Profile" collapsible="false" columns="1" rendered="{!companyProfileMode=='view'}">
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Company Name" for="companyName" />
+                                    <apex:outputText id="companyName" value="{!companyProfile.companyName}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Industry" for="industry" />
+                                    <apex:outputText id="industry" value="{!companyProfile.industry}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Country" for="country" />
+                                    <apex:outputText id="country" value="{!companyProfile.country}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="City" for="city" />
+                                    <apex:outputText id="city" value="{!companyProfile.city}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Company Key" for="companyKey" />
+                                    <apex:outputText id="companyKey" value="{!companyProfile.companyKey}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Encryption Key" for="encryptionKey" />
+                                    <apex:outputText id="companyKey" value="{!companyProfile.encryptionKey}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem rendered="{!companyProfile.isOrgUsingTokens}">
+                                    <apex:outputLabel value="Security Token" for="securityToken" />
+                                    <apex:outputText id="securityToken" value="{!companyProfile.securityToken}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Current Salesforce Instance Type" for="instanceType" />
+                                    <apex:outputText id="instanceType" value="{!companyProfile.instanceType}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Instance Login URL" for="instanceUrl" />
+                                    <apex:outputText id="instanceUrl" value="{!companyProfile.instanceUrl}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem rendered="{!companyProfile.instanceType=='Sandbox'}">
+                                    <apex:outputLabel value="Sandbox Name" for="sandboxName" />
+                                    <apex:outputText id="sandboxName" value="{!companyProfile.sandboxName}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Heroku Hub URL" for="herokuUrl" />
+                                    <apex:outputText id="herokuUrl" value="https://{!companyProfile.herokuUrl}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Synchronization Start Date" for="syncStartDate" />
+                                    <apex:outputText id="syncStartDate" value="{!companyProfile.syncStartDate.StartDateTime}" />
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <!-- CompanyProfile Edit Mode -->
+                            <apex:pageBlockSection title="Company Profile" collapsible="false" columns="1" rendered="{!companyProfileMode=='edit'}">
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Company Name" for="companyName" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="companyName" value="{!companyProfile.companyName}" maxlength="10" title="Please, enter acronym that would describe this particular salesforce.com instance. It can be a word or initials that would differentiate this organization from others. This acronym will appear next to every users' and groups' name. DO NOT INCLUDE BRACKETS!" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Industry" for="industry" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:selectList id="industry" size="1" value="{!companyProfile.industry}" style="width:30%">
+                                            <apex:selectOptions value="{!industryList}" />
+                                        </apex:selectList>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Country" for="country" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:selectList id="country" size="1" value="{!companyProfile.country}" style="width:30%">
+                                            <apex:selectOptions value="{!countryList}" />
+                                        </apex:selectList>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="City" for="city" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="city" value="{!companyProfile.city}" maxlength="100" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Use Current Organization as a Master" for="isMasterOrg" />
+                                    <apex:inputCheckbox id="isMasterOrg" value="{!companyProfile.isMasterOrg}" title="Organization should be master only during the setup of the first Passport application. All organizations that will be connected via passport should reuse the Organization key from the first organization.">
+                                        <apex:actionSupport event="onclick" reRender="panelCompanyKey" />
+                                    </apex:inputCheckbox>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Company Key" for="companyKey" />
+                                    <apex:outputPanel id="panelCompanyKey" styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="companyKey" value="{!companyProfile.companyKey}" disabled="{!companyProfile.isMasterOrg}" maxlength="40" style="width:30%" />
+                                        <apex:commandButton value="Generate Company Key" action="{!generateCompanyKey}" rendered="{!companyProfile.isMasterOrg}" reRender="companyKey,messages" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Encryption Key" for="encryptionKey" />
+                                    <apex:outputPanel id="panelEncryptionKey" styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="encryptionKey" value="{!companyProfile.encryptionKey}" disabled="true" maxlength="40" style="width:30%" />
+                                        <apex:commandButton value="Generate Encryption Key" action="{!generateEncryptionKey}" reRender="encryptionKey,messages" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem onLabelmouseover="showTooltip(this);" onLabelmouseout="hideTooltip(this);" >
+                                    <apex:outputLabel value="Is Organization Using Security Tokens" for="isOrgUsingTokens" />
+                                    <apex:inputCheckbox id="isOrgUsingTokens" value="{!companyProfile.isOrgUsingTokens}" onmouseover="showTooltip(this);" onmouseout="hideTooltip(this);">
+                                        <apex:actionSupport event="onclick" reRender="pageBlockCompanyProfile" />
+                                    </apex:inputCheckbox>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem rendered="{!companyProfile.isOrgUsingTokens}">
+                                    <apex:outputLabel value="Security Token" for="securityToken" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="securityToken" value="{!companyProfile.securityToken}" maxlength="100" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Current Salesforce Instance Type" for="instanceType" />
+                                    <apex:selectList id="instanceType" size="1" value="{!companyProfile.instanceType}" style="width:30%">
+                                        <apex:actionSupport event="onchange" action="{!changeInstanceType}" reRender="pageBlockCompanyProfile" />
+                                        <apex:selectOption itemLabel="Production/Developer Edition" itemValue="Production/Developer Edition" />
+                                        <apex:selectOption itemLabel="Sandbox" itemValue="Sandbox" />
+                                        <apex:selectOption itemLabel="Other" itemValue="Other" />
+                                    </apex:selectList>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Instance Login URL" for="instanceUrl" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="instanceUrl" value="{!companyProfile.instanceUrl}" disabled="{!companyProfile.instanceType!='Other'}" maxlength="100" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem rendered="{!companyProfile.instanceType=='Sandbox'}">
+                                    <apex:outputLabel value="Sandbox Name" for="sandboxName" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputText id="sandboxName" value="{!companyProfile.sandboxName}" maxlength="100" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Heroku Hub URL" for="herokuUrl" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                         <apex:outputLabel value="https://" /> 
+                                        <apex:inputText id="herokuUrl" value="{!companyProfile.herokuUrl}" maxlength="100" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Synchronization Start Date" for="syncStartDate" />
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                        <apex:inputField id="syncStartDate" value="{!companyProfile.syncStartDate.StartDateTime}" style="width:30%" />
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                        </apex:pageBlock>
+                    </apex:form>
+                </apex:tab>
+
+                <!-- Discovery tab -->
+                <apex:tab name="tab_2_2" label="Discovery" ontabenter="loadDiscoveryTab();">
+                    <apex:form >
+                        <apex:actionFunction name="loadAllConnections_M" action="{!loadAllConnections}" reRender="messages" oncomplete="loadLinkedOrganizations_M();loadPendingRequests_M();searchOrganizations_M();" status="loadallconnections" />
+                        <apex:actionFunction name="loadLinkedOrganizations" action="{!loadLinkedOrganizations}" reRender="linkedOrganizationsTable" status="linkedOrganizationsStatus" />
+                        <apex:actionFunction name="loadLinkedOrganizations_M" action="{!loadLinkedOrganizations}" reRender="linkedOrganizationsTable,messages" status="linkedOrganizationsStatus" />
+                        <apex:actionFunction name="loadPendingRequests" action="{!loadPendingRequests}" reRender="pendingRequestsTable" status="pendingRequestsStatus" />
+                        <apex:actionFunction name="loadPendingRequests_M" action="{!loadPendingRequests}" reRender="pendingRequestsTable,messages" status="pendingRequestsStatus" />
+                        <apex:actionFunction name="searchOrganizations" action="{!searchOrganizations}" reRender="searchOrganizationsTable" status="searchOrganizationsStatus" />
+                        <apex:actionFunction name="searchOrganizations_M" action="{!searchOrganizations}" reRender="searchOrganizationsTable,messages" status="searchOrganizationsStatus" />
+                        <apex:actionFunction name="cancelConnection_M" action="{!cancelConnection}" reRender="messages" oncomplete="loadLinkedOrganizations();">
+                            <apex:param name="commandPath" value="" />
+                        </apex:actionFunction>
+                        <apex:actionFunction name="acceptConnection_M" action="{!acceptConnection}" reRender="messages" oncomplete="loadPendingRequests();">
+                            <apex:param name="commandPath" value="" />
+                        </apex:actionFunction>
+                        <apex:actionFunction name="rejectConnection_M" action="{!rejectConnection}" reRender="messages" oncomplete="loadPendingRequests();">
+                            <apex:param name="commandPath" value="" />
+                        </apex:actionFunction>
+                        <apex:actionFunction name="sendConnectionRequest_M" action="{!sendConnectionRequest}" reRender="messages" oncomplete="searchOrganizations();">
+                            <apex:param name="selectedOrgId" value="" />
+                        </apex:actionFunction>
+						
+						<apex:actionStatus id="loadallconnections">
+                            <apex:facet name="start">
+                            	<apex:panelGrid columns="2">
+                                	<apex:image value="/img/loading32.gif" width="16" height="16" />
+                                	<apex:outputText value="Page is loading... Please, wait a few seconds." style="color:black;font-size:.9em;font-weight:bold;font-family:Arial,Verdana,sans-serif" />
+                            	</apex:panelGrid>
+                            </apex:facet>
+                            <apex:facet name="stop"></apex:facet>
+                        </apex:actionStatus>
+						
+                        <!-- Linked Organizations -->
+                        <apex:pageBlock mode="edit">
+                            <apex:actionStatus id="linkedOrganizationsStatus">
+                                <apex:facet name="start">
+                                	<apex:panelGrid columns="2">
+                                    	<apex:image value="/img/loading32.gif" width="16" height="16" />
+                                    	<apex:outputText value="Linked Organizations are loading... Please, wait a few seconds." style="color:black;font-size:.9em;font-weight:bold;font-family:Arial,Verdana,sans-serif"/>
+                                    </apex:panelGrid>
+                                </apex:facet>
+                                <apex:facet name="stop">
+                                    <apex:outputPanel >
+                                            <apex:pageBlockTable value="{!linkedOrganizations}" var="x" id="linkedOrganizationsTable">
+                                                <apex:column >
+                                                    <apex:facet name="header">Linked Organizations</apex:facet>
+                                                    <apex:pageBlockSection columns="1">
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputPanel >
+                                                                <apex:outputText value="{!x.approver_name}" rendered="{!x.initiator==companyProfile.organizationId}" />
+                                                                <apex:outputText value="{!x.initiator_name}" rendered="{!x.approver==companyProfile.organizationId}" />
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel >
+                                                                <input type="submit" class="btn" value="Disconnect" style="display:{!IF(x.state=='connected','','none')};" onclick="if (disconnectConfirm()) cancelConnection_M('{!JSENCODE(x.paths.cancel_path)}');return false;" />
+                                                                <apex:outputText value="Connecting" rendered="{!x.state=='approved'}" />
+                                                            </apex:outputPanel>
+                                                        </apex:pageBlockSectionItem>
+                                                    </apex:pageBlockSection>
+                                                </apex:column>
+                                            </apex:pageBlockTable>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlock>
+
+                        <!-- Pending Requests -->
+                        <apex:pageBlock mode="edit">
+                            <apex:actionStatus id="pendingRequestsStatus">
+                                <apex:facet name="start">
+                                	<apex:panelGrid columns="2">
+                                    	<apex:image value="/img/loading32.gif" width="16" height="16" />
+                                    	<apex:outputText value="Pending Requests are loading... Please, wait a few seconds." style="color:black;font-size:.9em;font-weight:bold;font-family:Arial,Verdana,sans-serif"/>
+                                    </apex:panelGrid>
+                                </apex:facet>
+                                <apex:facet name="stop">
+                                    <apex:outputPanel >
+                                            <apex:pageBlockTable value="{!pendingRequests}" var="x" id="pendingRequestsTable">
+                                                <apex:column >
+                                                    <apex:facet name="header">Pending Requests</apex:facet>
+                                                    <apex:pageBlockSection columns="1">
+                                                            <apex:pageBlockSectionItem >
+                                                                <apex:outputLabel value="Company Name" />
+                                                                <apex:outputText value="{!x.initiator_name}" />
+                                                            </apex:pageBlockSectionItem>
+                                                            <apex:pageBlockSectionItem >
+                                                                <apex:outputLabel value="" />
+                                                                <apex:outputPanel >
+                                                                    <input type="submit" class="btn" value="Accept" onclick="acceptConnection_M('{!JSENCODE(x.paths.approve_path)}');return false;" />
+                                                                    <input type="submit" class="btn" value="Reject" onclick="rejectConnection_M('{!JSENCODE(x.paths.reject_path)}');return false;" />
+<!--                                                                    <apex:commandButton value="Accept" action="{!acceptConnection}" reRender="messages" oncomplete="loadPendingRequests();">
+                                                                        <apex:param name="connectionId" value="{!x.id}" />
+                                                                    </apex:commandButton>
+                                                                    <apex:commandButton value="Reject" action="{!rejectConnection}" reRender="messages" oncomplete="loadPendingRequests();">
+                                                                        <apex:param name="connectionId" value="{!x.id}" />
+                                                                    </apex:commandButton>-->
+                                                                </apex:outputPanel>
+                                                            </apex:pageBlockSectionItem>
+                                                    </apex:pageBlockSection>
+                                                </apex:column>
+                                            </apex:pageBlockTable>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlock>
+
+                        <!-- Other Orgs in My Domain -->
+                        <apex:pageBlock mode="edit">
+                            <apex:actionStatus id="searchOrganizationsStatus">
+                                <apex:facet name="start">
+                                    <apex:panelGrid columns="2">
+                                    	<apex:image value="/img/loading32.gif" width="16" height="16" />
+                                    	<apex:outputText value="Other Orgs in My Domain are loading... Please, wait a few seconds." style="color:black;font-size:.9em;font-weight:bold;font-family:Arial,Verdana,sans-serif"/>
+                                    </apex:panelGrid>
+                                </apex:facet>
+                                <apex:facet name="stop">
+                                    <apex:outputPanel >
+                                            <apex:pageBlockTable value="{!otherOrgsInMyDomain}" var="x" id="searchOrganizationsTable">
+                                                <apex:column >
+                                                    <apex:facet name="header">Other Orgs in My Domain</apex:facet>
+                                                    <apex:pageBlockSection columns="2">
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel value="Company Name" />
+                                                            <apex:outputText value="{!x.companyName}" />
+                                                        </apex:pageBlockSectionItem>
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel value="Industry" />
+                                                            <apex:outputText value="{!x.industry}" />
+                                                        </apex:pageBlockSectionItem>
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel value="Country" />
+                                                            <apex:outputText value="{!x.country}" />
+                                                        </apex:pageBlockSectionItem>
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel value="City" />
+                                                            <apex:outputText value="{!x.city}" />
+                                                        </apex:pageBlockSectionItem>
+                                                        <apex:pageBlockSectionItem >
+                                                            <apex:outputLabel value="Connection" />
+                                                            <apex:outputPanel >
+                                                                <input type="submit" class="btn" value="Send Connection Request" style="display:{!IF(x.status == null,'','none')};" onclick="sendConnectionRequest_M('{!JSENCODE(x.organizationId)}');return false;" />
+<!--                                                                <apex:commandButton value="Send Connection Request" action="{!sendConnectionRequest}" rendered="{!x.status == null}" reRender="messages" oncomplete="searchOrganizations();">
+                                                                    <apex:param name="selectedOrgId" value="{!x.organizationId}" />
+                                                                </apex:commandButton>-->
+                                                                <apex:outputText value="{!x.status}" rendered="{!x.status != null}" />
+                                                            </apex:outputPanel>
+                                                        </apex:pageBlockSectionItem>
+                                                    </apex:pageBlockSection>
+                                                </apex:column>
+                                            </apex:pageBlockTable>
+                                    </apex:outputPanel>
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </apex:pageBlock>
+
+                    </apex:form>
+                </apex:tab>
+
+                <!-- Reports tab -->
+                <!-- 
+                <apex:tab name="tab_2_3" label="Reports"></apex:tab>
+ 				-->
+ 
+                <!-- Settings tab -->
+                <apex:tab name="tab_2_4" label="Settings">
+                    <apex:form id="formSettings">
+                        <apex:pageBlock id="pageBlockSettings" mode="detail">
+                            <apex:pageBlockButtons id="buttonsSettings" location="bottom">
+                                <apex:commandButton value="Update Sharing Settings" action="{!savePassportSharingSettings}" reRender="messages" />
+                            </apex:pageBlockButtons>
+
+                            <!-- Passport Sharing Settings -->
+                            <apex:pageBlockSection id="sharingSettingsSection" title="Passport Sharing Settings" collapsible="false" columns="1" >
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Users Sharing" />
+                                    <apex:selectRadio id="usersSharingModel" value="{!usersSharingModel}">
+                                        <apex:selectOption itemLabel="All" itemValue="All" />
+                                        <apex:selectOption itemLabel="Users from selected groups only" itemValue="GroupBased" />
+                                    </apex:selectRadio>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Allowed User Licenses" />
+                                    <apex:selectRadio id="usersLicenseFilter" value="{!usersLicenseFilter}">
+                                        <apex:selectOption itemLabel="All" itemValue="All" />
+                                        <apex:selectOption itemLabel="Salesforce, Salesforce Platform or Force.com license holders only" itemValue="StandardOnly" />
+                                    </apex:selectRadio>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem id="sharingModelSectionItem">
+                                    <apex:outputLabel value="Groups Sharing" />
+                                    <apex:selectRadio id="groupsSharingModel" value="{!groupsSharingModel}" onclick="refreshGroupsSharingModel(jQuery(this).val());">
+                                        <apex:selectOption itemLabel="All" itemValue="All" />
+                                        <apex:selectOption itemLabel="Public Only" itemValue="Public" />
+                                        <apex:selectOption itemLabel="Private Only" itemValue="Private" />
+                                        <apex:selectOption itemLabel="All Public and Selected Private" itemValue="ManualPrivate" />
+                                        <apex:selectOption itemLabel="Manual" itemValue="Manual" />
+<!--                                         <apex:selectOption itemLabel="Manual Targeted" itemValue="ManualTargeted" /> -->
+                                    </apex:selectRadio>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem id="manualGroupsSectionItem" >
+                                    <apex:outputLabel value="Groups to share" />
+                                    <apex:outputPanel layout="inline">
+                                        <apex:selectList id="groupsSelect" value="{!selectedGroups}" multiselect="true" size="10" styleClass="customMultiselect" style="width: 500px; height: 200px;">
+                                            <apex:selectOptions value="{!availableGroups}" />
+                                        </apex:selectList>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem id="manualPrivateGroupsSectionItem" >
+                                    <apex:outputLabel value="Groups to share" />
+                                    <apex:outputPanel layout="inline">
+                                        <apex:selectList id="groupsSelect" value="{!selectedGroupsPrivate}" multiselect="true" size="10" styleClass="customMultiselect" style="width: 500px; height: 200px;">
+                                            <apex:selectOptions value="{!availableGroupsPrivate}" />
+                                        </apex:selectList>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Feeds Sharing" />
+                                    <apex:selectRadio id="feedsSharingModel" value="{!feedsSharingModel}">
+                                        <apex:selectOption itemLabel="All" itemValue="All" />
+                                        <apex:selectOption itemLabel="Within groups only" itemValue="GroupBased" />
+                                    </apex:selectRadio>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                        </apex:pageBlock>
+                    </apex:form>
+                </apex:tab>
+            </apex:tabPanel>
+
+   <!--     </apex:tab>
+    </apex:tabPanel> -->
+
+    <script type="text/javascript">
+        jQuery.noConflict();
+        jQuery(document).ready(function() {
+            jQuery('.customMultiselect').multiselect({
+                    dividerLocation: 0.5,
+                    searchable: false
+                });
+            refreshGroupsSharingModel('{!JSENCODE(groupsSharingModel)}');
+            jQuery("*[id='page:iprangesblock']").click(function() {
+            	jQuery(this).hide();
+            	closeRanges_M();
+            });
+        });
+        
+        
+        function loadDiscoveryTab() {
+        	if ({!companyExistsInHeroku}) {
+                loadAllConnections_M();
+            }
+        }
+        
+        function showTooltip(x) {
+            var text = 'If your Organization has Security Tokens enabled you will need to paste the token of the Integration User. Passport server will use the token to authenticate its calls to Salesforce.';
+            jQuery('#tooltip').dialog({
+                    width: 400,
+                    draggable: false,
+                    position: 'right',
+                    title: 'Tooltip'
+                });
+            jQuery('#tooltip').dialog('widget').find('.ui-dialog-titlebar').hide();
+            jQuery('#tooltip').dialog('widget').position({ my: 'left', at: 'right', of: jQuery(x), offset: '350 0' });
+            jQuery('#tooltip').dialog('widget').find('.ui-dialog-content').html('<p>' + text + '</p>');
+        }
+        
+        function hideTooltip(x) {
+            jQuery('#tooltip').dialog('close');
+        }
+        
+        function disconnectConfirm() {
+            return confirm('Are you sure you want to disconnect this organization?');
+        }
+        
+        function messagePresent() {
+            return jQuery("span[id='{!$Component.page.messages}']").html().length > 0;
+        }
+        
+        function refreshGroupsSharingModel(value) {
+//            var v = jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:sharingModelSectionItem:groupsSharingModel']").val();
+
+            if (value == 'Manual') {
+                jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:manualGroupsSectionItem:groupsSelect']").parents('tr:first').show();
+                jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:manualPrivateGroupsSectionItem:groupsSelect']").parents('tr:first').hide();
+            } else if (value == 'ManualPrivate') {
+                jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:manualGroupsSectionItem:groupsSelect']").parents('tr:first').hide();
+                jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:manualPrivateGroupsSectionItem:groupsSelect']").parents('tr:first').show();
+            } else {
+                jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:manualGroupsSectionItem:groupsSelect']").parents('tr:first').hide();
+                jQuery("*[id='page:formSettings:pageBlockSettings:sharingSettingsSection:manualPrivateGroupsSectionItem:groupsSelect']").parents('tr:first').hide();
+            }
+        }
+        
+        
+        
+    </script>
+    
+</apex:page>

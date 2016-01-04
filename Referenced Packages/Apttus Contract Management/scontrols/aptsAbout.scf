@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<title>Application Splash Page</title>
+<style type="text/css" media="all">
+body#splashBody {
+font-family: arial, helvetica, verdana, sans-serif;
+font-size: 80%;
+margin: 0;
+padding: 0;
+width: 97%;
+}
+img {
+border: 0;
+margin: 0;
+padding: 0;
+}
+p {
+margin: 0;
+padding: 0;
+}
+h1.appName {
+font-weight: bold;
+font-size: 100%;
+color: #FFF;
+background-color: #638658;
+padding: 10px 0 10px 8px;
+margin: 0 0 15px 0;
+}
+h2 {
+color: #FFF;
+padding: 2px 0 2px 8px;
+margin-top: 0;
+background-color: #638658;
+font-size: 90%;
+}
+h2.exchangeTitle {
+background-color: #999;
+}
+#splash {
+margin: 0;
+padding: 0;
+width: 100%;
+}
+#splash td {
+margin: 0;
+padding: 0;
+}
+#splash #splashLeft {
+vertical-align: top;
+background-color: #F3F3EC;
+border-bottom: 2px solid #638658;
+}
+#splash #splashCenter {
+display:block;
+width: 15px;
+background-color: #FFF;
+}
+#splash #splashRight {
+vertical-align: top;
+background-color: #E8E8E8;
+border-bottom: 2px solid #999;
+}
+#splash #splashLeft .about, #splash #splashLeft .exchange {
+width: 100%;
+}
+#splash #splashRight .exchange p {
+font-size: 90%;
+color: #333;
+margin: 0 10px 12px 10px;
+line-height: 1.4em;
+}
+#splash #splashLeft .about p {
+font-size: 90%;
+color: #333;
+margin: 0 10px 12px 15px;
+line-height: 1.4em;
+}
+#splash #splashLeft .about fieldset {
+color: #333;
+margin: 0 15px 10px 15px;
+padding: 2px;
+}
+#splash #splashLeft .about fieldset ul {
+padding: 0;
+margin: .3em 0 .3em 2em;
+}
+#splash #splashLeft .about fieldset li {
+padding: 0;
+margin: 0;
+}
+#splash #splashLeft .about legend {
+font-size: 90%;
+color: #333;
+font-weight: bold;
+}
+.imgDiv {
+text-align: center;
+padding: 0 0 10px 0;
+}
+
+ li.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0pt; margin-right:0pt; margin-top:0pt}
+</style>
+</head>
+
+<body id="splashBody">
+
+<h1 class="appName">Apttus Contract Management Suite</h1>
+<table id="splash" cellspacing="0">
+	<tr>
+		<td id="splashLeft" width="75%">
+		<div class="about">
+			<p class="MsoNormal" style="line-height: 1.2em"><font face="Arial" size="2">The 
+			Apttus Contract Management 
+			Suite gives you complete visibility and control of your 
+			contract process. It is easy to deploy and very easy to use. You gain 
+			benefits immediately – process control, risk management and high, immediate 
+			investment returns. Contract Management typically is a frustrating experience: 
+			Finding and using the correct templates; ensuring the right approvals; 
+			tracking the right versions; using the appropriate clauses and finally 
+			executing the agreement in the time frame needed. Additionally, after 
+			all of this, finding the agreement when needed can be tricky and ensuring 
+			you are actually getting what you have negotiated is virtually impossible.
+			</font></p>
+			<p class="MsoNormal" style="line-height: 1.2em"><font face="Arial" size="2">Legal and Contract 
+			Administration set up standard templates, with full clause level capability. 
+			Sales and procurement users simply fill out a request form, which dynamically 
+			selects the correct, up to date, template and produces your first draft, 
+			real-time. Apttus ensures the correct process is managed. The application 
+			provides contract management features to be available in the MS Word 
+			interface. This allows negotiators to use a familiar tool while having 
+			access to the full capability of the application.</font></p>
+			<ul style="margin-top: 0pt; margin-bottom: 0pt" type="disc">
+				<li class="MsoNormal">
+				<p style="line-height: 1.2em"><font face="Arial" size="2">End to end contract 
+				creation, negotiation, storage and terms management with full reporting 
+				and 360 degree dashboard visibility</font></li>
+				<li class="MsoNormal">
+				<p style="line-height: 1.2em"><font face="Arial" size="2">Manage every aspect 
+				of your contract process: approvals, processes, terms, risk, obligations, 
+				templates, clauses, versions, amendments, renewals and transaction 
+				fulfillment</font></li>
+				<li class="MsoNormal">
+				<p style="line-height: 1.2em"><font face="Arial" size="2">Contract management 
+				functions enabled directly in MS Word user interface enabling a 
+				user to perform contract management in a familiar tool</font></li>
+			</ul>
+			<fieldset>
+			<legend><font face="Arial" size="2">Additional Help and Training</font></legend>
+			<ul>
+				<li>
+				<p style="line-height: 1.2em"><font face="Arial" size="2">To learn more about using this application 
+				in your environment, contact Apttus at 
+				<a href="mailto:info@apttus.com">info@apttus.com</a>.</font></li>
+				<li>
+				<p style="line-height: 1.2em"><font size="2">Apttus provides additional training for its 
+				Contract Management Suite on an as needed basis.&nbsp; Please 
+				contact <a href="mailto:sales@apttus.com">sales@apttus.com</a> 
+				for more information.</font></li>
+			</ul>
+			</fieldset> </div>
+		</td>
+		<td>
+		<div id="splashCenter">
+&nbsp;</div>
+		</td>
+		<td id="splashRight" width="25%">
+		<div class="exchange">
+			<h2 class="exchangeTitle">About Apttus</h2>
+			<p style="line-height: 1.2em"><font face="Arial" size="2">Apttus comes 
+			from the Latin word &quot;aptus&quot;, which means suitable, capable and fast. 
+			Apttus was formed to deliver the promise of enterprise class application 
+			capability, but extremely rapidly and with high value. Apttus has combined 
+			deep domain expertise with the Salesforce platform and launched the company 
+			with the Contract Management Suite. Apttus’ goal is to provide organizations 
+			with an alternative, significantly better way to automate business functions, 
+			but in a manner that much more closely maps to the needs of organizations.</font></p>
+			<p style="line-height: 1.2em"><font face="Arial" size="2">
+			Apttus delivers “on demand” applications, allowing you to gain complete visibility and 
+			end to end management of your business function. The Contract Management 
+			Suite is “out of the box” allowing for extremely rapid deployment. Additionally, 
+			configuration tools allow for extraordinary extensibility. You 
+			can begin to use the applications immediately, but can change 
+			them as you learn more about what you need.</font></p>
+			<p style="line-height: 1.2em"><font face="Arial" size="2">Website:
+			<a target="_blank" href="http://apttus.com">http://apttus.com</a><br>
+			Phone: 408-429-4817</font></p>
+			</font></div>
+		</td>
+	</tr>
+</table>
+
+</body>
+
+</html>

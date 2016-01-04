@@ -1,0 +1,2 @@
+<apex:component controller="TH1.REMOTE_CO_Attachments" layout="none">
+</apex:component>

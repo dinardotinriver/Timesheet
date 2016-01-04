@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>RulesActivityHistory__c$Owner</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.UserRole</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.Profile</field>
+    </columns>
+    <description>The following reports provide drill down on competitors.  This includes a Bucket Field.</description>
+    <filter>
+        <criteriaItems>
+            <column>RulesActivityHistory__c$Name</column>
+            <operator>contains</operator>
+            <value>comp</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>01 01C Lead + RAH COMP ONly</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>x03_AHA__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>RulesActivityHistory__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

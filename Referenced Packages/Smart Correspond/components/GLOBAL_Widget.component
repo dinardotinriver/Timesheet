@@ -1,0 +1,190 @@
+<apex:component controller="TH1.GLOBAL_CO_Widget" access="global" allowDML="true">
+    <head>
+        <apex:attribute type="String" name="objectId" assignTo="{!ContextObjectId}" default="" access="global" description="Id of object in context"/>
+        <apex:includeScript value="/support/console/27.0/integration.js"/>
+        <apex:includeScript value="{!URLFOR($Resource.TH1__ThirdParty, 'json/json2.js')}"/>
+        <style>
+            body.widget{
+                background-color: white;
+            }
+            img{
+                margin-top: 3px;
+            }
+            #widget_content .links{
+                position: absolute;
+                top: -3px;
+                right: 0px;
+            }
+            .widget #mask img{
+                border-radius: 5px;
+                background-color: white;
+                padding: 10px;
+                position: absolute;
+                left: 42%;
+                top: 30%;
+            }
+            #th_btn_edit {
+                display: none;
+            }
+            #th_btn_generate {
+                display: none;
+            }
+            #th_btn_collaborate {
+                display: none;
+            }
+            .logo {
+                margin-left: 10px;
+            }
+        </style>
+        <script type="text/javascript">
+
+            // If in console get focused tab
+            if (sforce.console.isInConsole()) {
+               sforce.console.setCustomConsoleComponentButtonIconUrl('{!URLFOR($Resource.TH1__ThunderheadResources, 'images/console_logo.png' )}');
+
+                // On focused primary tab get object id
+                var onFocusedPrimaryTabCallback = function (result) {
+                    //Update object id
+                    var focusedSubtabId = function focusedSubtabId(result) {
+                        updateObjectId(result.id);
+                    };
+                    sforce.console.getFocusedSubtabObjectId(focusedSubtabId);
+                };
+                sforce.console.onFocusedPrimaryTab(onFocusedPrimaryTabCallback);
+
+                // On focused subtab get object id
+                var onFocusedSubtabCallback = function (result) {
+                    //Update object id
+                    var focusedSubtabId = function focusedSubtabId(result) {
+                        updateObjectId(result.id);
+                    };
+                    sforce.console.getFocusedSubtabObjectId(focusedSubtabId);
+                };
+                sforce.console.onFocusedSubtab(onFocusedSubtabCallback);
+
+                // Get object id first time in
+                var showObjectId = function showObjectId(result) {
+                    try {
+                        updateObjectId(result.id);
+                    }
+                    catch(e) {
+                        //do nothing
+                    }
+                };
+                sforce.console.getFocusedSubtabObjectId(showObjectId);
+                
+                sforce.console.onCustomConsoleComponentButtonClicked(function (result) {
+                    //Update object id
+                    var focusedSubtabId = function focusedSubtabId(result) {
+                        updateObjectId(result.id);
+                    };                                        
+                    sforce.console.getFocusedSubtabObjectId(focusedSubtabId);
+                });
+            }
+        </script>
+    </head>
+    <body class="widget">
+        <apex:form >
+            <apex:outputPanel id="script_panel">
+                <script type="text/javascript">
+                    var docSettingIds = window.JSON.parse('{!JSENCODE(DocumentSettingsJSON)}');
+                    var docSettingsCompId = '{!$Component.th_select_docsettings}';
+                    var existingOnLoad = window.onload;
+
+                     function generate(action) {
+                        var selectedSettingId = document.getElementById(docSettingsCompId).value;
+
+                        var page = 'DOCGEN_GenerateDocument';
+                        if (action === 'edit') {
+                            page = 'DOCEDT_EditDocument';
+                        }
+                        else if (action === 'collaborate') {
+                            page = 'COLLAB_Docbox';
+                        }
+
+                        var redirectUrl = '{!$Site.Prefix}/apex/{!JSENCODE(OrgNamespace)}' + page + '?action=' + action + '&objectId={!JSENCODE(currentObjectId)}&docSettingId=' + selectedSettingId + '&genId=' + Math.floor((Math.random()*10000000))+'&console=' + sforce.console.isInConsole();
+                        if (sforce.console.isInConsole()) {
+                            sforce.console.setCustomConsoleComponentWindowVisible(false);
+                            var showTabId = function showTabId(result) {
+                                sforce.console.openPrimaryTab(null, redirectUrl + '&consoleTabId=' + result.id, true, '{!JSENCODE($Setup.Application_Custom_Settings__c.Application_Name__c)}', openSuccess, 'ocTab' + result.id + selectedSettingId);
+                            };
+                            sforce.console.getFocusedSubtabId(showTabId);
+                        } else {
+                            window.top.location = redirectUrl;
+                        }
+
+                        var openSuccess = function openSuccess(result) { };
+                    }
+
+                    function onWindowload() {
+                        if (!{!ObjectIdSet}) {
+                            setReferrer(document.referrer);
+                        }
+                        onDocSettingSelectionChanged();
+                        if (existingOnLoad) {
+                            existingOnLoad();
+                        }
+                    }
+
+                    function onDocSettingSelectionChanged() {
+                        var docSettingsComp = document.getElementById(docSettingsCompId);
+                        if (docSettingsComp) {
+                            var selectedSettingId = document.getElementById(docSettingsCompId).value;
+                            var docSettings = docSettingIds[selectedSettingId];
+                            updateActionButton('th_btn_edit', docSettings.canEdit);
+                            updateActionButton('th_btn_generate', docSettings.canGenerate);
+                            updateActionButton('th_btn_collaborate', docSettings.canCollaborate);
+                        }
+                        if ({!ObjectIdSet}) {
+                           document.getElementById('widget_content').setAttribute('style', 'display:inline;');
+                        }
+                    }
+
+                    function updateActionButton(id, display) {
+                       document.getElementById(id).setAttribute('style', 'display:' + (display ? 'inline' : 'none') + ';');
+                    }
+
+                    window.onload = onWindowload;
+
+                    if(sforce.console.isInConsole()) {
+	                    onDocSettingSelectionChanged();
+                    }
+                </script>
+            </apex:outputPanel>
+            <apex:actionFunction action="{!updateObjectId}" name="updateObjectId" rerender="widget_body,script_panel" oncomplete="onDocSettingSelectionChanged();">
+                <apex:param name="newConsoleId" assignTo="{!ConsoleId}" value=""/>
+            </apex:actionFunction>
+            <apex:actionFunction action="{!setReferrer}" name="setReferrer" rerender="widget_body,script_panel" oncomplete="onDocSettingSelectionChanged();">
+                <apex:param name="referrer" assignTo="{!referrer}" value=""/>
+            </apex:actionFunction>
+            <apex:outputPanel id="widget_body">
+                <div id="widget_content" style="display:none;">
+                    <apex:image styleClass="logo" value="{!URLFOR($Resource.TH1__ThunderheadResources, 'images/' + $Setup.Application_Custom_Settings__c.Logo__c)}" />
+                    <apex:outputPanel layout="block" rendered="{!HasDocSettings}">
+                        <center>
+                            <apex:selectList id="th_select_docsettings" value="{!SelectedDocSettingId}" multiselect="false" size="1" onchange="onDocSettingSelectionChanged();" style="width:150px;">
+                                <apex:selectOptions value="{!DocSettingOptions}"/>
+                            </apex:selectList>
+                            <br/>
+                            <br/>
+                            <apex:outputPanel id="widget_buttons">
+                                <c:COMMON_SkywalkerButton id="th_btn_edit" label="Edit" colour="blue" onclickMethod="generate('edit');" />
+                                <c:COMMON_SkywalkerButton id="th_btn_generate" label="Generate" colour="orange" onclickMethod="generate('generate');" />
+                                <c:COMMON_SkywalkerButton id="th_btn_collaborate" label="Collaborate" colour="orange" onclickMethod="generate('collaborate');" />
+                            </apex:outputPanel>
+                        </center>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" rendered="{!NOT(HasDocSettings)}">
+                        <center id="Title">
+                            <br/>
+                            No documents for this page
+                        </center>
+                        <br/>
+                        <br/>
+                    </apex:outputPanel>
+                    <c:COMMON_PageHelpLink helpUrlPath="index.htm#ThunderheadWidget.htm" showText="false" />
+                </div>
+            </apex:outputPanel>
+        </apex:form>
+    </body>
+</apex:component>

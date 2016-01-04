@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeDate)}
+{!INCLUDE($SControl.aptsIncludeTable)}
+{!INCLUDE($SControl.aptsIncludeWizard)}
+
+<script language="javascript" type="text/javascript"> 
+
+var cFILENAME_SUFFIX = "_Support";
+var cCREATE_SUPPORTING_DOCUMENT = "Generating supporting document...Please wait";
+var cSAVING_SUPPORTING_DOCUMENT = "Saving supporting document...Please wait";
+var cERROR_CREATE_SUPPORTING_DOCUMENT = "ERROR generating supporting document:";
+var cERROR_SAVING_SUPPORTING_DOCUMENT = "ERROR saving supporting document:";
+
+function initPage() {
+	window.setTimeout("generateSupportingDoc();",gTimeout);
+}
+
+function generateSupportingDoc() {
+	gAction = cACTION_GENERATE_SUPPORTING_DOC;
+	gTemplateType = cTEMPLATE_TYPE_SUPPORTING_DOC;
+	
+	gObjectId = gContractId;
+	gObjectIdURL = gContractIdURL;
+	gUseAsyncMode = true;
+	
+	gDebugTime = false;
+	gIsDraft = false;
+	gIsVisible = true;
+	
+	gMergeType = "Final";
+	gMergeTypeMsg = cCREATE_SUPPORTING_DOCUMENT;
+	gMergeTypeErr = cERROR_CREATE_SUPPORTING_DOCUMENT;
+	
+	gSaveProgressMsg = cSAVING_SUPPORTING_DOCUMENT;
+	gSaveErrorMsg = cSAVING_SUPPORTING_DOCUMENT;
+	
+	gPageTitle = "Generate Supporting Document";
+	gPageDescription = "Apttus can generate supporting documents for your agreement from your data.<br>" +
+		"Please choose a supporting document template.";
+	
+	getWizardMode();
+	doMakeFormRequest();
+	initWizard();
+}
+
+function preMerge() {}
+
+function postMerge() {
+	showMsgProgress(gSaveProgressMsg);
+	if (!gUseMergeServer) {
+		window.setTimeout("doSaveAttachment();",gTimeout);
+	}
+}
+
+function doSaveAttachment() {
+	if (gDebug) { writeDebugLn("<p>doSaveAttachment:"); }
+	try {
+		gAttachmentBody = gMMObj.Base64Encode(gAttachmentName);
+
+		var dateTimeStamp = getDateTime();
+		var templateName = GetTemplateName();
+		
+		var fnSys = getFileNameFromPath(gAttachmentName);
+		var fnPre = getFileNamePrefix(gAttachmentName);
+		var fnExt = getFileNameExtension(gAttachmentName);
+		
+		var fn = fnPre+"_"+templateName+"_"+dateTimeStamp;//+"."+fnExt;
+		if (fn.length > 76){
+			fn=fn.substring(0,76)+"."+fnExt;
+		}
+		else{
+			fn=fn.substring(0,76)+"."+fnExt;			
+		}
+		createAttachment(gObjectId,"{!User.Id}",fn);
+	}
+	catch(ex) {
+		erroralert(gSaveErrorMsg,ex);
+	}
+}
+
+function createAttachmentSuccess(result) {
+	if (gLogActivity) {
+		var subj = "Generated Supporting Document";
+		var desc = "Generated Supporting Document";
+	
+		if (gAttachmentName!=null && gAttachmentName!="") {
+			var dateTimeStamp = getDateTime();
+			var templateName = GetTemplateName();
+			
+			var fnSys = getFileNameFromPath(gAttachmentName);
+			var fnPre = getFileNamePrefix(gAttachmentName);
+			var fnExt = getFileNameExtension(gAttachmentName);
+			
+			var fn = fnPre+"_"+templateName+"_"+dateTimeStamp;//+"."+fnExt;
+			if (fn.length > 76){
+				fn=fn.substring(0,76)+"."+fnExt;
+			}
+			else{
+				fn=fn.substring(0,76)+"."+fnExt;			
+			}
+			//var fn = fnPre+cFILENAME_SUFFIX+"."+fnExt;
+			desc += " '"+fn+"' ";
+		}
+		
+		desc += " for agreement {!APTS_Agreement__c.FF_Agreement_Number__c}";
+		
+		createActionActivityHistory(subj,desc);
+	}
+	if (!gUseMergeServer) {
+		gMMObj = null;
+	}
+	navigateTo(gObjectIdURL);
+}
+
+function createAttachmentFailure(error) {
+	erroralert(gSaveErrorMsg,error);
+	if (!gUseMergeServer) {
+		gMMObj = null;
+	}
+	navigateTo(gObjectIdURL);
+}
+</script>
+</head>
+
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

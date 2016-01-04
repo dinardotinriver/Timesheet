@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+
+<script language="javascript" type="text/javascript"> 
+
+var gTargetCatStatus = "Cancelled";
+var gTargetStatus = "Cancelled Request";
+var gAmendedTargetCatStatus = "In Effect";
+var gAmendedTargetStatus = "Activated";
+var gRelatedAgreementObjName = "Apttus__APTS_Related_Agreement__c";
+var gRelatedFromAgreement = "Apttus__APTS_Contract_From__c";
+var gRelatedToAgreement = "Apttus__APTS_Contract_To__c";
+var gRelFromType = "Apttus__Relationship_From_Type__c";
+var gRelToType = "Apttus__Relationship_To_Type__c";
+
+var cAMENDED_FROM_TYPE = "Is Amended By";
+var cAMENDED_TO_TYPE = "Is Amendment For";
+
+var cRENEWED_FROM_TYPE = "Is Renewed By";
+var cRENEWED_TO_TYPE = "Is Renewal For";
+
+function initPage() {
+	showMsgProgress("Cancelling Request...Please Wait");
+	window.setTimeout("doInit();",gTimeout);
+}
+
+function doInit() {
+	logonAsSuperUser();
+	cancelRequest();
+}
+
+function cancelRequest() {
+	try {
+		var contract = new sforce.SObject(gAgreementObjName);
+		
+		contract.Id = gContractId;
+		contract.Apttus__Status_Category__c = gTargetCatStatus;
+		contract.Apttus__Status__c = gTargetStatus;
+		
+		var result = sforce.connection.update([contract]);
+		if (result[0].getBoolean("success")) {
+			reactivateAmendedAgreement();
+			closeSubmitRequestTasks();
+			createActivityLogEntry();
+		} else {
+			erroralert(cERROR_CANCEL_REQUEST, result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CANCEL_REQUEST,ex);
+	}
+	finally {
+		navigateTo(gContractIdURL);
+	}
+}
+
+function reactivateAmendedAgreement() {
+	try {
+		//get related agreements
+		var fieldList = getFieldList(gRelatedAgreementObjName);
+		var q = "select " + fieldList + " from " + gRelatedAgreementObjName;
+		    q += " where " + gRelatedFromAgreement + " = '" + gContractId + "'";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		//iterate over related agreements
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var relFromType = record.get(gRelFromType);
+			var relToType = record.get(gRelToType);
+			
+			//reactivate the original agreement
+			if (relFromType==cAMENDED_FROM_TYPE ||
+				relFromType==cRENEWED_FROM_TYPE)
+			{
+				var contract = new sforce.SObject(gAgreementObjName);
+				
+				var fromAgreementId = record.get(gRelatedFromAgreement);
+				var toAgreementId = record.get(gRelatedToAgreement);
+				
+				contract.Id = toAgreementId;
+				contract.Apttus__Status_Category__c = gAmendedTargetCatStatus;
+				contract.Apttus__Status__c = gAmendedTargetStatus;
+				
+				var result = sforce.connection.update([contract]);
+				if (!result[0].getBoolean("success")) {
+					erroralert(cERROR_CANCEL_REQUEST,result[0]);
+				}
+				
+				i = records.length;
+			}
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CANCEL_REQUEST,ex);
+	}
+}
+
+function closeSubmitRequestTasks() {
+	try {
+		var qStr = "Select Id, Subject, Status from Task " +
+			"where OwnerId = '{!User.Id}' and WhatId = '" + gContractId + "' and " +
+			"Subject = 'Submitted Request Review' and Status <> 'Completed'";
+
+		var result = sforce.connection.query(qStr);
+		var records = result.getArray("records");
+        for (i=0; i<records.length; i++) {
+            var task = records[i];
+            var taskId = task.Id;
+
+			var aTask = new sforce.SObject("Task");
+			aTask.Id = taskId;
+			aTask.Status = "Completed";
+			
+			result = sforce.connection.update([aTask]);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_CLOSE_SUBMIT_REQUEST_TASK,result[0]);
+				navigateTo(gContractIdURL);
+			}
+        }  
+	}
+	catch(ex) {
+		erroralert(cERROR_CLOSE_SUBMIT_REQUEST_TASK,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createActivityLogEntry() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Cancelled Request {!APTS_Agreement__c.Contract_Number__c}" +
+			"\rStatus Category changed from '{!APTS_Agreement__c.Status_Category__c}' to '" + gTargetCatStatus + "'";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Cancelled Request";
+		task.WhatId = gContractId;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_ACTIVITY_LOG,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

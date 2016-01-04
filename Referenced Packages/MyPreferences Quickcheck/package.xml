@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MyPreferences Quickcheck</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <namespacePrefix>mpqc01</namespacePrefix>
+    <types>
+        <members>CT_EmbeddedInitAuthController</members>
+        <members>CT_MySettingsController</members>
+        <members>CT_TestContactTriggers</members>
+        <members>CT_Utility</members>
+        <members>MyPreferencesServices</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CT_EmbeddedInitAuth</members>
+        <members>CT_MyPreferencesSettings</members>
+        <members>CT_MySettings</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>CT_ContactAfterInsertUpdate</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>MyPreferences_Quickcheck</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>Contact.tocCountry__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>MyPreferences_Settings</members>
+        <members>MyPreferences_Setup_Instructions</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>MyPreferences</members>
+        <name>Document</name>
+    </types>
+    <version>30.0</version>
+</Package>

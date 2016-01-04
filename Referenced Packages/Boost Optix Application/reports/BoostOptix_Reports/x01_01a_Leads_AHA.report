@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>RulesActivityHistory__c$Name</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.UserRole</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.Profile</field>
+    </columns>
+    <description>The following report provides lead summary data with AHA object.  There are Boost Rules (competitors mentioned) embedded in this report.</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>RulesActivityHistory__c$Owner.FirstName</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>01 01A Leads from RAH</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>x03_AHA__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>RulesActivityHistory__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

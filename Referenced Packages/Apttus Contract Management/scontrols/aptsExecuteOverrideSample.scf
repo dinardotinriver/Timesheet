@@ -1,0 +1,91 @@
+<script language="javascript" type="text/javascript"> 
+
+function postActivateAgreement() {
+	try {
+		//sample code to synchronize related opportunity with agreement after the agreement is activated
+		var oppId = "{!APTS_Agreement__c.Related_OpportunityId__c}";
+		if (oppId=="" || oppId==null) return;
+		
+		var opp = new sforce.SObject("Opportunity");
+		opp.Id = oppId;
+		
+		var agreementAmt = "{!APTS_Agreement__c.Total_Contract_Value__c}";
+		var agreementAmtNum = agreementAmt;
+		if (typeof(agreementAmtNum)=="string") {
+			agreementAmtNum = convertStringToFloat(agreementAmt);
+		} else if (typeof(agreementAmtNum)=="number") {
+		}
+		opp.Amount = agreementAmtNum;
+		opp.StageName = "Closed/Won";
+					
+		var result = sforce.connection.update([opp]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_EXECUTE_AGREEMENT,result[0]);
+			navigateTo(gContractIdURL);
+			return;
+		}
+
+		//test for custom opportunity product table
+		var hasCustomOppProduct = false;
+		var result = sforce.connection.describeGlobal();
+		var types = result.getArray("types");
+		for (var i=0; i<types.length; i++) {
+			if (types[i]=="Opportunity_Product__c") {
+				hasCustomOppProduct = true;
+				break;
+			}
+		}
+		
+		if (hasCustomOppProduct) {
+			//delete existing opportunity products
+			var opFieldlist = "Id,Name,Product__c,Price__c,Unit_Price__c,Quantity__c,Opportunity__c,Agreement_Product__c";	
+			var q = "select "+opFieldlist+" from Opportunity_Product__c where Opportunity__c = '"+oppId+"'";
+			var result = sforce.connection.query(q);
+			if (result.size>0) {
+				var records = result.getArray("records");
+				
+				var ids = new Array();
+				for (var i=0; i<records.length; i++) {
+					ids[i] = records[i].Id;
+				}
+		
+				var result = sforce.connection.deleteIds([ids]);
+				if (!result[0].getBoolean("success")) {
+					erroralert(cERROR_NEW_AGREEMENT, result[0]);
+					navigateTo(gContractIdURL);
+					return;
+				}
+			}
+	
+			//copy agreement products to opportunity
+			var apFieldList = "Id,Name,Product__c,Price__c,Unit_Price__c,Quantity__c,Opportunity_Product_Id__c,Agreement__c";
+			var q = "select "+apFieldList+" from Agreement_Product__c where Agreement__c = '"+gContractId+"'";
+			var result = sforce.connection.query(q);
+			var records = result.getArray("records");
+			
+			for (var i=0; i<records.length; i++) {
+				var ap = records[i];
+		  		var op = new sforce.SObject("Opportunity_Product__c");
+		  		
+				op.Product__c = ap.Product__c;
+				op.Unit_Price__c = ap.Unit_Price__c;
+				op.Quantity__c = ap.Quantity__c;
+				op.Agreement_Product__c = ap.Id;
+				op.Opportunity__c = oppId;
+	
+				var result = sforce.connection.create([op]);
+				if (!result[0].getBoolean("success")) {
+					erroralert(cERROR_EXECUTE_AGREEMENT,result[0]);
+					navigateTo(gContractIdURL);
+					return;
+				}
+			}		
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_EXECUTE_AGREEMENT,ex);
+		navigateTo(gContractIdURL);
+		return;
+	}
+}
+</script>

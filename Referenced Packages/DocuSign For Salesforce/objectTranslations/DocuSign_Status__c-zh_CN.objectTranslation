@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>DocuSign 状态</value>
+    </caseValues>
+    <fields>
+        <label>案例</label>
+        <name>Case__c</name>
+        <relationshipLabel>DocuSign 状态</relationshipLabel>
+    </fields>
+    <fields>
+        <label>帐户</label>
+        <name>Company__c</name>
+        <relationshipLabel>DocuSign 状态</relationshipLabel>
+    </fields>
+    <fields>
+        <label>已完成年龄</label>
+        <name>Completed_Age__c</name>
+    </fields>
+    <fields>
+        <label>已完成</label>
+        <name>Completed_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- DocuSign Status --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>合同</label>
+        <name>Contract__c</name>
+        <relationshipLabel>DocuSign 状态</relationshipLabel>
+    </fields>
+    <fields>
+        <label>完成所需天数</label>
+        <name>Days_to_Complete__c</name>
+    </fields>
+    <fields>
+        <label>已拒绝</label>
+        <name>Declined_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>已拒绝原因</label>
+        <name>Declined_Reason__c</name>
+    </fields>
+    <fields>
+        <label>DocuSign 信封 ID</label>
+        <name>DocuSign_Envelope_ID__c</name>
+    </fields>
+    <fields>
+        <label>信封链接</label>
+        <name>Envelope_Link__c</name>
+    </fields>
+    <fields>
+        <label>信封状态</label>
+        <name>Envelope_Status__c</name>
+    </fields>
+    <fields>
+        <label>完成所需小时数</label>
+        <name>Hours_to_Complete__c</name>
+    </fields>
+    <fields>
+        <label>发送至签名所需的小时数</label>
+        <name>Hrs_Sent_to_Sign__c</name>
+    </fields>
+    <fields>
+        <label><!-- Lead --></label>
+        <name>Lead__c</name>
+        <relationshipLabel><!-- DocuSign Status --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>完成所需分钟数</label>
+        <name>Minutes_to_Complete__c</name>
+    </fields>
+    <fields>
+        <label>已完成数量</label>
+        <name>Number_Completed__c</name>
+    </fields>
+    <fields>
+        <label>机会</label>
+        <name>Opportunity__c</name>
+        <relationshipLabel>DocuSign 状态</relationshipLabel>
+    </fields>
+    <fields>
+        <label>发件人电子邮件</label>
+        <name>Sender_Email__c</name>
+    </fields>
+    <fields>
+        <label>发件人</label>
+        <name>Sender__c</name>
+    </fields>
+    <fields>
+        <label>发送年龄</label>
+        <name>Sent_Age__c</name>
+    </fields>
+    <fields>
+        <label>已发送</label>
+        <name>Sent_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>主题</label>
+        <name>Subject__c</name>
+    </fields>
+    <fields>
+        <label>完成所需时间</label>
+        <name>Time_to_Complete__c</name>
+    </fields>
+    <fields>
+        <label>上次查看时间</label>
+        <name>Viewed_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>已清空</label>
+        <name>Voided_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>已清空原因</label>
+        <name>Voided_Reason__c</name>
+    </fields>
+    <layouts>
+        <layout>DocuSign Status With View Button</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Information --></label>
+            <section>Information</section>
+        </sections>
+        <sections>
+            <label><!-- Related Objects --></label>
+            <section>Related Objects</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>信封编号</nameFieldLabel>
+    <webLinks>
+        <label>在 DocuSign 中更正</label>
+        <name>CorrectInDocuSign</name>
+    </webLinks>
+    <webLinks>
+        <label>重新发送 DocuSign 电子邮件</label>
+        <name>Resend_DocuSign_EmailDS</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- View_In_DocuSign --></label>
+        <name>View_In_DocuSign</name>
+    </webLinks>
+    <webLinks>
+        <label>在 DocuSign 中查看</label>
+        <name>View_In_DocuSign_Button</name>
+    </webLinks>
+    <webLinks>
+        <label>清空信封</label>
+        <name>VoidEnvelope</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,42 @@
+<apex:component >
+    <style type="text/css">
+      .docgen_container {
+          margin-top: 5px;
+      }
+      .docgen_container .oc_logo {
+          margin-left: auto;
+          margin-right: auto;
+          display: block;
+      }
+      .docgen_container .spinner {
+          margin: 10px;
+          margin-left: auto;
+          margin-right: auto;
+          display: block;
+      }
+      .docgen_container .initialise_user {
+          text-align: center;
+          margin: 10px;
+      }
+      a:link {
+      	text-decoration:underline;
+      }
+    </style>
+
+    <!-- TODO Update to user requireJS -->
+    <apex:includeScript value="/support/console/26.0/integration.js"/>
+    <c:COMMON_JQueryLib />
+    <c:COMMON_UnderscoreJSLib />
+    <c:COMMON_MustacheLib />
+    <c:REMOTE_DocumentGenerator />
+    <c:LoadJS module="docgen/docgen" />
+
+    <div id="docgen_container" class="docgen_container">
+        <div class="logo_container">
+            <apex:image value="{!URLFOR($Resource.TH1__ThunderheadResources, '/images/' + $Setup.Application_Custom_Settings__c.Logo__c)}" styleclass="oc_logo"/>
+        </div>
+        <div class="initialise_user"></div>
+        <div align="center" class="spinner"><img src="/img/loading.gif" width="15" height="15"/></div>
+        <div class="apexp messages" id="messages"></div>
+    </div>
+</apex:component>

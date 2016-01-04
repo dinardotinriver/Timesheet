@@ -1,0 +1,74 @@
+<apex:component >
+<apex:attribute name="popId" type="String" required="false" description="Id of the div to popup"/>
+<apex:attribute name="clearActionMethod" type="String" required="false" description="Method name of the clear action function"/>
+<apex:attribute name="cancelActionMethod" type="String" required="false" description="Method name of the cancel action function"/>
+<apex:attribute name="updateActionMethod" type="String" required="false" description="Method name of the update action function"/>
+<apex:attribute name="popupWidth" type="Integer" required="false" description="The width of the popup" default="450"/>
+<apex:attribute name="popupHeight" type="Integer" required="false" description="The height of the popup" default="160"/>
+<apex:attribute name="popupTitle" type="String" required="false" description="The title of the popup" default="Dynamic field"/>
+<script>
+var isOKButton = false;
+function showPop_{!JSENCODE(popId)}(popId, popupWidth, popupHeight, popupTitle){
+	$( "#" + popId ).dialog({
+		width: popupWidth,
+		height: popupHeight,
+		title: popupTitle,
+		modal: true,
+		resizable: false,
+		position: 'center',
+		close: closePop_{!JSENCODE(popId)}, 
+		buttons: [
+    		{
+        		text: 'OK',
+        		open: function() { $(this).addClass('{!JSENCODE(popId)}_th_btn_popup_ok'); },
+        		click: function() { showMask();
+					{!JSENCODE(updateActionMethod)}();
+					isOKButton = true;
+					$( this ).dialog( "close" );
+				}
+    		},
+    		{
+        		text: "Cancel",
+        		open: function() { $(this).addClass('{!JSENCODE(popId)}_th_btn_popup_cancel'); },
+        		click: function() { $( this ).dialog( "close" ); }
+    		}
+  		]
+	}).parent().appendTo($("#th_page\\:th_form"));
+}
+function clearField_{!JSENCODE(clearActionMethod)}(){
+	showMask();
+	{!JSENCODE(clearActionMethod)}();
+}
+function closePop_{!JSENCODE(popId)}() {
+	if (!isOKButton) {
+		{!JSENCODE(cancelActionMethod)}();
+	}
+	isOKButton = false;
+}
+</script>
+<style>
+#th_link_clear{
+	color: #015BA7;
+	cursor: pointer;
+}
+.pop select{
+	margin-top: 20px;
+	margin-left: 65px;
+}
+.ui-dialog .ui-dialog-buttonpane { 
+    text-align: center;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { 
+    float: none;
+}
+</style>
+<span id="{!JSENCODE(popId)}_dynamic_button">
+	<img src="/s.gif" class="lookupIcon" onclick="showPop_{!JSENCODE(popId)}('{!JSENCODE(popId)}',{!popupWidth},{!popupHeight}, '{!JSENCODE(popupTitle)}')" 
+		onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+		onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" 
+		onmouseover="this.className = 'lookupIconOn';this.className = 'lookupIconOn';" 
+		style="margin-left: 5px;"/>
+	
+	<a href="" id="th_link_clear" class="clear_link" onclick="clearField_{!JSENCODE(clearActionMethod)}()">clear</a>
+</span>
+</apex:component>

@@ -1,0 +1,316 @@
+<script type="text/javascript" src="/dJS/en/1199917680000/library.js"></script>
+<script>
+function ApttusDesktopAjax() {}
+
+function myResponseHandler(doc) {
+	try {
+		var bodyHtml = doc.getElementById("html_body_hidden");
+		var bodyText = doc.getElementById("p7");
+        //var body = (bodyHTML==null) ? bodyText.value : bodyHTML.value;
+		var body = "";
+		
+        if (bodyHtml==null) {
+            body = bodyText.value;
+            gEmailBodyType = "text";
+            
+        } else {
+            body = bodyHtml.value;
+            gEmailBodyType = "html";
+            
+            //remove CDATA tags from html
+            body = body.replace("<![CDATA[","");
+            body = body.replace("]]>","");
+        }
+        
+        gEmailBody = body;
+        
+        sendToOtherPartyInit_Callback();
+	}
+	catch(ex) {
+        alert(ex);
+	}
+}
+
+function myFilePickerResponseHandler(url) {
+    try {
+        var body = doc;
+        //var bodyHTML = doc.getElementById("html_body_hidden");
+        //var bodyText = doc.getElementById("p7");
+        
+        //var body = (bodyHTML==null) ? bodyText.value : bodyHTML.value;
+        //newDocument.body.innerHTML = newXml;
+        
+        //replace script with our script so we can intercept
+
+	    //setLastMousePosition(e);
+	    //openPopup(url, 'doc', 450, 450, 'width=450,height=450,scrollbars=yes,toolbar=no,status=no,directories=no,menubar=no,resizable=1', true);
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+function makeActionRequest(actionUrl, finalUrl, finalData, finalHandler) {
+
+    function makeCookieRequest(url, handler) {
+        var now = new Date;
+        var cookieName = DynamicContent.pCOOKIE_PARAM + now.getTime();
+        now.setTime(now.getTime() + 600000);
+        setCookie(cookieName, data, now, null);
+        try {
+            makeGetRequest(setParam(url, DynamicContent.pCOOKIE_PARAM, cookieName), handler);
+        } finally {
+        }
+    }
+
+    var data = finalData;
+
+    function actionHandler(newDoc) {
+        makeCookieRequest(finalUrl, finalHandler);
+    }
+
+    if (actionUrl) {
+        makeCookieRequest(actionUrl, actionHandler);
+    } else {
+        actionHandler(null);
+    }
+}
+
+function removeParam(url, paramName) {
+    var s = url.indexOf(paramName + "=");
+    if (s < 0) {
+        return url;
+    }
+    var e = url.indexOf("&", s);
+    e++;
+    if (e == 0) {
+        e = url.length;
+    }
+    url = url.substring(0, s) + url.substring(e, url.length);
+    if (url.length > 1) {
+        var lastChar = url.charAt(url.length - 1);
+        if (lastChar == "?" || lastChar == "&") {
+            url = url.substring(0, url.length - 1);
+        }
+    }
+    return url;
+}
+
+function setParam(url, paramName, paramValue) {
+    url = removeParam(url, paramName);
+    if (url.indexOf("?") > -1) {
+        url = url + "&" + paramName + "=" + paramValue;
+    } else {
+        url = url + "?" + paramName + "=" + paramValue;
+    }
+    return url;
+}
+
+function makeGetRequest(url, handler) {
+    makeRequest(url, handler, null, null);
+}
+
+function makePostRequest(url,handler,payloadNames,payloadValues) {
+    makeRequest(url,handler,payloadNames,payloadValues);
+}
+
+function makeRequest(url, handler, payloadNames, payloadValues) {
+
+	function getRequestObject() {
+	    var req = null;
+	    if (window.XMLHttpRequest) {
+	        try {
+	            req = new XMLHttpRequest;
+	        } catch (e) {
+	            req = false;
+	        }
+	    } else if (window.ActiveXObject) {
+	        try {
+	            req = new ActiveXObject("Msxml2.XMLHTTP");
+	        } catch (e) {
+	            try {
+	                req = new ActiveXObject("Microsoft.XMLHTTP");
+	            } catch (e) {
+	                req = false;
+	            }
+	        }
+	    }
+	    return req;
+	}
+	
+	function parseHtml(responseHtml) {
+	    var uniqueId = "parserFrame" + (new Date).getTime();
+	    var divUniqueId = "div" + uniqueId;
+	    var b = document.getElementsByTagName("body")[0];
+	    var divElem = document.createElement("div");
+	    
+	    if (!isSafari) {
+	        divElem.style.display = "none";
+	    }
+	    
+	    divElem.id = divUniqueId;
+	    b.appendChild(divElem);
+	    
+	    if (isSafari) {
+	        divElem.innerHTML = "<iframe src=\"javascript:false\" style=\"height:1px;width:1px\" id=\"" + uniqueId + "\" name=\"" + uniqueId + "\"></iframe>";
+	    } else {
+	        divElem.innerHTML = "<iframe src=\"javascript:false\" style=\"display:none;\" id=\"" + uniqueId + "\" name=\"" + uniqueId + "\"></iframe>";
+	    }
+	    
+	    var newF = document.getElementById(uniqueId);
+	    var newDocument = null;
+	    
+	    try {
+	        var responseLowered = responseHtml.toLowerCase();
+	        var start = responseLowered.indexOf("<table");
+	        var end = responseLowered.length;
+	        var newXml = responseHtml.substring(start, end);
+	        newDocument = newF.contentWindow || newF.contentDocument;
+	        
+	        if (newDocument.document) {
+	            newDocument = newDocument.document;
+	        }
+	        
+	        newDocument.open();
+	        newDocument.write("<html><body></body></html>");
+	        newDocument.close();
+	        newDocument.body.innerHTML = newXml;
+	    }
+	    catch(ex) {
+	    } 
+	    finally {
+	        var clean = "cleanUp(\"" + divUniqueId + "\")";
+	        setTimeout(clean, 5000);
+	    }
+	    
+	    return newDocument;
+	}
+	
+	function handleError(doc) {
+	    if (window.sfdcPage &&
+	        window.sfdcPage.desktopAjaxDisplayErrorInline &&
+	        window.sfdcPage.desktopAjaxDisplayErrorInline()) {
+	        var t = doc.getElementById(DynamicContent.pERROR_TITLE);
+	        var d = doc.getElementById(DynamicContent.pERROR_DESC);
+	        if (t) {
+	            var msg = t.innerHTML;
+	            if (d) {
+	                msg = msg + "\n\n" + d.innerHTML;
+	            }
+	            alert(msg);
+	        }
+	    } else {
+	        url = removeParam(url, DynamicContent.pCOOKIE_PARAM);
+	        window.location = url;
+	    }
+	}
+	
+	function processRequest() {
+	    if (!req || req.readyState != 4) {
+	        return;
+	    }
+	    if (req.status != 200 && req.status != 500) {
+	        return;
+	    }
+	    
+	    var newDoc = parseHtml(req.responseText);
+	    if (req.status == 200) {
+	        handler(newDoc);
+	    } else {
+	        handleError(newDoc);
+	    }
+	}
+	
+	var req = getRequestObject();
+	if (req) {
+		var now = new Date();
+		var modifiedUrl = setParam(url, DynamicContent.pTYME, now.getTime());
+		req.onreadystatechange = processRequest;
+		
+		if (payloadNames == null || payloadNames.length == 0) {
+			req.open("GET", modifiedUrl, true);
+			req.send("");
+		} else {
+			req.open("POST", modifiedUrl, true);
+			req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			var payload = '';
+			
+			for (var i=0; i<payloadNames.length; i++) {
+			    if (payloadNames[i] == DynamicContent.pTYME) continue;
+			    if (i!=0) { payload += '&'; }
+				payload += payloadNames[i] + '=' + payloadValues[i];
+			}
+			req.send(payload);
+		}
+	}
+}
+
+function cleanUp(objectId) {
+    var b = document.getElementsByTagName("body")[0];
+    var f = document.getElementById(objectId);
+    if (f) {
+        b.removeChild(f);
+    }
+}
+
+ApttusDesktopAjax.prototype.doGet = function(url) {
+    var xmlhttp = false;
+    if (!xmlhttp) {
+        try {
+            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            try {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {
+                xmlhttp = new XMLHttpRequest;
+            }
+        }
+    }
+    if (xmlhttp) {
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send(null);
+        var text = xmlhttp.responseText;
+        return text;
+    }
+}
+
+function testXmlHttpRequest() {
+    var user = "";
+    var pswd = "";
+    
+    var doc = document.implementation.createDocument("","",null);
+    var se = doc.createElement("soap:Envelope");
+    se.setAttribute("xmlns:soap","http://schemas.xmlsoap.org/soap/envelope/");
+    se.setAttribute("xmlns:xsd","http://www.w3.org/2001/XMLSchema");
+    se.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    doc.appendChild(se);
+    
+    sb = doc.createElement("soap:Body");
+    se.appendChild(sb);    
+        
+    var lg = doc.createElement("login");
+    lg.setAttribute("xmlns","urn:partner.soap.sforce.com");
+    sb.appendChild(lg);    
+    
+    var un = doc.createElement("username");
+    lg.appendChild(un);    
+    untxt = doc.createTextNode(user);
+    un.appendChild(untxt);    
+    
+    var pw = doc.createElement("password");
+    lg.appendChild(pw);    
+    pwtxt = doc.createTextNode(pswd);
+    pw.appendChild(pwtxt);        
+    
+    //var xmlBlob = doc.toXML();
+    //print(xmlBlob);
+    
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST","https://na3.salesforce.com/services/Soap/u/11.1",false);
+    xmlhttp.setRequestHeader("Content-Type","text/xml");
+    xmlhttp.setRequestHeader("soapAction","login");
+    xmlhttp.send(doc);
+    //print(xmlhttp.responseText);
+    var response = xmlhttp.responseText;
+}
+</script>

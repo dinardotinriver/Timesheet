@@ -1,0 +1,175 @@
+<apex:component controller="TH1.COLLAB_CO_DocboxList" access="global" allowDML="true">
+    <apex:attribute type="String" name="objectId" assignTo="{!ContextObjectId}" access="global" description="Id of object to display for"/>
+    <apex:attribute type="String" name="statusFilter" assignTo="{!ContextStatusFilter}" access="global" description="Status to filter for"/>
+    <apex:attribute type="Boolean" name="multiDelete" assignTo="{!ContextMultiDelete}" access="public" description="Whether to show multi-delete option"/>
+    <style>
+    .pagingToolBar {
+        background-color: #f2f3f3;
+        background-image: none;
+        border: none;
+    }
+    .listViewLabel {
+        font-weight: bold;
+        margin-left: 20px;
+    }
+    </style>
+    <apex:outputPanel rendered="{!IsInlineList}">
+        <style>     
+        .pbHeader {
+            height: 0px;
+        }   
+        .hasMotif {
+            margin: 0px;
+        }
+        </style>
+    </apex:outputPanel>
+    <c:COMMON_JQueryLib />
+    <script>
+        function multiDelete(){
+            var selectedRowsCount = $('input.row_select:checked').size();
+            if (selectedRowsCount == 0) {
+                alert('You have not selected any rows to delete');
+            } else if (selectedRowsCount == 1){ 
+                return window.confirm('Are you sure you want to delete this Docbox?');
+            } else if (!window.confirm('Are you sure you want to delete these Docboxes?')){ 
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
+    <apex:pageMessage summary="{!CollaborateFeatureMessage}" severity="info" strength="3" rendered="{!NOT(CollaborateIsLicensed)}" escape="false" />
+    <apex:form rendered="{!CollaborateIsLicensed}">
+        <c:COMMON_Mask />
+        <apex:outputPanel rendered="{!NOT(IsInlineList)}">
+            <apex:sectionHeader title="{!PrimaryObjectLabelPlural}" subtitle="Home"/>       
+            <apex:pageMessage summary="{!ObjectNotAccessibleMessage}" severity="info" strength="3" rendered="{!NOT(PrimaryObjectIsAccessible)}"/>
+            <!-- Replicate SF help for this page link and icon -->
+            <div class="bPageTitle">
+                <div class="ptBody">
+                    <apex:outputLabel value="View: " styleClass="listViewLabel"/>
+                    <apex:selectList id="th_select_view_mode" value="{!ListView}" size="1">
+                        <apex:selectOptions value="{!ListViewOptionList}"/>
+                        <apex:actionSupport event="onchange" action="{!resetPage}" reRender="record_list"/>
+                    </apex:selectList>
+                    <c:COMMON_PageHelpLink helpUrlPath="index.htm#DocboxesPage.htm" showText="true"/>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:pageBlock id="record_list" mode="{!PageBlockDetail}">
+            <apex:pageMessages />
+            <apex:pageBlockButtons location="top" rendered="{!NOT(IsInlineList)}">
+                <apex:commandButton id="th_btn_delete" value="Delete" action="{!deleteSelectedRecords}" reRender="record_list" rendered="{!PrimaryObjectIsDeletable}" onclick="if (!multiDelete()){return false;} showMask();" oncomplete="$('.all_rows_select').attr('checked', false); hideMask();"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!recordList}" var="record">
+                <apex:column id="checkbox" rendered="{!AND(ContextMultiDelete, PrimaryObjectIsDeletable)}" styleClass="col_select_{!SUBSTITUTE(record.Docbox.Name, ' ', '_')}" >
+                    <apex:facet name="header">
+                        <apex:inputCheckbox id="th_check_select_all" value="{!AllRowsSelect}" styleClass="all_rows_select"/>
+                    </apex:facet>
+                    <apex:inputCheckbox id="th_check_select_row" value="{!record.isSelected}" styleClass="{!IF(NOT(record.RecordAccess.HasDeleteAccess), '', 'row_select')}" disabled="{!NOT(record.RecordAccess.HasDeleteAccess)}" title="{!IF(NOT(record.RecordAccess.HasDeleteAccess), 'You do not have permissions to delete this record.', '')}"/>
+                </apex:column>
+                <apex:column headerValue="Action" styleClass="actionColumn col_action_{!SUBSTITUTE(record.Docbox.Name, ' ', '_')}">
+                    <apex:outputLink id="th_link_view_row" value="/apex/COLLAB_Docbox?id={!record.Docbox.Id}" rendered="{!record.RecordAccess.HasReadAccess}" styleClass="actionLink" target="{!ViewLinkTarget}">
+                        <span>View</span>
+                    </apex:outputLink>
+                    <apex:outputLabel value=" |" rendered="{!record.RecordAccess.HasDeleteAccess}"/>
+                    <apex:commandLink id="th_link_delete_row" action="{!deleteRecord}" reRender="record_list" rendered="{!record.RecordAccess.HasDeleteAccess}" onclick="if (!window.confirm('Are you sure?')) return false;" styleClass="actionLink">
+                        <span>Del</span>
+                        <apex:param name="actionrecordid" value="{!record.Docbox.Id}" assignTo="{!ActionRecordId}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column styleClass="col_docboxname_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Docbox__c.Fields.Name.Label} {!IF(ColumnSortField=='Name',IF(ColumnSortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="Name" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputLink id="th_link_name_row_link" value="/apex/COLLAB_Docbox?id={!record.Docbox.Id}" rendered="{!record.RecordAccess.HasReadAccess}" styleClass="actionLink" target="{!ViewLinkTarget}">
+                        <span>{!record.Docbox.Name}</span>
+                    </apex:outputLink>
+                    <apex:outputText id="th_link_name_row" value="/{!record.Docbox.Name}" rendered="{!NOT(record.RecordAccess.HasReadAccess)}">{!record.Docbox.Name}</apex:outputText>
+                </apex:column>
+                <apex:column styleClass="col_recordname_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}" rendered="{!NOT(IsInlineList)}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Docbox__c.Fields.TH1__Primary_Object_Record_Name__c.Label} {!IF(ColumnSortField=='Primary_Object_Record_Name__c',IF(ColumnSortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="Primary_Object_Record_Name__c" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputLink id="th_link_recordname_row" value="/{!record.Docbox.TH1__Primary_Object_Record_Id__c}" target="{!ViewLinkTarget}">{!record.Docbox.TH1__Primary_Object_Record_Name__c}</apex:OutputLink>
+                </apex:column>
+                <apex:column value="{!record.Docbox.Document_Setting__r.TH1__Primary_Object__c}" styleClass="col_primaryobject_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}" rendered="{!NOT(IsInlineList)}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Document_Setting__c.Fields.TH1__Primary_Object__c.Label} {!IF(ColumnSortField=='Document_Setting__r.Primary_Object__c',IF(ColumnSortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="Document_Setting__r.Primary_Object__c" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column styleClass="col_docsettingname_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}" rendered="{!NOT(IsInlineList)}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Document_Setting__c.Fields.Name.Label} {!IF(ColumnSortField=='Document_Setting__r.Name',IF(ColumnSortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="Document_Setting__r.Name" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputLink id="th_link_docset_row" value="/{!record.Docbox.TH1__Document_Setting__c}" target="{!ViewLinkTarget}">{!record.Docbox.Document_Setting__r.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column value="{!record.Docbox.TH1__Status__c}" styleClass="col_status_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Docbox__c.Fields.TH1__Status__c.Label} {!IF(ColumnSortField=='Status__c',IF(ColumnSortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="Status__c" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column value="{!record.Docbox.CreatedBy.Name}" styleClass="col_createdby_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!SUBSTITUTE($ObjectType.TH1__Docbox__c.Fields.CreatedById.Label, ' ID', '')} {!IF(ColumnSortField=='CreatedBy.Name',IF(ColumnSortOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="CreatedBy.Name" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column value="{!record.Docbox.LastModifiedDate}" styleClass="col_lastmoddate_{!SUBSTITUTE(record.Docbox.Document_Setting__r.Name, ' ', '_')}">
+                    <apex:facet name="header">
+                        <apex:commandLink value="{!$ObjectType.TH1__Docbox__c.Fields.LastModifiedDate.Label} {!IF(ColumnSortField=='LastModifiedDate',IF(LmdOrder=='desc','↓','↑'),'')}" action="{!sortColumn}" rerender="record_list">
+                            <apex:param name="ColumnSortField" value="LastModifiedDate" assignTo="{!ColumnSortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:outputPanel >
+                <apex:outputText value="no records to display" rendered="{!NOT(recordsToDisplay)}"/>
+            </apex:outputPanel>
+            <apex:toolbar styleClass="pagingToolBar">
+                <apex:toolbarGroup itemSeparator="none" location="left">
+                    <apex:outputPanel rendered="{!ListViewTotalRecords > 10}">
+                        <apex:outputText >Display </apex:outputText>
+                        <apex:selectList id="th_select_rows_per_page" value="{!RowsPerPage}" size="1">
+                            <apex:selectOptions value="{!RowsPerPageOptionList}"/>
+                            <apex:actionSupport event="onchange" action="{!resetPage}" reRender="record_list"/>
+                        </apex:selectList>
+                        <apex:outputText > records per page</apex:outputText>
+                    </apex:outputPanel>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup itemSeparator="none" location="right">
+                    <apex:commandLink id="th_btn_previous" value="<Previous page" action="{!previousPage}" onclick="showMask();" oncomplete="hideMask();" rendered="{!hasPrevious}" reRender="record_list"/>
+                    <apex:commandLink id="th_btn_next" value="Next page>" action="{!nextPage}" onclick="showMask();" oncomplete="hideMask();" rendered="{!hasNext}" reRender="record_list"/>
+                </apex:toolbarGroup>
+            </apex:toolbar>
+            <script>
+                jQuery(document).ready(function($){
+                    var allRows = $('.all_rows_select');
+                    if (allRows) {
+                        allRows.click(function() {
+                            var checkBoxState = false;
+                            if($(this).is(':checked')){
+                                checkBoxState = true;
+                            }
+                            
+                            $('input.row_select').each(function(){
+                                $(this).attr("checked", checkBoxState);
+                            });
+                        });
+                    }
+                });
+            </script>           
+        </apex:pageBlock>
+    </apex:form>
+</apex:component>

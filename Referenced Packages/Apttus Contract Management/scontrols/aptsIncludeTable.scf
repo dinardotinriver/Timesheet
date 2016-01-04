@@ -1,0 +1,409 @@
+<script language="javascript" type="text/javascript">
+
+var Table;
+Table = function() {
+	this.mObject = null;
+	this.mObjectLink = null;
+	this.mCanvas = "divBody";
+	this.mDso = null;
+	this.mAllowSelect = true;
+	this.mMultiSelect = false;	
+	this.mColFields = new Array();
+	this.mColLabels = new Array();
+	this.mColTypes = new Array();
+	this.mColRefTos = new Array();
+	this.mRecords = new Array();
+	this.mRecordIds = new Array();
+	this.mSortDir = "ASC";
+	this.mSortVisible = true;
+	this.mShowHighlights = false;
+};
+
+Table.prototype.setObject = function(obj) {
+	this.mObject = obj;
+	
+	if (obj!=null && obj!="") {
+		this.mDso = sforce.connection.describeSObject(obj);
+	}
+};
+
+Table.prototype.setObjectLink = function(link) {
+	if (link=="" || link==null) return;
+	this.mObjectLink = link;
+};
+
+Table.prototype.setCanvas = function(div) {
+	if (div=="" || div==null) return;
+	this.mCanvas = div;
+};
+
+Table.prototype.setRecords = function(records) {
+	if (records==null) return;
+	this.mRecords = records;
+};
+
+Table.prototype.setRecordIds = function(ids) {
+	if (ids==null) return;
+	this.mRecordIds = ids;
+};
+
+Table.prototype.setRecordsFromQuery = function(query) {
+	try {
+		if (query!="" && query!=null) {
+			var q = query;
+			var orderBy = this.mColFields[0];
+			if (orderBy!="" && orderBy!=null) {
+				q += " order by " + orderBy + " " + this.mSortDir;
+			}
+			var result = sforce.connection.query(q);
+			var records = result.getArray("records");
+			
+			this.setRecords(records);
+		}
+	}
+	catch(ex) {
+		this.setRecords(new Array());
+	}
+}
+Table.prototype.setAllowSelect = function(allow) {
+	if (allow==true || allow==false) {
+		this.mAllowSelect = allow;
+	}
+};
+
+Table.prototype.setMultiSelect = function(mselect) {
+	if (mselect==true || mselect==false) {
+		this.mMultiSelect = mselect;
+	}
+};
+
+Table.prototype.showHighlights = function(enabled) {
+	if (enabled==true || enabled==false) {
+		this.mShowHighlights = enabled;
+	}
+};
+
+Table.prototype.setSortDir = function(dir) {
+	if (dir=="ASC" || dir=="DESC") {
+		this.mSortDir = dir;
+	}
+};
+
+Table.prototype.setSortVisible = function(visible) {
+	if (visible==true || visible==false) {
+		this.mSortVisible = visible;
+	}
+};
+
+Table.prototype.addColumn = function(col) {
+	if (col=="" || col==null) return;
+	
+	var label = this.getFieldLabel(col);
+	var type = this.getFieldType(col);
+	var refTo = this.getFieldRefTo(col);
+	
+	this.mColFields[this.mColFields.length++] = col;
+	this.mColLabels[this.mColLabels.length++] = label;
+	this.mColTypes[this.mColTypes.length++] = type;
+	this.mColRefTos[this.mColRefTos.length++] = refTo;
+};
+
+Table.prototype.getFieldLabel = function(field) {
+	if (field=="" || field==null) return "";
+	if (this.mDso==null) return field;
+	
+	var label = field;
+	try {
+	    for (var i=0; i<this.mDso.fields.length; i++) {
+	        var fld = this.mDso.fields[i];
+	        if (fld.name==field) {
+	        	label = fld.label;
+	        	i = this.mDso.fields.length;
+	        }
+	    }
+	}
+	catch(ex) {
+	}
+	finally {
+		return label;
+	}
+};
+
+Table.prototype.getFieldType = function(field) {
+	if (field=="" || field==null) return "";
+	if (this.mDso==null) return field;
+	
+	var type = field;
+	try {
+	    for (var i=0; i<this.mDso.fields.length; i++) {
+	        var fld = this.mDso.fields[i];
+	        if (fld.name==field) {
+	        	type = fld.type;
+	        	i = this.mDso.fields.length;
+	        }
+	    }
+	}
+	catch(ex) {
+	}
+	finally {
+		return type;
+	}
+};
+
+Table.prototype.getFieldRefTo = function(field) {
+	if (field=="" || field==null) return "";
+	if (this.mDso==null) return field;
+	
+	var refTo = field;
+	try {
+	    for (var i=0; i<this.mDso.fields.length; i++) {
+	        var fld = this.mDso.fields[i];
+	        if (fld.name==field) {
+	        	refTo = fld.referenceTo;
+	        	i = this.mDso.fields.length;
+	        }
+	    }
+	}
+	catch(ex) {
+	}
+	finally {
+		return refTo;
+	}
+};
+
+Table.prototype.draw = function() {
+	try {
+		var html = "";
+		html += "<div id=\"tableResults\">";
+		html += "<table class=\"list\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
+		html += "<tr class=\"headerRow\">";
+		
+		//row selection column
+		if (this.mAllowSelect) {
+			html += "<th class=\"actionColumn\" scope=\"col\">";
+			html += "<input id=\"allBox\" name=\"allBox\"";
+			html += "onclick=\"javascript:SelectAllOrNoneByCheckbox(document.forms['dispatch'],'ids', this);\" ";
+			var selType = (this.mMultiSelect) ? "checkbox" : "radio";
+			if (this.mMultiSelect) {
+				html += "title=\"Toggle All Rows\" type=\""+selType+"\" value />";
+			} else {
+				html += "type=\"hidden\" value />";
+			}
+			html += "</th>";
+		}
+
+		//column headings
+		for (var i=0; i<this.mColLabels.length; i++) {
+			var colName = this.mColLabels[i];
+			
+			html += "<th scope=\"col\" class>";
+			
+			if (this.mSortVisible) {
+				if (i==0) {
+					if (this.mSortDir=="ASC") {
+						html += "<a href=\"#\" type=\"submit\" onclick=\"this.sort('DESC');\" title=\""+colName+" - Sorted ascending\">";
+						html += colName+"<img src=\"/img/sort_asc_arrow.gif\" alt=\"Sorted Ascending\" width=\"21\" height=\"14\"";
+						html += "align=\"texttop\" title=\"Sorted Ascending\" /></a>";
+					} else {
+						html += "<a href=\"#\" type=\"submit\" onclick=\"this.sort('ASC');\" title=\""+colName+" - Sorted descending\">";
+						html += colName+"<img src=\"/img/sort_desc_arrow.gif\" alt=\"Sorted Descending\" width=\"21\" height=\"14\"";
+						html += "align=\"texttop\" title=\"Sorted Descending\" /></a>";
+					}
+				} else {
+					html += "<a href=\"#\" type=\"submit\" title=\""+colName+"\">"+colName+"</a>";
+				}
+			} else {
+				html += "<a href=\"#\" type=\"submit\" title=\""+colName+"\">"+colName+"</a>";
+			}
+			html += "</th>";
+		}
+		html += "</tr>";
+		
+		//draw rows
+		html += this.drawRows();
+		html += "</table></div>";
+
+		//draw table
+		var body = document.getElementById(this.mCanvas);
+		body.innerHTML = html;
+	}
+	catch(ex) {
+		alert(ex);
+	}
+};
+
+Table.prototype.hiOn = function(row){
+	//alert("hiOn:row="+row);
+    this.addStyleClass(row,'highlight');
+};
+
+Table.prototype.hiOff = function(row){
+    //alert("hiOff:row="+row);
+    this.delStyleClass(row,'highlight');
+};
+
+Table.prototype.addStyleClass = function(elem,clazzName) {
+    var n = ' ' + elem.className + ' ';
+    if (n.indexOf(' ' + clazzName + ' ') < 0) {
+        var append = (elem.className && elem.className.length > 0) ? ' ' + clazzName : clazzName;
+        elem.className += append;
+    }
+};
+
+Table.prototype.delStyleClass = function(elem,clazzName) {
+    var n = ' ' + elem.className + ' ';
+    var len = clazzName.length;
+    var start = n.indexOf(' ' + clazzName + ' ');
+    if (start >= 0) {
+        var end = start + len + 1;
+        elem.className = trim(n.substring(0, start) + n.substring(end, n.length));
+        return;
+    }
+};
+
+Table.prototype.drawRows = function() {
+	try {
+		var html = "";
+		for (var i=0; i<this.mRecords.length; i++) {
+			var record = this.mRecords[i];
+			
+			//get id field
+			var id = record.Id;
+			if (this.mRecordIds.length>0) {
+				id = this.mRecordIds[i];
+			}
+			
+			//get name field
+			var name = record.Name;
+	
+			//table row
+			html += "<tr class=\" dataRow even first\"";
+			if (this.mShowHighlights) {
+				html += "onblur=\"if (window.hiOff){hiOff(this);}\"";
+				html += "onfocus=\"if (window.hiOn){hiOn(this);}\"";
+				html += "onmouseout=\"if (window.hiOff){hiOff(this);}\"";
+				html += "onmouseover=\"if (window.hiOn){hiOn(this);}\"";
+			}
+			html += ">";
+			
+			//selection column
+			if (this.mAllowSelect) {
+				var selType = (this.mMultiSelect) ? "checkbox" : "radio";
+				html += "<td class=\"actionColumn\">";
+				html += "<input id=\"ids"+i+"\" name=\"ids\" onclick=\"javascript:updateToggleAllBox(this.form,'ids');\"";
+				html += "title=\"Select "+name+"\" type=\""+selType+"\" value=\""+id+"\" ";
+
+				if (this.mRecords.length==1) {
+					html += "checked";
+				}
+				
+				html += " /></td>";
+			}
+
+			//column data
+			for (var j=0; j<this.mColFields.length; j++) {
+				var colFld = this.mColFields[j];
+				var colTyp = this.mColTypes[j];
+				var colRefTo = this.mColRefTos[j];
+				
+				//get field from object array or salesforce record
+				var colVal = (this.mObject==null)
+					? record[colFld]
+					: record.get(colFld);
+
+				if (colVal==null) colVal = "";
+				//alert("colFld="+colFld+"\ncolTyp="+colTyp+"\ncolVal="+colVal);
+
+				if (colTyp=="datetime" || colTyp=="date") {
+					if (colTyp=='datetime') {
+						colVal = record.getDateTime(colFld);
+						if (colVal!=null) {
+							var d = new Date(colVal);
+							var diso = toIsoDate(d);
+							var dloc = d.toLocaleString();
+
+							colVal = dloc;
+						}
+					} else if (colTyp=='date') {
+						colVal = record.getDate(colFld);
+					}
+					
+					if (colVal==null) colVal = "";
+				}
+
+				if (colTyp=="reference" && colVal!="") {
+					var fldList = "Id,Name";
+					var result = sforce.connection.retrieve(fldList,colRefTo,[colVal]);
+					if (result[0]!=null) {
+						colVal = result[0].Name;
+					}
+				}
+
+				if (j==0) {
+					var idVal = id;
+					if (this.mObjectLink!=null && this.mObjectLink!="") {
+						idVal = (this.mObject==null)
+							? record[this.mObjectLink]
+							: record.get(this.mObjectLink);
+					}
+					
+					html += "<th scope=\"row\" class=\"dataCell\">";
+					html += "<a href=\"/"+idVal+"\">"+colVal+"</a></th>";
+					
+				} else {
+					html += "<td class=\"dataCell\">"+colVal+"</td>";
+				}
+			}
+			
+			html += "<td class=\"dataCell\">&nbsp;</td>";
+			html += "</tr>";
+		}
+		
+		return html;
+	}
+	catch(ex) {
+		return "";
+	}
+};
+
+Table.prototype.sort = function(sortDir) {
+	this.setSortDir(sortDir);
+	this.draw();
+};
+
+Table.prototype.getSelection = function() {
+	try {
+		var ids = new Array();
+		var nIds = 0;
+		var hasSelection = (this.mMultiSelect)
+			? verifyChecked(document.forms['dispatch'],'ids','Please select one or more rows')
+			: verifyChecked(document.forms['dispatch'],'ids','Please select a row');
+		
+		if (hasSelection) {
+			for (var i=0; i<this.mRecords.length; i++) {
+				var item = document.getElementById("ids"+i);
+				if (item.checked) {
+					ids[nIds++] = item.value;
+					if (!this.mMultiSelect) break;
+				}
+			}
+			
+			//this.doSelectAction(ids);
+		}
+		return ids;
+	}
+	catch(ex) {
+		alert(ex);
+	}
+};
+
+//clients should implement this method
+Table.prototype.doSelectAction = function(ids) {
+	//alert("Table.doSelectAction(ids)="+ids);
+};
+
+//clients should implement this method
+Table.prototype.doCancelAction = function() {
+	//alert("Table.doCancelAction");
+};
+</script>

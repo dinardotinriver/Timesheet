@@ -1,0 +1,33 @@
+<apex:page standardController="TH1__Draft__c" extensions="TH1.DOCEDT_CO_Editor" action="{!onload}" sidebar="false"
+        showHeader="{!DisplayHeader}" tabstyle="Drafts__tab">
+
+    <c:COMMON_HelpUtil />
+
+    <c:DOCGEN_DocumentGenerator />
+    <c:DOCGEN_PreviewControl />
+
+    <c:DOCGEN_DocusignControl />
+    <c:DOCGEN_CollaborateControl />
+    <c:LoadJS module="docgen/echosign" />
+
+
+    <c:DOCEDT_ApprovalProcess />
+    <span id="approval-process-related-list">
+        <apex:relatedList list="ProcessSteps" pageSize="3" />
+    </span>
+
+    <c:DOCEDT_DraftEditor />
+    <c:COMMON_FeaturesJS />
+    <script>
+    $(function(){
+        Thunderhead.SF.require('browser', 'pages/editDocument')
+        .done(function(Browser, EditDocument) {
+            EditDocument(Browser.getUrlParams());
+        });
+    });
+    </script>
+
+    <div id="editDocumentContainer">
+        <div id="editErrorMessage"></div>
+    </div>
+</apex:page>

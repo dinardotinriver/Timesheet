@@ -1,0 +1,39 @@
+<apex:component controller="MetaDataSearch.SearchResultsController" >
+    <form target="_blank" action="/apex/SearchResults" method="GET" name="mdsearch"> 
+        <div class="quickfindContainer">
+            <script>
+                function setFocusOnLoad() {}
+            </script>
+            <select id="searchCategory" name="searchCategory" title="Search scope" style="margin-bottom: 5px; width: 100%; max-width: 100%;">    
+                <option value="1" title="Search All" selected="selected">Search All</option>
+                <option value="Recent Items" title="Recent Items" style="{!IF($ObjectType.RecentlyViewed.accessible,'','display:none')}">Recent Items</option> 
+                <option value="Fields" title="Fields" style="{!IF(configManager.SearchFields__c,'','display:none')}">Fields</option>
+                <option value="Objects" title="Objects" style="{!IF(configManager.Search_Objects__c,'','display:none')}" >Objects</option>
+                <option value="Workflow Rules" title="Workflow Rules" style="{!IF(AND(isAPIEnabled,configManager.Search_Workflow_Rules__c),'','display:none')}">Workflow Rules</option>
+                <option value="Validation Rules" title="Validation Rules" style="{!IF(AND(isAPIEnabled,configManager.Search_Validation_Rules__c),'','display:none')}">Validation Rules</option>
+                <option value="Approval Processes" title="Approval Processes" style="{!IF($ObjectType.ProcessNode.accessible,'','display:none')}" >Approval Processes</option>
+                <option value="Pages" title="Pages" style="{!IF($ObjectType.ApexPage.accessible,'','display:none')}" >Pages</option>
+                <option value="Apex Classes" title="Apex Classes" style="{!IF($ObjectType.ApexClass.accessible,'','display:none')}">Apex Classes</option>
+                <option value="Components" title="Components" style="{!IF($ObjectType.ApexComponent.accessible,'','display:none')}">Components</option>
+                <option value="Apex Triggers" title="Apex Triggers" style="{!IF($ObjectType.ApexTrigger.accessible,'','display:none')}">Apex Triggers</option>
+                <option value="Apps" title="Apps" style="{!IF($ObjectType.AppMenuItem.accessible,'','display:none')}" >Apps</option>
+                <option value="Assignment Rules" title="Assignment Rules" style="{!IF($ObjectType.AssignmentRule.accessible,'','display:none')}" >Assignment Rules</option>
+                <option value="Custom Settings" title="Custom Settings"  >Custom Settings</option>
+                <option value="Buttons and Links" title="Buttons and Links" style="{!IF($ObjectType.WebLink.accessible,'','display:none')}" >Buttons and Links</option>
+                <option value="Static Resources" title="Static Resources" style="{!IF($ObjectType.StaticResource.accessible,'','display:none')}" >Static Resources</option>
+                <option value="Roles" title="Roles" style="{!IF($ObjectType.UserRole.accessible,'','display:none')}" >Roles</option>
+                <option value="Profiles" title="Profiles" style="{!IF($ObjectType.Profile.accessible,'','display:none')}" >Profiles</option>
+                <option value="Permission Sets" title="Permission Sets" style="{!IF($ObjectType.PermissionSet.accessible,'','display:none')}" >Permission Sets</option>
+                <option value="Reports" title="Reports" style="{!IF($ObjectType.Report.accessible,'','display:none')}" >Reports</option>
+                <option value="Dashboards" title="Dashboards" style="{!IF($ObjectType.Dashboard.accessible,'','display:none')}" >Dashboards</option>
+                <option value="Email Templates" title="Email Templates" style="{!IF($ObjectType.EmailTemplate.accessible,'','display:none')}" >Email Templates</option> 
+                <option value="Public Groups" title="Public Groups" style="{!IF($ObjectType.Group.accessible,'','display:none')}" >Public Groups</option>
+                <option value="Queues" title="Queues" style="{!IF($ObjectType.Group.accessible,'','display:none')}" >Queues</option>
+                <option value="Sites" title="Sites" style="{!IF($ObjectType.Site.accessible,'','display:none')}" >Sites</option>
+                <option value="Record Types" title="Record Types" style="{!IF($ObjectType.RecordType.accessible,'','display:none')}" >Record Types</option>                
+            </select>            
+            <input class="quickfindInput" style="background-position: 140px 4px;padding-top: 5px;padding-right: 20px;padding-bottom: 5px;padding-left: 8px;width: 140px;height: 16px;-moz-border-radius: 4px;-webkit-border-radius: 4px;border-radius: 4px;border: 1px solid #999;" id="setupSearch" maxlength="100" name="str" size="25" title="Quick Find Metadata ..." type="text" value="" placeholder="Quick Find Metadata ..."/>
+        </div>
+        <div class="searchFooter"><a href="/apex/SearchResults" target="opener.window.name" onclick="document.getElementById('mdsearch').action='/apex/MetaDataSearch__SearchResults';document.getElementById('mdsearch').submit(); return false;">Advanced Search...</a></div>
+    </form>  
+</apex:component>

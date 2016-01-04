@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Definitions of web page furniture that can be Help Enabled</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <fields>
+        <fullName>Domain__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The web domain within which this Signature is applicable</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The web domain within which this Signature is applicable</inlineHelpText>
+        <label>Domain</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HelpStyle__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Improved Help styling class name defining one of several known ways in which Help callouts can be displayed</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Improved Help styling class name defining one of several known ways in which Help callouts can be displayed</inlineHelpText>
+        <label>Help Style</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IdentifierType__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Defines the Type of the unique identifier for a given instance of a signature element</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines the Type of the unique identifier for a given instance of a signature element</inlineHelpText>
+        <label>Identifier Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Attribute</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Property</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Html</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Text</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Identifier__c</fullName>
+        <defaultValue>&quot;id&quot;</defaultValue>
+        <deprecated>false</deprecated>
+        <description>The attribute or property to use as the unique identifier for a given instance of a signature element</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The attribute or property to use as the unique identifier for a given instance of a signature element</inlineHelpText>
+        <label>Identifier</label>
+        <length>30</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Helpable Signature</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Identifier__c</columns>
+        <columns>IdentifierType__c</columns>
+        <columns>Domain__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Signature</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Helpable Signatures</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	New
+	Overrides Salesforce New button to perform custom actions before creating a new agreement.
+	This method is NOT called when agreements are created through the SOAP API.
+	=================================================================================================
+*/
+function initPage() {
+	window.setTimeout("doInit();", 50);
+}
+
+function doInit() {
+	gHasRecordTypes = hasCustomField("RecordTypeId", gAgreementObjName);
+	if (gHasRecordTypes==true && gRecordTypePrompt==true) {
+		var cancelURL = gAgreementObjURL;
+		var retURL = gAgreementObjURL;
+		var entity = "";
+		var save = "1";
+		var saveNewURL = gAgreementObjURL + gEditMode + "?retURL=" + gAgreementObjURL + gViewMode;
+
+		//show custom recordtypeselect.jsp page
+		selectRecordType("doNewAgreement()","doCancel()",cancelURL,retURL,entity,save,saveNewURL);
+	} else {
+		doNewAgreement();
+	}
+}
+
+function doNewAgreement() {
+	newAgreement();
+}
+
+function doCancel() {
+	navigateTo(gAgreementObjURL);
+}
+
+function doCommit(id) {
+	editAgreement(id);
+}
+
+function doRollback(id) {
+	doCancel();
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

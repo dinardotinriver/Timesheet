@@ -1,0 +1,25 @@
+<apex:component >
+<c:LoadJS />
+<c:COMMON_Bootstrap />
+<script type="text/template" id="salesforce1-job-messages_tmpl">
+<span class="wrap-bootstrap">
+<div class="container">
+
+<table class="table table-condensed" style="width: auto;">
+{{#messages}}
+<tr class="{{type.style}}">
+    <td class="col-md-1">{{type.label}}</td>
+    <td class="col-md-4">{{text}}</td>
+</tr>
+{{/messages}}
+</table>
+
+<div class="center-block">
+  <button type="button" class="btn btn-info back-button" style="display: none;">Back</button>
+  <button type="button" class="btn btn-warning continue-button" style="display: none;">Continue</button>
+</div>
+
+</div>
+</span>
+</script>
+</apex:component>

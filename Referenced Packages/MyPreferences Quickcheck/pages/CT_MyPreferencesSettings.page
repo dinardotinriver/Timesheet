@@ -1,0 +1,47 @@
+<apex:page sidebar="false" showChat="false">
+    <apex:sectionHeader title="" subtitle="MyPreferences Setup Instructions"/>
+    <apex:pageBlock >
+        <apex:pageBlockSection columns="1" collapsible="false">
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 1. Setup the Custom Settings from &quot;MyPreferences Settings&quot; tab in side &quot;MyPreferences Quickcheck&quot;" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 2. Setup the &quot;Enable Insert Trigger&quot; and &quot;Enable Update Trigger&quot; fields at Org. level inorder to control the trigger access."/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 3. Ensure Remote Site Setting are correctly added for your Endpoint in Custom Settings. This is MUST Step else Salesforce.com will not be able to communicate to endpoint server."/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Your Name -&gt; Setup -&gt; Administration Setup -&gt; Security Controls -&gt; Remote Site Settings -&gt; Click on &quot;New Remote Site&quot; button" style="font-weight:bold; font-size:14px;"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem > </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 4. For any users or profiles who should have access, go to the Contact Layout Page that corresponds to those users and Click on Edit Page Layout."/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="If there are groups of users or profiles who should not have access to the app, please ensure that those users or profiles are designated for user of a Contact Page Layout that does not display the app&quot;s frame."/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 5. Add Country field and also add a Section; name it as &quot;MyPreferences&quot; with only on Detail page and 1 Column format to layout"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 6. Add CT_EmbeddedInitAuth VF Page in the above section with Height should be 200 and width should be 100%."/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Step 7. Depending on your MyPreferences implementation, you may need to ensure your browser is accepting cookies from designated MyPreferences domain."/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText escape="false" value="Finally &quot;MyPreferences Quickcheck&quot; application is ready for use..! Enjoy..!" style="font-weight:bold; font-size:14px;"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        
+    </apex:pageBlock>
+    
+</apex:page>

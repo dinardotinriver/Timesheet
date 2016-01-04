@@ -1,0 +1,120 @@
+<apex:component >
+    <c:EMAIL_DocumentAttachmentsDialog />
+    <c:DOCEDT_AttachmentsDialog />
+    <c:LoadJS module="docedt/email-dialog"/>
+
+    <script type="text/template" id="email-modal_tmpl">
+    <div id="{{id}}" class="modal fade modal-th" tabindex="-1" data-backdrop="static"
+            role="dialog" aria-labelledby="x" aria-hidden="true" data-keyboard="false">
+        <div class="modal-dialog" style="width: 750px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Email Properties</h3>
+                    <span class="messages"></span>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">From:</label>
+                            <div class="col-xs-10">
+                                <p class="form-control-static from">email@example.com</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="to">
+                                <label for="{{id}}-toInput" class="col-xs-2 control-label">To:</label>
+                                    <div class="col-xs-8">
+                                        <input id="{{id}}-toInput" type="email" class="form-control to-input"></input>
+                                    </div>
+                            </span>
+                            <span class="target">
+                                <label class="col-xs-2 control-label">To:</label>
+                                <div class="col-xs-8">
+                                    <p class="form-control-static target-name"></p>
+                                </div>
+                            </span>
+                            <div class="col-xs-2">
+                                <div class="row">
+                                    <a href="#" class="cc">CC</a>
+                                </div>
+                                <div class="row">
+                                    <a href="#" class="bcc">BCC</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group cc">
+                            <label for="{{id}}-ccInput" class="col-xs-2 control-label">CC:</label>
+                            <div class="col-xs-8">
+                                <input id="{{id}}-ccInput" type="email" class="form-control cc-input"></input>
+                            </div>
+                        </div>
+                        <div class="form-group bcc">
+                            <label for="{{id}}-bccInput" class="col-xs-2 control-label">BCC:</label>
+                            <div class="col-xs-8">
+                                <input id="{{id}}-bccInput" type="email" class="form-control bcc-input"></input>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{id}}-subjectInput" class="col-xs-2 control-label">Subject:</label>
+                            <div class="col-xs-8">
+                                <input id="{{id}}-subjectInput" type="text" class="form-control subject-input" maxlength="245"></input>
+                            </div>
+                        </div>
+						<div class="form-group storageName">
+                            <label for="{{id}}-storageName" class="col-xs-2 control-label">Storage Name:</label>
+                            <div class="col-xs-8">
+                                <input id="{{id}}-storageName" type="text" class="form-control storageName-input" maxlength="250"></input>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group add-attachment" id="{{id}}-browse">
+                            <label class="col-xs-2 control-label">Attachments:</label>
+                            <div class="col-xs-8 btn-group">
+                                <button class="skywalker_button from-salesforce" style="vertical-align: top; margin-right: 15px">From Documents</button>
+                                <span id="{{id}}_fileUploader" />
+                                <button class="skywalker_button notes-attachments" style="vertical-align: top;">From Record Attachments</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="max-height: 300px;overflow: auto;">
+                        <table class="table"><tbody class="attachments"></tbody></table>
+                    </div>
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default close-modal">Close</button>
+				</div>
+            </div>
+        </div>
+    </div>
+    </script>
+
+    <script type="text/template" id="attachment_tmpl">
+            <tr class="attachment  {{id}}" >
+                <td class="name"><a target="_blank" href="{{attachmentUrl}}">{{document.name}}</a></td>
+                <td style="width:50px;">
+                    <button type="button" class="close remove">&times;</button>
+                </td>
+            </tr>
+    </script>
+
+    <script type="text/template" id="uploading_tmpl">
+            <tr class="uploading">
+                <td>Uploading&hellip;</td>
+                <td style="width:50px;">
+                    <img src="/img/loading.gif" />
+                </td>
+            </tr>
+    </script>
+
+    <script type="text/template" id="message_tmpl">
+        <div class="alert alert-dismissable alert-{{alert}} message-{{alert}} message-{{id}}" style="margin-top:10px;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{{message}}}
+        </div>
+    </script>
+
+    <script type="text/template" id="close-while-uploading-message_tmpl">
+        File {{filename}} is uploading.  <a class="cancel-upload alert-link">Cancel upload and close?</a>
+    </script>
+
+</apex:component>

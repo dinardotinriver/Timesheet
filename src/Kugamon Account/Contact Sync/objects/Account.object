@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>DisableBillingShippingAddressSync__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, the automatic sync function is disabled with the Billing Address and Shipping Address fields. 
+
+If unchecked, the Shipping Address fields are automatically updated when the Billing Address has been updated and was previously in sync.</inlineHelpText>
+        <label>Disable Billing/Shipping Address Sync</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <webLinks>
+        <fullName>ContactAddress_Manager</fullName>
+        <availability>online</availability>
+        <description>Kugamon Address</description>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Contact Address Manager</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/kugadd__ContactAddressUpdate?aId={! Account.Id }</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Contact_Address_Manager</fullName>
+        <availability>online</availability>
+        <description>Kugamon Address</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Contact Address Manager</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/kugadd__ContactAddressUpdate?aId={! Account.Id }</url>
+    </webLinks>
+</CustomObject>

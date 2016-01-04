@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>RulesActivityHistory__c$Owner</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.UserRole</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.Profile</field>
+    </columns>
+    <description>Lead report which includes data from RAH object and Insights from Rule Engine and SFDC Bucket Fields</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>RulesActivityHistory__c$Name</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>01 01C Lead + RAH + Rules</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>x03_AHA__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>RulesActivityHistory__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

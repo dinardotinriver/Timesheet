@@ -1,0 +1,39 @@
+<apex:page id="ApplianceConfigurationPage" controller="BGIntegration.ApplianceConfigurationController" showHeader="true" sidebar="true">
+    <apex:form >
+        <apex:sectionHeader title="Appliance Configuration" subtitle="Manage appliances"/>
+        <apex:pageBlock id="ApplianceConfigurationBlock" mode="maindetail">
+			<apex:messages />        	
+        	<apex:pageBlockButtons >
+        		<!--<apex:commandButton value="New" action="{!URLFOR($Action.Settings__c.New)}"/>-->
+               	<!--<apex:outputLink title="New appliance" value="{!$Page.BGIntegration__ApplianceConfigurationEdit}">
+               		New
+               	</apex:outputLink>-->
+               	<apex:commandButton value="New" action="{!add}" />
+        	</apex:pageBlockButtons>
+        
+            <apex:pageBlockTable id="ApplianceConfigurationTable" value="{!settingsMap}" var="settings" width="100%">
+                <apex:column headerValue="Settings Name" value="{!settings}" width="30%" />
+                <apex:column headerValue="Appliance HostName" value="{!settingsMap[settings].Hostname__c}" width="30%"/>
+                <apex:column headerValue="Username" value="{!settingsMap[settings].Username__c}" width="15%"/>
+                <apex:column headerValue="Import All Bomgar Sessions" value="{!settingsMap[settings].BGIntegration__Import_All_Bomgar_Sessions__c}" width="10%"/>
+                <apex:column headerValue="Import System Information" value="{!settingsMap[settings].System_Information__c}" width="10%"/>
+                <!--<apex:column headerValue="Edit">
+                    <apex:outputLink title="Edit {!settings} appliance" value="/{!settingsMap[settings].id}/e?retURL=/apex/{!$CurrentPage.Name}">Edit</apex:outputLink>
+                </apex:column>-->
+                <apex:column headerValue="Edit">
+                	<apex:outputLink title="Edit {!settings} appliance" value="{!$Page.BGIntegration__ApplianceConfigurationEdit}">
+                		Edit
+                		<apex:param name="appliance" value="{!settings}" assignTo="{!appliance}" />
+                	</apex:outputLink>
+                </apex:column>            
+                <apex:column headerValue="Delete">
+                    <a href="javascript:if (window.confirm('Are you sure?')) DeleteAppliance('{!settingsMap[settings].Id}');">Delete</a>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+        <apex:actionFunction action="{!DeleteAppliance}" name="DeleteAppliance" reRender="form" >
+           <apex:param name="applianceId" value="" assignTo="{!SelectedApplianceId}"/>
+        </apex:actionFunction>
+    </apex:form>
+</apex:page>

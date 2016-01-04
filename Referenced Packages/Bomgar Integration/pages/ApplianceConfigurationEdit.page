@@ -1,0 +1,36 @@
+<apex:page controller="BGIntegration.ApplianceConfigurationEditController" showHeader="true" sidebar="true">
+	<apex:form id="ApplianceEditForm">
+		<apex:sectionHeader title="Appliance Configuration" subtitle="Edit appliance {!Appliance}"/>
+		<apex:pageBlock id="ApplianceConfigurationEditBlock" mode="maindetail">
+			<apex:messages />
+			<table>
+				<tr>
+					<td>Appliance Name</td>
+					<td><apex:inputText value="{!Name}" id="name" /></td>
+				</tr>
+				<tr>
+					<td>Hostname</td>
+					<td><apex:inputText id="hostname" value="{!Hostname}" required="true" styleClass="textfield" /></td>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><apex:inputText id="username" value="{!Username}" required="true" styleClass="textfield" /></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><apex:inputSecret id="password" value="{!Password}" styleClass="textfield" /></td>
+				</tr>
+				<tr>
+					<td>Import All Bomgar Sessions</td>
+					<td><apex:inputCheckbox id="import_all" value="{!ImportAllSessions}" /></td>
+				</tr>
+				<tr>
+					<td>Import System Information</td>
+					<td><apex:inputCheckbox id="system_information" value="{!ImportSystemInfo}" /></td>
+				</tr>
+			</table>
+			<apex:commandButton id="save" value="Save" action="{!save}" />
+			<apex:commandButton id="cancel" value="Cancel" action="{!cancel}" />
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

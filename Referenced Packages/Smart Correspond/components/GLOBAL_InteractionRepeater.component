@@ -1,0 +1,21 @@
+<apex:component controller="TH1.GLOBAL_CO_InteractionRepeater" allowDML="true" access="global">
+    
+    <apex:attribute access="global" name="commandIterator" type="String" default="var" description="The variable to represent a single command in the list of commands in the response" />
+    <apex:attribute access="global" name="customerKey" type="String" assignTo="{!CustomerKeyProp}" description="The customer key" />
+    <apex:attribute access="global" name="interaction" type="String" assignTo="{!InteractionProp}" description="The interaction parameter for the API call"/>
+    <apex:attribute access="global" name="path" type="String" assignTo="{!PathProp}" description="Optionally filter the response for a specific path"/>
+    <apex:attribute access="global" name="responseTarget" type="String"  description="When clicking on a hyperlink response determines where to open the href. NEW, TOP, THIS." />
+    <apex:attribute access="global" name="postResponsesToChatter" type="boolean"  assignTo="{!postToChatter}" default="false" description="Posts to chatter feed on clicking response" />
+    <apex:attribute access="global" name="includeJQuery" type="boolean" default="true" description="If false prevents this component from loading its own copy of jquery"/>
+    
+    <apex:pageMessage summary="{!ConnectFeatureMessage}" severity="info" strength="3" rendered="{!NOT(ConnectIsLicensed)}" escape="false" />
+    <apex:outputPanel rendered="{!ConnectIsLicensed}">
+
+	    <!-- Iterate through the commands place each command into a variable which can be accessed from the parent VF page -->
+	    <apex:repeat var="command" value="{!response.optimizations}">
+	        <apex:componentBody >
+	            <apex:variable var="{!commandIterator}" value="{!command}" />
+	        </apex:componentBody>
+	    </apex:repeat>
+    </apex:outputPanel>    
+</apex:component>

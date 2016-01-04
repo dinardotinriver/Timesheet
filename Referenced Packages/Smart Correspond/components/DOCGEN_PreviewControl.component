@@ -1,0 +1,32 @@
+<apex:component >
+    <apex:stylesheet value="{!URLFOR($Resource.TH1__ThunderheadResources, 'styles/sw-ext.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.TH1__ThunderheadResources, 'styles/oc-styles.css')}"/>
+
+    <apex:includeScript value="/support/console/27.0/integration.js"/>
+    <c:COMMON_JQueryLib />
+    <c:COMMON_UnderscoreJSLib />
+    <c:COMMON_ExtJSLib />
+    <c:COMMON_Json2Lib />
+
+    <c:LoadJS module="docgen/preview"/>
+
+    <span id="show_pdf" style="display:none;">
+        <div id="headerBackground">
+            <div id="headerBar">
+                <div id="titleBar">
+                    <img id="titleImg" src="{!URLFOR($Resource.ThunderheadResources, 'images/document_icon.png')}" />
+                    <span id="titleText"></span>
+                </div>
+                <div id="doclistspan">Documents:
+                    <span id="documentListDropdown"></span>
+                </div>
+                <div id="center">
+                   <input id="th_btn_finish_primary" type="button" value="Finish" class="skywalker_button skywalker_orange" />
+                   <input id="th_btn_finish_secondary" type="button" value="Finish" class="skywalker_button skywalker_blue" />
+                   <input id="th_btn_esign" type="button" value="Send for eSignature" class="skywalker_button skywalker_orange" />
+                </div>
+            </div>
+        </div>
+        <div id="pdfViewer" style="padding: 0;"></div>
+    </span>
+</apex:component>

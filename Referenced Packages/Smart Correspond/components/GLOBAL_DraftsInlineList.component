@@ -1,0 +1,5 @@
+<apex:component access="global" allowDML="true">
+    <apex:attribute type="String" name="objectId" access="global" description="Id of object in context"/>
+    <apex:attribute type="String" name="statusFilter" access="global" description="Status filter for the draft in context"/>
+    <c:DRAFTS_DraftsList isInline="true" objectId="{!objectId}" statusFilter="{!statusFilter}"/>
+</apex:component>

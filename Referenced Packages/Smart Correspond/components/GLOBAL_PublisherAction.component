@@ -1,0 +1,81 @@
+<apex:component controller="TH1.GLOBAL_CO_Widget" access="global" allowDML="true">
+    <apex:attribute type="String" name="objectId" assignTo="{!ContextObjectId}" default="" access="global" description="Id of object in context"/>
+<head>
+    <apex:includeScript value="/canvas/sdk/js/publisher.js"/>
+    <c:LoadJS />
+    <c:COMMON_Salesforce1PublisherAction />
+    <style>
+        #th_btn_edit {
+            display: none;
+        }
+        #th_btn_generate {
+            display: none;
+        }
+        #th_btn_collaborate {
+            display: none;
+        }
+         #th_btn_back {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<div id="th_widget" style="display: none;">
+<apex:form styleClass="th-form">
+    <center>
+        <br/>
+        <apex:image value="{!URLFOR($Resource.TH1__ThunderheadResources, 'images/' + $Setup.Application_Custom_Settings__c.Logo__c)}" />
+        <br/>
+        <div id="th-gen-controls">
+            <apex:selectList value="{!SelectedDocSettingId}" multiselect="false" size="1" style="width:150px;" styleClass="th-select-docsettings">
+                <apex:selectOptions value="{!DocSettingOptions}"/>
+            </apex:selectList>
+            <br/>
+            <br/>
+            <div>
+               <c:COMMON_SkywalkerButton id="th_btn_edit" label="Edit" colour="blue" onclickMethod="return false;" />
+               <c:COMMON_SkywalkerButton id="th_btn_generate" label="Generate" colour="orange" onclickMethod="return false;" />
+               <c:COMMON_SkywalkerButton id="th_btn_collaborate" label="Collaborate" colour="orange" onclickMethod="return false;" />
+            </div>
+        </div>
+        <div id="th-gen-spinner" style="display:none;">
+           <img id="loading" src="/img/loading.gif"/>
+        </div>
+        <div id="th-gen-error" style="display:none;">
+           <div id="th-gen-error-message"></div>
+           <br/>
+           <br/>
+           <c:COMMON_SkywalkerButton id="th_btn_back" label="Back" colour="orange" onclickMethod="return false;" />
+        </div>
+        <div id="th-gen-result" style="display:none;">
+        </div>
+    </center>
+</apex:form>
+</div>
+<script type="text/javascript">
+$(window).load(function () {
+    var objectId = '{!JSENCODE(ObjectId)}';
+    var docSettings = window.JSON.parse('{!JSENCODE(DocumentSettingsJSON)}');
+    var sforce1 = (function () {
+        try {
+            if (sforce && sforce.one) {
+                return true;
+            }
+        }
+        catch(e) {
+            //do nothing
+        }
+        return false;
+    })();
+
+    var publisherActionModule = sforce1 ? 'salesforce1_publisherActionWidget' : 'publisherActionWidget';
+
+    Thunderhead.SF.require(publisherActionModule)
+        .done(function (PublisherActionModule) {
+            new PublisherActionModule(objectId, docSettings);
+        });
+ });
+</script>
+</body>
+</apex:component>

@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html> 
+<head> 
+<title>Apttus Contract Management Suite</title> 
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet"> 
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet"> 
+<script type="text/javascript" src="/js/functions.js"></script> 
+<script src="/soap/ajax/13.0/connection.js"></script> 
+
+{!INCLUDE($SControl.aptsInclude)} 
+
+<script language="javascript" type="text/javascript"> 
+
+var gTargetCatStatus = "Request"; 
+var gTargetStatus = "Returned to Requestor"; 
+var gUseAsyncMode = new Boolean(false); 
+
+function initPage() { 
+	showMsgProgress("Returning To Requestor...Please Wait"); 
+	window.setTimeout("doInit();",gTimeout); 
+} 
+
+function doInit() { 
+	logonAsSuperUser(); 
+	returnToRequestor(); 
+} 
+
+function returnToRequestor() { 
+	try { 
+		var contract = new sforce.SObject(gAgreementObjName); 
+		
+		contract.Id = gContractId; 
+		contract.Apttus__Status_Category__c = gTargetCatStatus; 
+		contract.Apttus__Status__c = gTargetStatus; 
+		
+		var result = sforce.connection.update([contract]); 
+		if (result[0].getBoolean("success")) { 
+			createActivityLogEntry(); 
+			createRequestorReviewTask(); 
+		} else { 
+			erroralert(cERROR_RETURN_TO_REQUESTOR, result[0]); 
+			navigateTo(gContractIdURL); 
+		} 
+	} 
+	catch(ex) { 
+		alert(cERROR_RETURN_TO_REQUESTOR + ex); 
+		navigateTo(gContractIdURL); 
+	} 
+} 
+
+function createActivityLogEntry() { 
+	try { 
+		var task = new sforce.SObject("Task"); 
+		
+		task.ActivityDate = new Date(); 
+		task.Description = "Agreement {!APTS_Agreement__c.Contract_Number__c} Returned To Requestor" + 
+		"\rStatus Category changed from '{!APTS_Agreement__c.Status_Category__c}' to '" + gTargetCatStatus + "'"; 
+		//task.OwnerId = "{!User.Id}"; 
+		task.OwnerId = "{!APTS_Agreement__c.RequestorId__c}";
+		task.Priority = "Normal"; 
+		task.Status = "Completed"; 
+		task.Subject = "Returned To Requestor"; 
+		task.WhatId = gContractId; 
+		
+		var result = sforce.connection.create([task]); 
+		if (!result[0].getBoolean("success")) { 
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]); 
+		} 
+	} 
+	catch(ex) { 
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex); 
+		navigateTo(gContractIdURL); 
+	} 
+} 
+
+function createRequestorReviewTask() {
+	try {
+		//get previous "Submit For Changes" task for this contract
+		var curUserId = "{!User.Id}";
+		var qStr = "Select Id, CreatedById from Task " +
+			"where OwnerId = '"+curUserId+"' and WhatId = '" + gContractId + "' and " +
+			"Subject = 'Author Contract' and Status <> 'Completed'";
+			
+		var result = sforce.connection.query(qStr);
+		var records = result.getArray("records");
+
+		var ownerId = "";
+		var ownerIdIsRequestor = true;
+		
+		if (records.size > 0) {
+			ownerId = records[0].get("CreatedById");
+		} else {
+			//if there are no previous submit for changes tasks, then we got here from submit request
+			//the task owner can be either the requestor or owner of the agreement
+			if (ownerIdIsRequestor) {
+				ownerId = "{!APTS_Agreement__c.RequestorId__c}";
+			} else {
+				ownerId = "{!APTS_Agreement__c.OwnerId}";			
+			}
+		} 
+	
+		// create requestor review task
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Requestor Review task created for Agreement {!APTS_Agreement__c.Contract_Number__c}";
+		task.OwnerId = ownerId;
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Requestor Review";
+		task.WhatId = gContractId;
+		
+		if (gUseAsyncMode == true) {
+			result = sforce.connection.create([task],
+				{ onSuccess : createTaskSuccess,
+				  onFailure : createTaskFailure });
+		} else {
+			result = sforce.connection.create([task]);
+			if (result[0].getBoolean("success")) {
+				closeSubmitForChangesTasks();
+				
+				if (ownerIdIsRequestor) {
+					//can't open up in edit mode
+					navigateTo("/" + result[0].id);
+
+				} else {
+					//open up the task in edit mode
+					navigateTo("/" + result[0].id + "/e?retURL=%2F" + gContractId);
+				}
+			} else {
+				erroralert(cERROR_CREATE_REQUESTOR_REVIEW_TASK, result[0]);
+				navigateTo(gContractIdURL);
+			}
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_REQUESTOR_REVIEW_TASK + ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function createTaskSuccess(result) { 
+	closeSubmitForChangesTasks(); 
+	
+	//open up the task in edit mode
+	navigateTo("/" + result.id + "/e?retURL=%2F" + gContractId); 
+} 
+
+function createTaskFailure(error) { 
+	alert(cERROR_CREATE_REQUESTOR_REVIEW_TASK + error); 
+	navigateTo(gContractIdURL); 
+} 
+
+function closeSubmitForChangesTasks() { 
+	try { 
+		var qStr = "Select Id, Subject, Status from Task " + 
+		"where OwnerId = '{!User.Id}' and WhatId = '" + gContractId + "' and " + 
+		"Subject = 'Author Contract' and Status <> 'Completed'"; 
+		
+		var result = sforce.connection.query(qStr); 
+		var records = result.getArray("records"); 
+		for (i=0; i<records.length; i++) { 
+			var task = records[i]; 
+			var taskId = task.Id; 
+			
+			var aTask = new sforce.SObject("Task"); 
+			aTask.Id = taskId; 
+			aTask.Status = "Completed"; 
+			
+			result = sforce.connection.update([aTask]); 
+			if (!result[0].getBoolean("success")) { 
+				erroralert(cERROR_CLOSE_SUBMIT_FOR_CHANGES_TASK, result[0]); 
+				navigateTo(gContractIdURL); 
+			} 
+		} 
+	} 
+	catch(ex) { 
+		alert(cERROR_CLOSE_SUBMIT_FOR_CHANGES_TASK + ex); 
+		navigateTo(gContractIdURL); 
+	} 
+} 
+</script> 
+</head> 
+
+<body onload="initPage()" class="home editPage"> 
+
+<div id="divMain"><h1>Please wait...</h1></div> 
+
+</body> 
+</html>

@@ -1,0 +1,1491 @@
+<script language="javascript" type="text/javascript"> 
+
+//superuser credentials
+var gSUId = "";
+var gSUPswd = "";
+var gUserId = "{!$User.Id}";
+var gUserName = "{!User.Username}";
+var gCurrUserInfo = sforce.connection.getUserInfo();
+
+//generic object
+var gObjectId = "{!APTS_Agreement__c.Id}";
+var gObjectIdURL = "/{!APTS_Agreement__c.Id}";
+
+//apttus objects
+var gAgreementObjName = "Apttus__APTS_Agreement__c";
+var gAgreementId = "{!APTS_Agreement__c.Id}";
+var gAgreementIdURL = "/{!APTS_Agreement__c.Id}";
+var gAgreementObjNameField = "{!APTS_Agreement__c.Name}";
+var gAgreementObj = "{!$ObjectType.APTS_Agreement__c}";
+var gAgreementObjURL = "/{!$ObjectType.APTS_Agreement__c}";
+var gAgreementVersion = "{!APTS_Agreement__c.Version_Number__c}";
+var gAgreementObjLabel = "Agreement";
+//todo: obsolete
+var gContractId = "{!APTS_Agreement__c.Id}";
+var gContractIdURL = "/{!APTS_Agreement__c.Id}";
+
+var gTemplateObjName = "Apttus__APTS_Template__c";
+var gTemplateObjId = "{!APTS_Template__c.Id}";
+var gTemplateObjIdURL = "/{!APTS_Template__c.Id}";
+var gTemplateObj = "{!$ObjectType.APTS_Template__c}";
+var gTemplateObjURL = "/{!$ObjectType.APTS_Template__c}";
+
+var gAdminObjName = "Apttus__APTS_Admin__c";
+var gAdminObj = "{!$ObjectType.APTS_Admin__c}";
+var gAdminObjURL = "/{!$ObjectType.APTS_Admin__c}";
+
+var gRelatedAgreementObjName = "Apttus__APTS_Related_Agreement__c";
+var gRelatedAgreementObjId = "{!APTS_Related_Agreement__c.Id}";
+var gRelatedAgreementObjIdURL = "/{!APTS_Related_Agreement__c.Id}";
+var gRelatedAgreementObj = "{!$ObjectType.APTS_Related_Agreement__c}";
+var gRelatedAgreementObjURL = "/{!$ObjectType.APTS_Related_Agreement__c}";
+var gRelatedAgreementObjFromKey = "Apttus__APTS_Contract_From__c";
+var gRelatedAgreementObjToKey = "Apttus__APTS_Contract_To__c";
+
+var gAgreementDocumentObjName = "Apttus__Agreement_Document__c";
+var gAgreementDocumentObjId = "{!Agreement_Document__c.Id}";
+var gAgreementDocumentObjIdURL = "/{!Agreement_Document__c.Id}";
+var gAgreementDocumentObj = "{!$ObjectType.Agreement_Document__c}";
+var gAgreementDocumentObjURL = "/{!$ObjectType.Agreement_Document__c}";
+var gAgreementDocumentObjKey = "Apttus__Agreement__c";
+
+var gAgreementProtectionObjName = "Apttus__Agreement_Protection__c";
+var gAgreementProtectionObjId = "{!Agreement_Protection__c.Id}";
+var gAgreementProtectionObjIdURL = "/{!Agreement_Protection__c.Id}";
+var gAgreementProtectionObj = "{!$ObjectType.Agreement_Protection__c}";
+var gAgreementProtectionObjURL = "/{!$ObjectType.Agreement_Protection__c}";
+var gAgreementProtectionObjKey = "Profile";
+
+//salesforce objects
+var gOpportunityObjName = "Opportunity";
+var gOpportunityId = "{!Opportunity.Id}";
+var gOpportunityIdURL = "/{!Opportunity.Id}";
+var gOpportunityObjNameField = "{!Opportunity.Name}";
+var gOpportunityObj = "{!$ObjectType.Opportunity}";
+var gOpportunityObjURL = "/{!$ObjectType.Opportunity}";
+var gOpportunityObjLabel = "Opportunity";
+
+//protection
+var gNumProtectionLevels = 5;
+var cNoProtection = "Full access";
+var cAllowOnlyRevisions = "Insert comments and tracked changes only";
+var cAllowOnlyComments = "Insert comments only";
+var cAllowOnlyFormFields = "Fill in form fields only";
+var cAllowOnlyReading = "Read only";
+
+var wdNoProtection = -1;
+var wdAllowOnlyRevisions = 0;
+var wdAllowOnlyComments = 1;
+var wdAllowOnlyFormFields = 2;
+var wdAllowOnlyReading = 3;
+
+var wdDefaultProtection = wdNoProtection;
+var gProtectionLevel = wdDefaultProtection;
+var gDebugProtection = false;
+
+var gHasRecordTypes = new Boolean(false);
+var gRecordTypeObjPrefix = "{!$ObjectType.RecordType}";
+var gHomePageURL = "/home/home.jsp";
+var gViewMode = "/o";
+var gEditMode = "/e";
+var gDebug = false;
+var gUsingWorkflow = false;
+var gWorkflowTriggerField = "";
+var gNumApiCalls = 0;
+var gTimeout = 10;
+
+var cDEBUG_MODE = "APTS_DebugMode";
+var cWORKFLOW_MODE = "APTS_UseWorkflow";
+var cSUPERUSER_ID = "APTS_SUId";
+var cSUPERUSER_PSWD = "APTS_SUPswd";
+var cSUPERUSER_SECURITY_TOKEN = "APTS_SUSecurityToken";
+
+var gAction = "";
+var cACTION_PREVIEW_AGREEMENT = "Preview Agreement";
+var cACTION_GENERATE_AGREEMENT = "Generate Agreement";
+var cACTION_SAVE_INTERNAL_VERSION = "Save Internal Version";
+var cACTION_SAVE_EXTERNAL_VERSION = "Save External Version";
+var cACTION_SAVE_FINAL_VERSION  = "Save Final Version";
+var cACTION_SEND_TO_OTHER_PARTY_FOR_REVIEW = "Send To Other Party For Review";
+var cACTION_SEND_TO_OTHER_PARTY_FOR_SIGNATURES = "Send To Other Party For Signatures";
+var cACTION_GENERATE_SUPPORTING_DOC = "Generate Supporting Document";
+var cACTION_REGENERATE_AGREEMENT = "Regenerate Agreement";
+
+//constants
+var cERROR_CREATE_ACTIVITY_LOG = "ERROR creating activity log entry:";
+var cERROR_SUBMIT_FOR_CHANGES = "ERROR submitting for changes:";
+var cERROR_CREATE_AUTHOR_CONTRACT_TASK = "ERROR creating author contract task:";
+var cERROR_CLOSE_REQUESTOR_REVIEW_TASK = "ERROR closing requestor review tasks:";
+var cERROR_RETURN_TO_REQUESTOR = "ERROR returning to requestor:";
+var cERROR_CREATE_REQUESTOR_REVIEW_TASK = "ERROR creating requestor review task:";
+var cERROR_CLOSE_SUBMIT_FOR_CHANGES_TASK = "ERROR closing submit for changes tasks:";
+var cERROR_EXECUTE_AGREEMENT = "ERROR activating agreement:";
+var cERROR_EXPIRE_AGREEMENT = "ERROR expiring agreement:";
+var cERROR_TERMINATE_AGREEMENT = "ERROR terminating agreement:";
+var cERROR_CREATE_FROM_OPPORTUNITY = "ERROR creating agreement from opportunity:";
+var cERROR_CREATE_OFFLINE_AGREEMENT = "ERROR creating offline agreement:";
+var cERROR_SAVE_OFFLINE_AGREEMENT = "ERROR saving offline agreement attachment:";
+var cERROR_REMINDER_OFFLINE_AGREEMENT = "ERROR creating offline agreement reminder:";
+var cERROR_STORE_EXECUTED_AGREEMENT = "ERROR storing executed agreement:";
+var cERROR_SUBMIT_REQUEST = "ERROR submitting request:";
+var cERROR_CANCEL_REQUEST = "ERROR cancelling request:";
+var cERROR_CREATE_SUBMIT_REQUEST_TASK = "ERROR creating submit request task:";
+var cERROR_CLOSE_SUBMIT_REQUEST_TASK = "ERROR closing submit request tasks:";
+
+//admin table field names
+var cADMIN_ID = "Id";
+var cADMIN_NAME = "Name";
+var cADMIN_VALUE = "Apttus__Value__c";
+var cADMIN_CODE = "Apttus__Code__c";
+
+/*
+// GETRECORDIDS OnClick Javascript sample
+{REQUIRESCRIPT("/soap/ajax/11.1/connection.js")} 
+
+var records = {!GETRECORDIDS($ObjectType.Agreement_Document__c)}; 
+if (records[0]==null) { 
+    alert("Please select at least one row");
+} else { 
+    for (var n in records) { 
+        alert("id="+records[n]);
+    }
+
+    //<a href="URL" onClick="window.open('URL', 'window_name', 'window_options'); return false">linking text</a>
+    //var newWin = window.open("http://www.cnn.com/","CNN_WindowName",
+    //  "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
+
+    window.location.reload(); 
+}
+*/
+
+function init() {
+    setDebugMode();
+    setWorkflowMode();
+}
+
+function setDebugMode() {
+    try {
+        var q = "select " + cADMIN_VALUE + " from " + gAdminObjName +
+               " where " + cADMIN_NAME + " = '" + cDEBUG_MODE + "'";
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        
+        if (result.size > 0) {
+            var records = result.getArray("records");
+            var mode = records[0].get(cADMIN_VALUE);
+            if (mode.toLowerCase()=="true" || mode=="1") {
+                gDebug = true;
+            } else {
+                gDebug = false;
+            }
+        }
+    }
+    catch(ex) {
+        gDebug = false;
+    }
+}
+
+function setWorkflowMode() {
+    try {
+        var q = "select " + cADMIN_VALUE + " from " + gAdminObjName +
+               " where " + cADMIN_NAME + " = '" + cWORKFLOW_MODE + "'";
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        
+        if (result.size > 0) {
+            var records = result.getArray("records");
+            var mode = records[0].get(cADMIN_VALUE);
+            gUsingWorkflow = (mode.toLowerCase()=="true" || mode=="1") ? true : false;
+        }
+    }
+    catch(ex) {
+        gUsingWorkflow = false;
+    }
+}
+
+function logonAsSuperUser() {
+    try {
+    	//save current user info before logging in as superuser
+		gCurrUserInfo = sforce.connection.getUserInfo();
+    	
+        var idObj = getAdminObjSettings(cSUPERUSER_ID);
+        var pwObj = getAdminObjSettings(cSUPERUSER_PSWD);
+        var stObj = getAdminObjSettings(cSUPERUSER_SECURITY_TOKEN);
+        
+        if (idObj==null || pwObj==null) return null;
+        
+        var id = idObj.value;
+        var pw = pwObj.value;
+        var st = stObj.value;
+        
+        if (st!=null && st!="") pw += st;
+        
+        var result = sforce.connection.login(id,pw);
+        return result.userId;
+    }
+    catch(ex) {
+        if (gDebug) { writeDebugLn("<br>"+ex); }
+        
+        return null;
+    }
+}
+
+function getAdminObjSettings(name) {
+    try {
+        if (name==null || name=="") return null;
+        
+        var obj = new Object();
+        var q = "select "+cADMIN_VALUE+" from "+gAdminObjName+
+                " where "+cADMIN_NAME+" = '"+name+"'";
+        var result = sforce.connection.query(q);
+        
+        if (result.size>0) {
+            var records = result.getArray("records");
+            var record = records[0];
+            
+            obj = new Object();
+            
+            obj.name = name
+            obj.value = record.get(cADMIN_VALUE);
+            obj.code = record.get(cADMIN_CODE);
+
+            if (gDebug) {
+                writeDebugLn("<br>cADMIN_NAME="+obj.name);
+                writeDebugLn("<br>cADMIN_VALUE="+obj.value);
+                writeDebugLn("<br>cADMIN_CODE="+obj.code);
+            }
+        }
+        
+        return obj;
+    }
+    catch(ex) {
+        return null;
+    }
+}
+
+function writeDebugLn(msg) {
+    if (msg==null || msg=="") return;
+    
+    var divMain = document.getElementById("divMain");
+    if (divMain==null) {
+        document.writeln(msg);
+    } else {
+        divMain.innerHTML += msg;
+    }
+}
+
+function getDetailURLPrefix(fPath) {
+    if (fPath.lastIndexOf('/') > 0) {
+        pos = fPath.lastIndexOf('/') + 1;    
+        return fPath.substring(0,pos);
+    } else {
+        return fPath;
+    }
+}
+
+function isRunningIE() {
+    var isIE = new Boolean(true);
+    if (navigator.appName.indexOf("Microsoft")==-1) {
+        isIE = false;
+    }
+    return isIE;
+}
+
+function getObjectTypeFromId(id) {
+    var type = "";
+    try {
+        var idType = id.substring(0,3);
+        if (idType==gAgreementObj) {
+            type = gAgreementObjName;
+        } else if (idType==gOpportunityObj) {
+            type = gOpportunityObjName;
+        }
+    }
+    catch(ex) {
+        alert(ex.message);
+    }
+    finally {
+        return type;
+    }
+}
+
+/*
+builtin string replace function
+
+usage:      var newString = str.replace(regexp/substr, newSubStr/function[, flags]);
+
+regexp:     RegExp object. The match is replaced by the return value of parameter #2. 
+substr:     String that is to be replaced by newSubStr. 
+newSubStr:  String that replaces the substring received from parameter #1. 
+function:   Function to be invoked to create the new substring (to put in place of the substring
+            received from parameter #1). 
+flags:      String containing any combination of the RegExp flags: g - global match, i - ignore case,
+            m - match over multiple lines. This parameter is only used if the first parameter is a string. 
+*/
+
+//todo: move to aptsInclude
+function myReplace(incomingText,sParam1,sParam2) {
+    workString = incomingText;
+    str1 = sParam1;
+    str2 = sParam2;
+    //alert("workString="+workString+"\nstr1="+str1+"\nstr2="+str2);
+    
+    while (workString.indexOf(str1)!=-1) {
+        workString = workString.substring(0,
+            workString.indexOf(str1))+str2+
+            workString.substring(workString.indexOf(str1)+str1.length,workString.length);
+        //alert("workString="+workString);
+    }
+
+    return workString;
+}
+
+function getProtectionLevel() {
+    if (gDebugProtection) { writeDebugLn("<br>getProtectionLevel"); }
+    try {
+        if (inPromptMode()) {
+            for (var i=0; i<gNumProtectionLevels; i++) {
+                var item = document.getElementById("accessLevel"+i);
+                if (gDebugProtection) {
+                    writeDebugLn("<br>item.value="+item.value+"<br>item.checked="+item.checked);
+                }
+                
+                if (item.checked) {
+                    return item.value;
+                }
+            }
+            return wdDefaultProtection;
+            
+        } else {
+            var pName = getUserProfile(gCurrUserInfo);
+            if (gDebugProtection) {
+                writeDebugLn("<br>pName="+pName);
+                writeDebugLn("<br>gAction="+gAction);
+            }
+
+            var pObj = getAgreementProtectionObj(pName,gAction);
+            if (gDebugProtection) { writeDebugLn("<br>pObj="+pObj); }
+
+            if (pObj==null) return wdDefaultProtection;
+            
+            var id = pObj.id;
+            var profile = pObj.profile;
+            var action = pObj.action;
+            var type = pObj.type;
+            var level = pObj.level;
+            var value = wdNoProtection;
+
+            if (level==cNoProtection) {
+                value = wdNoProtection;
+            } else if (level==cAllowOnlyRevisions) {
+                value = wdAllowOnlyRevisions;
+            } else if (level==cAllowOnlyComments) {
+                value = wdAllowOnlyComments;
+            } else if (level==cAllowOnlyFormFields) {
+                value = wdAllowOnlyFormFields;
+            } else if (level==cAllowOnlyReading) {
+                value = wdAllowOnlyReading;
+            }           
+
+            if (gDebugProtection) {
+                writeDebugLn("<br>profile="+profile+"<br>action="+action+"<br>type="+type+"<br>level="+level+"<br>value="+value);
+            }
+            return value;
+        }
+    }
+    catch(ex) {
+        return wdDefaultProtection;
+    }
+}
+
+function inPromptMode() {
+    try {
+        var prompt = false;
+        
+        var pName = getUserProfile(gCurrUserInfo);
+        var pObj = getAgreementProtectionObj(pName,gAction);
+        
+        if (pObj!=null) {
+            var id = pObj.id;
+            var profile = pObj.profile;
+            var action = pObj.action;
+            var type = pObj.type;
+            var level = pObj.level;
+            //alert("profile="+profile+"\naction="+action+"\ntype="+type+"\nlevel="+level);
+            
+            if (type=="Prompt") {
+                prompt = true;
+            }
+        }
+        
+        return prompt;
+    }
+    catch(ex) {
+        return false;
+    }
+}
+
+function getUserProfile(userInfo) {
+    try {
+        var userId = userInfo.userId;
+        var fullName = userInfo.userFullName;
+        var email = userInfo.userEmail;
+        var profileId = userInfo.profileId;
+        
+        var ids = new Array(1);
+        ids[0] = profileId;
+        var fieldList = getFieldList("Profile");
+        var result = sforce.connection.retrieve(fieldList,"Profile",ids);
+        if (result[0]==null) {
+            return "";
+        }
+        
+        var profileName = result[0].Name;
+        //alert("userId="+userId+"\nuserFullName="+fullName+"\nuserEmail="+email+"\nuserProfile="+profileId+"\nprofileName="+profileName);
+        
+        return profileName;
+    }
+    catch(ex) {
+        return "";
+    }
+}
+
+function getAgreementProtectionObj(profile,action) {
+    try {
+        var fieldList = getFieldList(gAgreementProtectionObjName);
+        var pObj = null;
+        var q = "select "+fieldList+" from "+gAgreementProtectionObjName+
+            " where Apttus__Profile_Name__c='"+profile+"' and Apttus__Action__c='"+action+"' limit 1";
+        var result = sforce.connection.query(q);
+        
+        if (result.size>0) {
+            var records = result.getArray("records");
+            var record = records[0];
+
+            pObj = new Object();
+            pObj.id = record.Id;
+            pObj.profile = record.Apttus__Profile_Name__c;
+            pObj.action = record.Apttus__Action__c;
+            pObj.type = record.Apttus__Protection_Type__c;
+            pObj.level = record.Apttus__Protection_Level__c;
+        }
+
+        return pObj;
+    }
+    catch(ex) {
+        return null;
+    }
+}
+
+function contains(s1,s2) {
+    try {
+        //return true if s1 contains s2
+        s1.toLowerCase();
+        s2.toLowerCase();
+
+        return (s1.indexOf(s2) >= 0) ? true : false;
+    }
+    catch(ex) {
+        return false;
+    }
+}
+
+function isAmendedAgreement() {
+    return gAgreementVersion > 0;
+}
+
+function convertStringToFloat(s) {
+    try {
+        if (s==null || s.length==0) return "";
+        
+        var sn = "";
+        var num = parseFloat(s);
+        if (isNaN(num)) {
+            //conversion to number failed, strip non-number characters
+            for (var i=0; i<=s.length; i++) { 
+                var ch = s.charAt(i);
+                var chn = ch*1;
+                
+                if ((chn>=0 && chn<=9) || ch==".") {
+                    sn += ch;
+                }
+            }
+        } else {
+            //conversion to number ok
+            sn = num;
+        }
+        
+        return sn;
+    }
+    catch(ex) {
+        return "";
+    }
+} 
+
+//sample code to diplay a picklist in an scontrol based on a record type.
+//the sample below displays the Task Type picklist for a particular record type.
+//
+function displayPicklistForRecordType(recType) {
+    var result = sforce.connection.describeLayout("Task",[getRecordTypeId("Task",TASK_RECORD_TYPE)]);
+    gNumApiCalls++;
+    var selType = document.getElementById("type_picklist");    
+    var recordTypeMappings = result.getArray("recordTypeMappings");
+
+    for (var i=0; i<recordTypeMappings.length; i++) {
+        var picklistArr = recordTypeMappings[i].get("picklistsForRecordType");
+        
+        for (var j=0; j<picklistArr.length; j++) {
+            if (picklistArr[j].picklistName == "Type") {
+                var plItems = picklistArr[j].picklistValues;
+                
+                for (var k=0; k<plItems.length; k++) {
+                    var plItem = plItems[k];
+                    if (plItem.active) {
+                        selType.options[k] = new Option(plItem.label, plItem.value);
+                    }
+                }
+            }            
+        }
+    }
+}
+
+function getFieldLabel(table,field) {
+    if (field=="" || field==null) return "";
+    var label = field;
+    
+    try {
+        var dso = sforce.connection.describeSObject(table);
+        gNumApiCalls++;
+        for (var i=0; i<dso.fields.length; i++) {
+            var fld = dso.fields[i];
+            if (fld.name == field) {
+                label = fld.label;
+                i = dso.fields.length;
+            }
+        }
+    }
+    catch(ex) {
+    }
+    finally {
+        return label;
+    }
+}
+
+function stripFieldname(field) {
+    //strip __c from fieldname
+    if (field.indexOf('__c') > 0) {
+        var pos = field.lastIndexOf('__c');
+        return field.substring(0,pos);
+    } else {
+        return "";
+    }
+
+}
+
+/**
+    var gRecordTypes = getObjectRecordTypes(gAgreementObjName);
+    var NDALabel = "NDA";
+    var NDARecordType = gRecordTypes[NDALabel].Id;
+    var SOWLabel = "SOW";
+    var SOWRecordType = gRecordTypes[SOWLabel].Id;
+*/
+function getObjectRecordTypes(object) {
+    var recordTypes = new Object();
+
+    var q = "select r.Id, r.Name, r.SobjectType from RecordType r where r.IsActive=true and r.SobjectType='"+ object +"'";
+    var result = sforce.connection.query(q);
+    gNumApiCalls++;
+    var records = result.getArray("records");
+    
+    for (var i=0; i<records.length; i++) {
+        var record = records[i];
+        
+        var recordType = new Object();
+        recordType.Name = record.Name;
+        recordType.Id = record.Id;
+        
+        recordTypes[record.Name] = recordType;
+    }
+
+    return recordTypes;
+}
+
+function getFieldList(table) {
+    var fieldList = "";
+    try {
+        var dso = sforce.connection.describeSObject(table);
+        gNumApiCalls++;
+        for (var i=0; i<dso.fields.length; i++) {
+            var field = dso.fields[i];
+            var fieldName = field.name;
+            if (fieldList.length > 0) {
+                fieldList += "," + fieldName;
+            } else {
+                fieldList += fieldName;
+            }
+        }
+    }
+    catch(ex) {}
+    finally {
+        return fieldList;
+    }
+}
+
+function getFieldNamesArray(table) {
+    var fieldList = new Array();
+    try {
+        var dso = sforce.connection.describeSObject(table);
+        gNumApiCalls++;
+        for (var i=0; i<dso.fields.length; i++) {
+            var f = dso.fields[i];
+            //if (f.custom=="true" || f.name=="Name") {
+            if (f.name!="Name" &&
+                f.name!="CreatedById" &&
+                //f.name!="CreatedDate" &&
+                f.name!="Id" &&
+                f.name!="IsDeleted" &&
+                f.name!="LastActivityDate" &&
+                f.name!="LastModifiedById" &&
+                f.name!="LastModifiedDate" &&
+                f.name!="OwnerId" &&
+                f.name!="SystemModstamp")
+            {
+                fieldList.push(f.name);
+            }
+        }
+    }
+    catch(ex) {}
+    finally {
+        return fieldList;
+    }
+}
+
+function deleteLineItems(table,whereClause) {
+    try {
+        var q = "select Id from " + table + " where " + whereClause;
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        var records = result.getArray("records");
+    
+        if (records.length == 0) return;
+        var ids = new Array(records.length);
+        for (var i=0; i<records.length; i++) {
+            ids[i] = records[i].Id;
+        }
+        
+        var result = sforce.connection.deleteIds([ids]);
+        gNumApiCalls++;
+        if (!result[0].getBoolean("success")) {
+            erroralert("", result[0]);
+        }
+        
+        //alert(records.length+" records deleted.");
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+function deleteTableData(table) {
+    try {
+        var q = "select Id From " + table;
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        var records = result.getArray("records");
+    
+        if (records.length == 0) return;
+        var ids = new Array(records.length);
+        for (var i=0; i<records.length; i++) {
+            ids[i] = records[i].Id;
+        }
+        
+        var result = sforce.connection.deleteIds([ids]);
+        gNumApiCalls++;
+        if (!result[0].getBoolean("success")) {
+            erroralert("", result[0]);
+        }
+        
+        //alert(records.length+" records deleted.");
+    }
+    catch(ex) {
+        alert(ex);
+    }
+    finally {
+        navigateTo(gContractIdURL);
+    }
+}
+
+function selectRecordType(
+    okCallback, cancelCallback, cancelURL, retURL, entity, save, saveNewURL)
+{
+    if (gHasRecordTypes==false) return;
+    try {
+        var rtDef = "";
+        var rtTypes = new Array();
+        var rtDescs = new Array();
+        var rtNum = 0;
+        var dso = sforce.connection.describeSObject(gAgreementObjName);
+        gNumApiCalls++;
+        
+        //get allowable record types for this user
+        for (var i=0; i<dso.recordTypeInfos.length; i++) {
+            var rt = dso.recordTypeInfos[i];
+            if (rt.available=="true" && rt.name!="Master") {
+                rtTypes[rtNum++] = rt;
+            }
+            if (rt.defaultRecordTypeMapping=="true") {
+                rtDef = rt.name;
+            }
+        }
+        
+        //get record type descriptions
+        var ids = new Array(1);
+        for (var i=0; i<rtTypes.length; i++) {
+            var recType = rtTypes[i];
+            var rtId = recType.get("recordTypeId");
+            ids[0] = rtId;
+
+            var result = sforce.connection.retrieve("Id,Name,Description","RecordType",ids);
+            gNumApiCalls++;
+            if (result[0]!=null) {
+                rtDescs[i] = result[0].Description;
+            }
+        }
+
+        if (rtNum>0) {
+            //build custom recordtypeselection page
+            buildRecordTypeSelection(okCallback, cancelCallback, cancelURL, retURL, entity, save, saveNewURL);
+    
+            //output dropdown list
+            var output_dd = "<select id=\"recordTypeId\" name=\"recordType\">";
+            for (var i=0; i<rtNum; i++) {
+                var recType = rtTypes[i];
+                var rtId = recType.get("recordTypeId");
+                var rtName = recType.get("name");
+                
+                if (rtName==rtDef) {
+                    output_dd += "<br><option value=\"" + rtId + "\" selected>" + rtName + "</option>";
+                } else {
+                    output_dd += "<br><option value=\"" + rtId + "\">" + rtName + "</option>";
+                }
+            }
+            output_dd += "<br></select>";
+            document.getElementById("divRecTypeSelect").innerHTML = output_dd;
+            
+            //output table list
+            var output_table = "<table class=\"infoTable\" cellpadding=\"2\" cellspacing=\"2\" border=\"1\">";
+            output_table += "<tr class=\"headerRow\">" +
+                                "<th class=\"recordTypeName\" scope=\"col\">Record Type Name</th>" +
+                                "<th class=\"recordTypeDescription\" scope=\"col\">Description</th>" +
+                            "</tr>";
+    
+            for (var i=0; i<rtNum; i++) {
+                var recType = rtTypes[i];
+                var rtId = recType.get("recordTypeId");
+                var rtName = recType.get("name");
+                var rtDesc = rtDescs[i];
+                
+                output_table += "<tr class=\"headerRow\">" +
+                                    "<th class=\"recordTypeName\" scope=\"row\">" + rtName + "</th>" +
+                                    "<td class=\"recordTypeDescription\">" + rtDesc + "</td>" +
+                                "</tr>";
+            }
+            output_table += "</table>";      
+            document.getElementById("divTemplate").innerHTML += output_table;
+            showMain();
+            
+        } else {
+            alert("No record types found.");
+            navigateTo(gHomePageURL);
+        }
+    }
+    catch(ex) {
+    }
+}
+
+function buildRecordTypeSelection(
+    okCallback, cancelCallback, cancelURL, retURL, entity, save, saveNewURL)
+{
+    var html = "";
+    html += "<div class=\"bPageTitle\">";
+        html += "<div class=\"ptBody secondaryPalette\">";
+            html += "<div class=\"content\">";
+                html += "<img src=\"/img/icon/contracts32.png\" alt=\"Contract\" class=\"pageTitleIcon\">";
+                html += "<h1 class=\"pageType\">New Agreement<span class=\"titleSeparatingColon\">:</span></h1>";
+                html += "<h2 class=\"pageDescription\">Select Agreement Record Type</h2>";
+                html += "<div class=\"blank\">&nbsp;</div>";
+            html += "</div>";
+            html += "<div class=\"links\">";
+                html += "<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help";
+                html += "&body=%2Fhelp%2Fdoc%2Fen%2Fhelp2.jsp&target=account_recordtype.htm&section=Customizing', ";
+                html += "'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,";
+                html += "menubar=yes,directories=no,location=no,dependant=no', false, false);\" title=\"Help for ";
+                html += "this Page (New Window)\">";
+                html += "<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\"></a></div>";
+        html += "</div>";
+        html += "<div class=\"ptBreadcrumb\">";
+        html += "</div>";
+    html += "</div>";
+    html += "<div class=\"bDescription\">";
+        html += "Select a record type for the new agreement. To skip this page in the ";
+        html += "future, change your record type settings on your personal setup page.</div>";
+    html += "<form action=\"/setup/ui/recordtypeselect.jsp\" id=\"editPage\" name=\"editPage\" method=\"POST\">";
+        html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"" + cancelURL + "\">";
+        html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"" + retURL + "\">";
+        html += "<input type=\"hidden\" name=\"ent\" id=\"ent\" value=\"" + entity + "\">";
+        html += "<input type=\"hidden\" name=\"save\" id=\"save\" value=\"" + save + "\">";
+        html += "<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"" + saveNewURL + "\">";
+        html += "<div class=\"bPageBlock bEditBlock bLayoutBlock secondaryPalette\" id=\"ep\">";
+            html += "<div class=\"pbHeader\">";
+                html += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
+                    html += "<tr>";
+                        html += "<td class=\"pbTitle\">";
+                        html += "<img src=\"/s.gif\" alt=\"\" title width=\"1\" height=\"1\" class=\"minWidth\"><h2 class=\"mainTitle\">";
+                        html += "Select Agreement Record Type</h2>";
+                        html += "</td>";
+                    html += "</tr>";
+                html += "</table>";
+            html += "</div>";
+            html += "<div class=\"pbBody\">";
+                html += "<div class=\"pbSubsection\">";
+                    html += "<table class=\"detailList\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
+                        html += "<tr>";
+                            html += "<td class=\"labelCol requiredInput\">";
+                            html += "<label for=\"p3\"><span class=\"requiredMark\">*</span>Record Type of new record</label></td>";
+                            html += "<td class=\"data2Col\" colspan=\"3\">";
+                            html += "<div class=\"requiredInput\">";
+                                html += "<div class=\"requiredBlock\"></div>";
+                                html += "<div id=\"divRecTypeSelect\">";
+                                html += "</div>";
+                            html += "</div>";
+                            html += "</td>";
+                        html += "</tr>";
+                        html += "<tr class=\"detailRow\">";
+                            html += "<td colspan=\"4\">&nbsp;</td>";
+                        html += "</tr>";
+                        html += "<tr class=\"detailRow last\">";
+                            html += "<td colspan=\"4\"><span id=\"errorText\"></span>";
+                            html += "</td>";
+                        html += "</tr>";
+                    html += "</table>";
+                html += "</div>";
+            html += "</div>";
+            html += "<div class=\"pbBottomButtons\">";
+                html += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">";
+                    html += "<tr>";
+                        html += "<td class=\"pbTitle\">";
+                        html += "<img src=\"/s.gif\" alt=\"\" title width=\"1\" height=\"1\" class=\"minWidth\">";
+                        html += "</td>";
+                        html += "<td class=\"pbButtonb\">";
+                        html += "<input value=\"Continue\" class=\"btn\" type=\"button\" title=\"Continue\" name=\"save\" onclick=\"" + okCallback + "\">";
+                        html += "<input value=\"Cancel\" class=\"btn\" type=\"button\" title=\"Cancel\" name=\"cancel\" onclick=\"" + cancelCallback + "\">";
+                        html += "</td>";
+                    html += "</tr>";
+                html += "</table>";
+            html += "</div>";
+            html += "<div class=\"pbFooter secondaryPalette\">";
+                html += "<div class=\"bg\">";
+                html += "</div>";
+            html += "</div>";
+        html += "</div>";
+    html += "</form>";
+    html += "<h3 class=\"recordTypesHeading\">Available Agreement Record Types</h3>";
+    html += "<table>";
+        html += "<tr>";
+            html += "<td>&nbsp;</td>";
+            html += "<td>";
+            html += "<div id=\"divTemplate\">";
+            html += "</div>";
+            html += "</td>";
+        html += "</tr>";
+        html += "<tr>";
+            html += "<td colspan=\"2\">&nbsp;</td>";
+        html += "</tr>";
+    html += "</table>";
+
+    setMain(html);
+}
+
+function showMsgProgress(msg) {
+    var html = "<center><p><p><h2>" + msg + "</h2>" +
+        "<p><img src=\"/img/waiting_dots.gif\" border=\"0\" width=156 height=25></center>";
+    
+    setMain(html);
+    showMain();
+}
+
+function resetMain() {
+    setMain("");
+}
+
+function setMain(html) {
+    document.getElementById("divMain").innerHTML = html;
+}
+
+function showMain() {
+    document.getElementById("divMain").style.visibility = "visible";
+}
+
+function hideMain() {
+    document.getElementById("divMain").style.visibility = "hidden";
+}
+
+function getFrontdoorNewUrl(object) {
+    try {
+        var dso = sforce.connection.describeSObject(object);
+        gNumApiCalls++;
+        return dso.urlNew;
+    }
+    catch(ex) {
+    }
+}
+
+function getFrontdoorEditUrl(object) {
+    try {
+        var dso = sforce.connection.describeSObject(object);
+        gNumApiCalls++;
+        return dso.urlEdit;
+    }
+    catch(ex) {
+    }
+}
+
+function getFrontdoorDetailUrl(object) {
+    try {
+        var dso = sforce.connection.describeSObject(object);
+        gNumApiCalls++;
+        return dso.urlDetail;
+    }
+    catch(ex) {
+    }
+}
+
+function getRecordTypeDefault() {
+    try {
+        var dso = sforce.connection.describeSObject(gAgreementObjName);
+        gNumApiCalls++;
+        for(i=0; i<dso.recordTypeInfos.length; i++) {
+            var rt = dso.recordTypeInfos[i];
+            if (rt.defaultRecordTypeMapping == "true") {
+                return rt.name;
+            }
+        }
+    }
+    catch(ex) {
+        return "";
+    }
+}
+
+function getRecordTypeDescription(id) {
+    try {
+        var records = sforce.connection.query("Select Name from RecordType " +
+            "where Id = '" + id + "' and IsActive = true");
+        gNumApiCalls++;
+        if (records.size > 0) {
+            var record = records.getArray("records")[0];
+            var name = record.get("Name");
+            return name;
+        } else {
+            //alert("No record types found.");
+            return "";
+        }
+    } catch(ex) {
+        return "";
+    }
+}
+
+function getRecordTypeIdFromName(name) {
+    try {
+        var records = sforce.connection.query("Select Id,Name from RecordType " +
+            "where Name = '" + name + "' and IsActive = true");
+        if (records.size > 0) {
+            var record = records.getArray("records")[0];
+            var id = record.get("Id");
+            return id;
+        } else {
+            //alert("No record types found.");
+            return "";
+        }
+    } catch(ex) {
+        return "";
+    }
+}
+
+function hasCustomField(field, object) {
+    var hasField = new Boolean(false);
+    try {
+        var dso = sforce.connection.describeSObject(object);
+        gNumApiCalls++;
+        var fields = dso.fields;
+        for(i=0; i<fields.length; i++) {
+            var fieldFromDescribe = fields[i];
+            if (fieldFromDescribe.name == field) {
+                hasField = true;
+                break;
+            }
+        }
+    }
+    catch(ex) {
+        alert(ex);
+    }
+    finally {
+        return hasField;
+    }
+}
+
+function getFields(object) {
+    try {
+        var dso = sforce.connection.describeSObject(object);
+        gNumApiCalls++;
+        for(i=0; i<dso.fields.length; i++) {
+            var field = dso.fields[i];
+        }
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+function getChildRelationships(object) {
+    try {
+        var dso = sforce.connection.describeSObject(object);
+        gNumApiCalls++;
+        for(i=0; i<dso.childRelationships.length; i++) {
+            var child = dso.childRelationships[i];
+        }
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+function isProtectionOn() {
+    try {
+        var q = "select " + cADMIN_VALUE + " from " + gAdminObjName + " where " + cADMIN_NAME + " = 'APTS_Protection'";
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        
+        if (result.size > 0) {
+            var records = result.getArray("records");
+            var useProtection = records[0].get(cADMIN_VALUE);
+            
+            return (useProtection.toLowerCase()=="true" || useProtection=="1") ? true : false;
+        } else {
+            return false;
+        }
+    }
+    catch(ex) {
+        return false;
+    }
+}
+
+function getDocumentPassword() {
+    try {
+        var q = "select " + cADMIN_VALUE + " from " + gAdminObjName + " where " + cADMIN_NAME + " = 'APTS_Password'";
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        
+        if (result.size > 0) {
+            var records = result.getArray("records");
+            return records[0].get(cADMIN_VALUE);
+        } else {
+            return "";
+        }
+    }
+    catch(ex) {
+        return "";
+    }
+}
+
+function queryMailMergeTemplates() {
+    try {
+        var qr = sforce.connection.query("Select Id, Name, Description from MailMergeTemplate"); 
+        gNumApiCalls++;
+        var mmArray = qr.records;
+        var output = "<select id=\"bTemplateId\" size=\"10\" name=\"bTemplateId\">";
+        
+        for (i=0; i<qr.size; i++) {
+            var mmTemplate = mmArray[i];
+ 
+            mmId = mmTemplate.get("Id");
+            mmName = mmTemplate.get("Name");
+            mmDesc = mmTemplate.get("Description");
+            
+            output += "<br><option value=\"" + mmId + "\">" + mmName + "</option>";
+        }
+        output += "<br></select>";
+        
+        document.getElementById("divTemplate").innerHTML = output;
+        document.getElementById("divTemplate").style.display = "";
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+function isDefined(object, variable) {
+    alert("object = " + object + "\nvariable = " + variable +
+          "\ntypeof(eval(object)[variable]) = " + typeof(eval(object)[variable]));
+    return (typeof(eval(object)[variable]) != "undefined");
+}
+
+function getUserInfoSample() {
+    try {
+        var ui = sforce.connection.getUserInfo(); 
+        gNumApiCalls++;
+        
+        var userId = ui.userId;
+        var fullName = ui.userFullName;
+        var email = ui.userEmail;
+        
+        alert("userId = " + userId + "\nuserFullName = " + fullName + "\nuserEmail = " + email);
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+function displayResultsInList(items) {
+    var output = "<select id=\"bTemplateId\" size=\"10\" name=\"bTemplateId\">";
+    if (items.length > 0) {
+        output += "<br><option value=\"" + items[0].get("Id") + "\"selected>" + items[0].get("Name") + "</option>";
+    }
+    for (var i=1; i<items.length; i++) {
+        output += "<br><option value=\"" + items[i].get("Id") + "\">" + items[i].get("Name") + "</option>";
+    }
+    
+    output += "<br></select>";
+    document.getElementById("divTemplate").innerHTML = output;
+}
+
+function displayResultsInTable(items) {
+    var output = "<table border='1'><tbody>";
+    for (var i=0; i<items.length; i++) {
+        output += "<tr><td>" + items[i].get("Id")
+               + "</td><td>" + items[i].get("Name")
+               + "</td><td>" + items[i].get("Description") + "</td></tr>";
+    }
+    
+    output += "</tbody></table>";      
+    document.getElementById("divTemplate").innerHTML = output;
+}
+
+function displayResultsInListOfTables(items) {
+    var output = "<select id=\"bTemplateId\" size=\"1\" name=\"bTemplateId\">";
+    if (items.length > 0) {
+        output += "<br><option value=\"" + items[0].get("Id") + "\"selected>" +
+            "<table border='1'><tbody><tr>" +
+            "<td>" + items[0].get("Name") + "</td>" +
+            "<td>" + items[0].get("Description") + "</td>" +
+            "</tr></tbody></table></option>";
+    }
+    for (var i=1; i<items.length; i++) {
+        output += "<br><option value=\"" + items[i].get("Id") + "\">" +
+            "<table border='1'><tbody><tr>" +
+            "<td>" + items[i].get("Name") + "</td>" +
+            "<td>" + items[i].get("Description") + "</td>" +
+            "</tr></tbody></table></option>";
+    }
+    
+    //"<td>" + items[i].get("Guidance") + "</td>" +
+    //"<td>" + items[i].get("Language") + "</td>" +
+    //"<td>" + items[i].get("Locale") +   "</td>" +
+
+    output += "<br></select>";
+    document.getElementById("divTemplate").innerHTML = output;
+}
+
+function sortSample() {
+    //setup sort ordinals
+    var sortFields = new Array();
+    var fld = new Array();
+    fld.push("Name");
+    fld.push("ASC");
+    sortFields.push(fld);
+    
+    //query sorted
+    sforce.connection.queryAllSorted("Select Id, Name, Description from MailMergeTemplate", sortFields);
+}
+
+function sortSObject(a, b) {
+    for (var i=0; i<sforce.connection.sortArray.length; i++) {
+        var va = a.get(sforce.connection.sortArray[i][0]);
+        var vb = b.get(sforce.connection.sortArray[i][0]);
+        var s = 1;
+        
+        if (sforce.connection.sortArray[i][1] == "DESC") {
+            s = -1;
+        }
+        if (va > vb) {
+            return 1 * s;
+        } else {
+            if (va < vb) {
+                return -1 * s;
+            }
+        }
+    }
+    return 0;
+}
+
+// sort array
+//sforce.connection.sortArray = new Array();
+
+sforce.connection.queryAllSorted = function(soql, sort_orders) { 
+    sforce.connection.sortArray = sort_orders;
+    
+    sforce.connection.sobjects = new Array();
+    this.query(soql, queryCallback);
+}
+
+queryCallback = function(ret) {
+    if (ret.size > 0){
+        // create single array of results
+        sforce.connection.sobjects = sforce.connection.sobjects.concat(ret.records);
+        if (ret.done == false){
+            sforce.connection.queryMore(ret.queryLocator, queryCallback)
+        } else {
+            // sort results and display
+            displayResultsInList(sforce.connection.sobjects.sort(sortSObject));
+            //displayResultsInTable(sforce.connection.sobjects.sort(sortSObject));
+            //displayResultsInListOfTables(sforce.connection.sobjects.sort(sortSObject));
+        }
+    }
+}
+
+function getFilePath(fPath) {
+    if (fPath.indexOf('\\') > 0) {
+        pos = fPath.lastIndexOf('\\') + 1;    
+        return fPath.substring(0,pos);
+    } else {
+        return 0;
+    }
+}
+
+function getFileNameFromPath(fPath) {
+    if (fPath.indexOf('\\') > 0) {
+        pos = fPath.lastIndexOf('\\') + 1;    
+        return fPath.substring(pos);
+    } else {
+        return 0;
+    }
+}
+
+function getFileNamePrefix(fPath) {
+    fPath = getFileNameFromPath(fPath);
+    if (fPath.indexOf('.') > 0) {
+        pos = fPath.lastIndexOf('.');
+        return fPath.substring(0, pos);
+    } else {
+        return 0;
+    }
+}
+
+function getFileNameExtension(fPath) {
+    if (fPath.indexOf('.') > 0) {
+        pos = fPath.lastIndexOf('.') + 1;
+        return fPath.substring(pos);
+    } else {
+        return 0;
+    }
+}
+
+function erroralert(msg,exception) {
+    try {
+        var emsg = null;
+        var efld = null;
+        var estc = null;
+        var etid = null;
+
+        try {
+            var hasErrors = (exception.errors!=null);
+            var hasFault = (exception.faultcode!=null);
+            //alert("hasErrors="+hasErrors+"\nhasFault="+hasFault);
+
+            if (hasErrors) {
+                emsg = exception.errors.message;
+                efld = exception.errors.fields;
+                estc = exception.errors.statusCode;
+
+            } else if (hasFault) {
+                emsg = exception.faultcode;
+                efld = exception.faultstring;
+                
+            } else {
+                emsg = exception.message;
+                efld = exception.fields;
+                estc = exception.statusCode;
+            }
+        }
+        catch(ex) {
+            emsg = exception.errors.message;
+            efld = exception.errors.fields;
+            estc = exception.errors.statusCode;
+        }
+
+        var estr = msg;
+        var estrdb = estr;
+        
+        if (emsg!=null && emsg!="") {
+            estr += "\nmessage: "+emsg;
+            estrdb += "<br>message: "+emsg;
+        }
+        if (efld!=null && efld!="") {
+            estr += "\nfields: "+efld;
+            estrdb += "<br>fields: "+efld;
+        }
+        if (estc!=null && estc!="") {
+            estr += "\nstatusCode: "+estc;
+            estrdb += "<br>statusCode: "+estc;
+        }
+        if (etid!=null && etid!="") {
+            estr += "\ntargetObjectId: "+etid;
+            estrdb += "<br>targetObjectId: "+etid;
+        }
+        
+        alert(estr);
+        if (gDebug) writeDebugLn("<p>"+estrdb);
+    }
+    catch(ex) {
+        alert(msg+"\n"+exception);
+        if (gDebug) writeDebugLn("<p>"+msg+"<br>"+exception);
+    }
+}
+
+function navigateTo(url) {
+    top.location.replace(url);
+}
+
+function navigateToHome() {
+    top.location.replace(gHomePageURL);
+}
+
+/**
+// override toSoap to not encode base64 strings when the dontEncode flag is set
+Sforce.Property.prototype.toSoap = function() { 
+    if (this.value == null) return "";
+    var xval; 
+    switch (this.fieldDef.soapType) {
+        case Sforce.SoapObject.SoapType.BASE64BINARY:
+            if (this.fldDef.dontEncode) {
+                xval = this.value;
+            } else {
+                var b64 = new Sforce.Util.Base64();
+                xval = b64.encode(this.value);  
+            }
+            break;
+        case Sforce.SoapObject.SoapType.BOOLEAN:
+            xval = this.value;
+            break;
+        case Sforce.SoapObject.SoapType.DOUBLE:
+            xval = this.value;
+            break;
+        case Sforce.SoapObject.SoapType.INT:
+            xval = this.value;
+            break;
+        case Sforce.SoapObject.SoapType.DATE:
+            if (this.value == null) {
+                xval = "";
+            } else {
+                xval = Sforce.Util.ToIsoDate(this.value);
+            }
+            break;
+        case Sforce.SoapObject.SoapType.DATETIME:
+            if (this.value == null) {
+                xval = "";
+            } else {
+                xval = Sforce.Util.ToIsoDateTime(this.value);
+            }
+            break;      
+        default:
+            xval = this.value;
+            break;
+    }
+    //return "<ns3:" + this.name + "><![CDATA[" + xval + "]]></ns3:" + this.name + ">"; 
+    if (this.parentBean.getName().toLowerCase() == "customsetup" && this.name.toLowerCase() == "value") {
+        return "<" + this.name.toLowerCase() + " xsi:type=\"xsd:string\" xmlns=\"\"><![CDATA[" + xval + "]]></" + this.name.toLowerCase() + ">"; 
+    } else {
+        return "<ns3:" + this.name + "><![CDATA[" + xval + "]]></ns3:" + this.name + ">"; 
+    }
+};
+*/
+
+function getCalendarDate() {
+    var months = new Array(13);
+    
+    months[0] = "January";
+    months[1] = "February";
+    months[2] = "March";
+    months[3] = "April";
+    months[4] = "May";
+    months[5] = "June";
+    months[6] = "July";
+    months[7] = "August";
+    months[8] = "September";
+    months[9] = "October";
+    months[10] = "November";
+    months[11] = "December";
+    
+    var now = new Date();
+    var monthnumber = now.getMonth();
+    var monthname = months[monthnumber];
+    var monthday = now.getDate();
+    var year = now.getYear();
+    
+    if (year < 2000) { year = year + 1900; }
+    
+    var dateString = monthname +
+                     ' ' +
+                     monthday +
+                     ', ' +
+                     year;
+    
+    return dateString;
+}
+
+function getClockTime() {
+    var now = new Date();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    var ap = "AM";
+    
+    if (hour   > 11) { ap = "PM";             }
+    if (hour   > 12) { hour = hour - 12;      }
+    if (hour   == 0) { hour = 12;             }
+    if (hour   < 10) { hour   = "0" + hour;   }
+    if (minute < 10) { minute = "0" + minute; }
+    if (second < 10) { second = "0" + second; }
+    
+    var timeString = hour +
+                     ':' +
+                     minute +
+                     ':' +
+                     second +
+                     " " +
+                     ap;
+    
+    return timeString;
+}
+
+function getDefaultReminderDuration() {
+    var now = new Date();
+    
+    var t0_hour = now.getHours();
+    var t0_minute = now.getMinutes();
+    var t0_second = now.getSeconds();
+    var t0_monthnum = now.getMonth();
+    var t0_monthday = now.getDate();
+    var t0_year = now.getYear();
+    
+    //alert("now = " + now + "\nhour = " + t0_hour + "\nminute = " + t0_minute + "\nsecond = " + t0_second +
+    //  "\nmonthnum = " + t0_monthnum + "\nmonthday = " + t0_monthday + "\nyear = " + t0_year);
+    
+    //set duration in minutes
+    var duration = 10;
+    t0_minute += duration;
+
+    //year, month, day, hour, minute, seconds
+    return new Date(t0_year, t0_monthnum, t0_monthday, t0_hour, t0_minute, t0_second);
+}
+
+</script>

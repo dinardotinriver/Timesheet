@@ -1,0 +1,99 @@
+<!--
+* {Purpose} – Displays the top index filter option for enhanced list
+*
+* @author	Shah Kadirmohideen
+* @version	2012-01-20
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2012-01-20	Shah Kadirmohideen		Created
+* =============================================================================
+-->  
+<apex:component >
+
+	<apex:attribute name="clickAction" description="Action method which will be executed upon clicking a letter"  type="ContactNet.CNEnhancedListHandler" required="true"/>
+	<apex:attribute name="rerenderPanel" description="Component Id which will be rerendered upon action"  type="String" required="false"/>
+	<apex:attribute name="paginationLocation" description="Where to display the next, prev links? Possible values: top, bottom"  type="String" required="true"/>
+	<apex:attribute name="feedbackToEmail" description="Email to address which will be placed on submit feedback link" type="String" />
+	<apex:attribute name="feedbackSubject" description="Email subject which will be placed on submit feedback link" type="String"/>
+	<apex:attribute name="sortedColumnAPIName" description="Which column is currently sorted on?" type="String"/>
+	
+	
+	<apex:outputPanel rendered="{!IF(paginationLocation=='top', true, false)}">	
+	<div class="bNext" style="margin: 0px 0px 5px 0px; ">
+		<div class="withFilter">
+			<div class="next">
+		        <apex:outputPanel rendered="{!NOT(clickAction.hasPreviousPage)}" styleClass="greyedLink">&lt;Previous Page</apex:outputPanel>
+		        <apex:commandLink rendered="{!clickAction.hasPreviousPage}" action="{!clickAction.prevPage}" rerender="{!rerenderPanel}"
+		        					onmouseup="makeCursorWait()" oncomplete="makeCursorAuto()">&lt;Previous Page</apex:commandLink>&nbsp;|&nbsp;
+		        <apex:outputPanel rendered="{!NOT(clickAction.hasNextPage)}" styleClass="greyedLink">Next Page&gt;</apex:outputPanel>
+		        <apex:commandLink rendered="{!clickAction.hasNextPage}" action="{!clickAction.nextPage}" rerender="{!rerenderPanel}"
+		        					onmouseup="makeCursorWait()" oncomplete="makeCursorAuto()">Next Page&gt;</apex:commandLink>
+			</div>
+			<div class="clearingBox"></div>
+		</div>
+	</div>
+	</apex:outputPanel>
+	 
+    <apex:outputPanel styleClass="bNext" rendered="{!IF(sortedColumnAPIName=='Fullname__c' || sortedColumnAPIName=='Title__c' || sortedColumnAPIName=='Department__c' || sortedColumnAPIName=='Working_Location__c' || sortedColumnAPIName=='First_Email__c', true, false)}">
+        <div class="withFilter">
+            <div class="rolodex">
+            	<c:CNIndexFilterLetter letter="A" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="B" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="C" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="D" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="E" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="F" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="G" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="H" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="I" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="J" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="K" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="L" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="M" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="N" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="O" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="P" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="Q" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="R" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="S" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="T" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="U" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="V" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="W" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="X" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="Y" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="Z" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="Other" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            	<c:CNIndexFilterLetter letter="All" clickAction="{!clickAction}" rerenderPanel="{!rerenderPanel}"/>
+            </div>
+        </div>
+    </apex:outputPanel>
+
+	<apex:outputPanel rendered="{!IF(paginationLocation=='bottom', true, false)}">	
+	<div class="bNext" style="{!IF(sortedColumnAPIName=='Fullname__c' || sortedColumnAPIName=='Title__c' || sortedColumnAPIName=='Department__c' || sortedColumnAPIName=='Working_Location__c' || sortedColumnAPIName=='First_Email__c', 'margin: -5px 0px 0px 0px', 'margin: 5px 0px 0px 0px')}">
+		<div class="withFilter">
+			<div class="next">
+		        <apex:outputPanel rendered="{!NOT(clickAction.hasPreviousPage)}" styleClass="greyedLink">&lt;Previous Page</apex:outputPanel>
+		        <apex:commandLink rendered="{!clickAction.hasPreviousPage}" action="{!clickAction.prevPage}" rerender="{!rerenderPanel}"
+		        						onmouseup="makeCursorWait()" oncomplete="makeCursorAuto()">&lt;Previous Page</apex:commandLink>&nbsp;|&nbsp;
+		        <apex:outputPanel rendered="{!NOT(clickAction.hasNextPage)}" styleClass="greyedLink">Next Page&gt;</apex:outputPanel>
+		        <apex:commandLink rendered="{!clickAction.hasNextPage}" action="{!clickAction.nextPage}" rerender="{!rerenderPanel}"
+		        						onmouseup="makeCursorWait()" oncomplete="makeCursorAuto()">Next Page&gt;</apex:commandLink>
+			</div>
+			<div class="clearingBox"></div>
+		</div>
+	</div>
+	
+	<div align="right">
+		<br/>
+		<span align="right">
+		<apex:outputLink value="mailto:{!feedbackToEmail}?subject={!feedbackSubject}" rendered="{!feedbackToEmail!=null}">Submit Feedback</apex:outputLink>
+		</span>
+	</div>
+	</apex:outputPanel>
+    
+</apex:component>

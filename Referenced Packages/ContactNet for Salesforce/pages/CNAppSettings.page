@@ -1,0 +1,118 @@
+<!--
+* {Purpose} – Used to manage the entries from CN_App_Settings custom setting
+*
+* @author   Shah Kadirmohideen
+* @version  2012-01-05
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date          Name                    Description
+* 2012-01-05    Shah Kadirmohideen      Created  
+* 2012-01-05    Mike Eaton              Updated with UI changes   
+* 2012-01-25	Shah Kadirmohideen		Included 3 new fields related to phase 1.5 changes
+* 2012-01-26	Shah Kadirmohideen		Added inline style to increase the length for some of the fields.
+* 2012-02-03	Mike Eaton				Updated section header description
+* 2012-05-03	Shah Kadirmohideen		Added 'Delete All Cache' button
+* 2012-09-30	Shah Kadirmohideen		Added two variables (Display_General_Error__c, General_Error_User_Msg__c) 
+*											to enhance error handling
+* =============================================================================
+-->
+<apex:page controller="ContactNet.CNAppSettingsController" showHeader="true" sidebar="false" action="{!loadCustomSetting}" 
+            setup="true" title="Customize ContactNet Application Settings">
+<script language="javascript">
+	function deleteCacheConfirmation() {
+		var ans = confirm('You are attempting to delete all the cached ContactNet relationship records from this intance. Do you want to proceed?');
+		return ans;
+	}
+</script>
+<apex:form forceSSL="true" >
+
+    <apex:variable var="isDemoEditable" value="true" />
+    <apex:sectionHeader title="ContactNet for Salesforce" subtitle="Application Settings"
+            description="ContactNet’s Enterprise Relationship Management platform has been integrated with Salesforce.com CRM.  
+            The application supports a number of configuration settings that can be customized below.  Please refer to the tooltips
+            for individual setting information. <br></br>
+            <b>IMPORTANT:  Regarding package updates - you will need to disable the Data Cleanup Job before attempting to install 
+            any ContactNet for Salesforce package updates.</b>" />
+            
+    <apex:pageBlock mode="edit" rendered="{!bEditMode}">
+        <apex:pageBlockSection columns="1" title="Display Settings" collapsible="false">
+            <apex:outputField value="{!oAppSetup.Name}" rendered="false"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Data_Cache_Size__c}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Data_Display_Size__c}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Inner_Relationship_Data_Display_Size__c}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Enhanced_List_Data_Display_Size__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection columns="1" title="Notification Settings" collapsible="false">                     
+            <apex:inputField value="{!oAppSetup.ContactNet__Error_Notification__c}" style="width:400px"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Feedback_Notification_Email__c}" style="width:400px"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Feedback_Notification_Subject__c}" style="width:400px"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Display_General_Error_Message__c}" />
+            <apex:inputField value="{!oAppSetup.ContactNet__General_Error_Message__c}" style="width:600px"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection columns="1" title="Web Service Settings" collapsible="false">
+            <apex:inputField value="{!oAppSetup.ContactNet__WS_Consumer_Name__c}" rendered="{!isDemoEditable}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__WS_Auth_Key__c}" rendered="{!isDemoEditable}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__WS_Endpoint__c}" rendered="{!isDemoEditable}" style="width:400px"/>        
+            <apex:inputField value="{!oAppSetup.ContactNet__WS_Is_Active__c}" />
+            <apex:inputField value="{!oAppSetup.ContactNet__WS_Timeout__c}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__WS_Unavailable_Message__c}" style="width:600px"/>
+          </apex:pageBlockSection>
+
+        <apex:pageBlockSection columns="1" title="Data Storage Settings" collapsible="false">                     
+            <apex:inputField value="{!oAppSetup.ContactNet__Data_Expiration_Hours__c}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Max_Data_Storage__c}"/>
+            <apex:inputField value="{!oAppSetup.ContactNet__Enable_Data_Cleanup_Job__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockButtons > 
+                <apex:commandButton action="{!savePage}" value="Save" />
+                <apex:commandButton action="{!cancelPage}" value="Cancel" />
+        </apex:pageBlockButtons>
+    </apex:pageBlock>
+
+    <apex:pageBlock mode="maindetail" rendered="{!bEditMode==false}">
+        <apex:pageBlockSection columns="1" title="Display Settings" collapsible="false">
+            <apex:outputField value="{!oAppSetup.Name}" rendered="false"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Data_Cache_Size__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Data_Display_Size__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Inner_Relationship_Data_Display_Size__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Enhanced_List_Data_Display_Size__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection columns="1" title="Notification Settings" collapsible="false">                          
+            <apex:outputField value="{!oAppSetup.ContactNet__Error_Notification__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Feedback_Notification_Email__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Feedback_Notification_Subject__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Display_General_Error_Message__c}" />
+            <apex:outputField value="{!oAppSetup.ContactNet__General_Error_Message__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection columns="1" title="Web Service Settings" collapsible="false">      
+            <apex:outputField value="{!oAppSetup.ContactNet__WS_Consumer_Name__c}" rendered="{!isDemoEditable}"/> 
+            <apex:outputField value="{!oAppSetup.ContactNet__WS_Auth_Key__c}" rendered="{!isDemoEditable}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__WS_Endpoint__c}" rendered="{!isDemoEditable}"/>              
+            <apex:outputField value="{!oAppSetup.ContactNet__WS_Is_Active__c}" />
+            <apex:outputField value="{!oAppSetup.ContactNet__WS_Timeout__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__WS_Unavailable_Message__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection columns="1" title="Data Storage Settings" collapsible="false">                     
+            <apex:outputField value="{!oAppSetup.ContactNet__Data_Expiration_Hours__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Max_Data_Storage__c}"/>
+            <apex:outputField value="{!oAppSetup.ContactNet__Enable_Data_Cleanup_Job__c}"/>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockButtons > 
+                <apex:commandButton action="{!editPage}" value="Edit" />
+                <apex:commandButton action="{!gotoWSQueuePage}" value="View Webservice Queues" />
+                <apex:commandButton action="{!gotoDeleteAllCachePage}" value="Delete All Relationship Cache" onClick="return deleteCacheConfirmation()"/>
+        </apex:pageBlockButtons>
+    </apex:pageBlock>
+
+</apex:form>
+</apex:page>

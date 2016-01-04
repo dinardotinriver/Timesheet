@@ -1,0 +1,26 @@
+<apex:component controller="TH1.COMMON_CO_PageHelpLink">
+	<apex:attribute type="String" name="helpUrlPath" assignTo="{!HelpUrlPathAttribute}" description="Url path for help page" required="true"/>
+	<apex:attribute type="Boolean" name="showText" description="Whether or not to show the text" required="true"/>
+	<apex:attribute type="String" name="id" description="Unique id to allow multiple help links per page" required="false"/>
+	<script>
+	    var url{!JSENCODE(id)} = {!ServeHelpFromSalesForce} ? '{!URLFOR($Resource.Help, PopupHelpUrl)}' : '{!JSENCODE(PopupHelpUrl)}';
+		window.isHelpNavigation = false;
+		function popupHelpWindow{!JSENCODE(id)}(){
+			window.isHelpNavigation = false;
+			window.open(url{!JSENCODE(id)}, 'Help');
+		}
+		function keyDown(e) {
+		    var evt = e || window.event
+		    if (evt.keyCode === 120) {
+		        popupHelpWindow{!JSENCODE(id)}();
+		    }
+		}
+		document.onkeydown = keyDown;
+	</script>
+	<div class="links" style="padding:3px;">
+		<a href="javascript:popupHelpWindow{!JSENCODE(id)}();" title="Help for this Page (New Window)" onclick="window.isHelpNavigation=true;">
+			<apex:outputText value="Help for this Page" styleClass="helpLink" rendered="{!showText}"/>
+			<img class="helpIcon" src="/s.gif"/>
+		</a>
+	</div>
+</apex:component>

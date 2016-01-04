@@ -1,0 +1,17 @@
+<apex:component >
+<!--  Requires
+ <span id="approval-process-related-list">
+    <apex:relatedList list="ProcessSteps" pageSize="3" />
+</span>
+in VF page
+ -->
+<c:REMOTE_Drafts />
+<style>
+  #approval-process-related-list {
+    display: none;
+    height:200px;
+    overflow-y:scroll;
+  }
+</style>
+
+</apex:component>

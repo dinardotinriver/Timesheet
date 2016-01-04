@@ -1,0 +1,2694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customApplications>
+        <label><!-- DocuSign For Salesforce --></label>
+        <name>DocuSign_For_Salesforce</name>
+    </customApplications>
+    <customLabels>
+        <label>关于 DocuSign</label>
+        <name>AboutDS</name>
+    </customLabels>
+    <customLabels>
+        <label>访问代码</label>
+        <name>AccessCode</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户</label>
+        <name>Account</name>
+    </customLabels>
+    <customLabels>
+        <label>此电子邮件/名称的帐户已存在。  要链接帐户，请转到“如果您已拥有使用 DocuSign 的帐户并且想要使用该帐户，请单击此处”页面</label>
+        <name>AccountAlreadyExistEmailName</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户创建</label>
+        <name>AccountCreation</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户 ID</label>
+        <name>AccountID</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户信息</label>
+        <name>AccountInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户名称</label>
+        <name>AccountInfoAccountName</name>
+    </customLabels>
+    <customLabels>
+        <label>您只有输入 DocuSign 凭证之后才能查看帐户信息。 
+请根据需要输入或更正凭证，然后刷新页面。</label>
+        <name>AccountInfoCredentialMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 尚未针对此帐户进行配置。</label>
+        <name>AccountInfoNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户信息</label>
+        <name>AccountInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户管理</label>
+        <name>AccountManagement</name>
+    </customLabels>
+    <customLabels>
+        <label>必须配置 DocuSign 帐户。</label>
+        <name>AccountMustBeConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>您的 DocuSign 帐户尚未配置。</label>
+        <name>AccountNotConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>帐号</label>
+        <name>AccountNumber</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户页面布局</label>
+        <name>AccountPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户已挂起</label>
+        <name>AccountSuspended</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户</label>
+        <name>Accounts</name>
+    </customLabels>
+    <customLabels>
+        <label>确认收件人</label>
+        <name>AcknowledgeReceipt</name>
+    </customLabels>
+    <customLabels>
+        <label>操作</label>
+        <name>Action</name>
+    </customLabels>
+    <customLabels>
+        <label>操作状态</label>
+        <name>ActionStatus</name>
+    </customLabels>
+    <customLabels>
+        <label>激活成员</label>
+        <name>ActivateMembers</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- ActivateMembersError --></label>
+        <name>ActivateMembersError</name>
+    </customLabels>
+    <customLabels>
+        <label>已激活</label>
+        <name>Activated</name>
+    </customLabels>
+    <customLabels>
+        <label>由 salesforce 激活</label>
+        <name>ActivatedBySalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>请验证您是否已获得 DocuSign 的访问权限、您的帐户设置是否正确以及您是否已回复所有激活电子邮件</label>
+        <name>ActivationMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>添加</label>
+        <name>Add</name>
+    </customLabels>
+    <customLabels>
+        <label>添加管理用户</label>
+        <name>AddAdminUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>添加管理用户 = 为选定
+			用户添加 DocuSign 包，然后让其成为 DocuSign 帐户的管理员</label>
+        <name>AddAdminUsersAddTheDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>添加按钮</label>
+        <name>AddButtons</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 按钮添加到 Salesforce 布局</label>
+        <name>AddDSButtonsToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 添加为 Salesforce 的受信任网络</label>
+        <name>AddDSTrusted</name>
+    </customLabels>
+    <customLabels>
+        <label>添加文档</label>
+        <name>AddDoc</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 添加为受信任网络</label>
+        <name>AddDocuSignAsATrustedNetwork</name>
+    </customLabels>
+    <customLabels>
+        <label>为选定用户添加 DocuSign 包。</label>
+        <name>AddDocuSignPackageForSelectedUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>添加我</label>
+        <name>AddMe</name>
+    </customLabels>
+    <customLabels>
+        <label>将新文档添加到文件夹</label>
+        <name>AddNewDoc</name>
+    </customLabels>
+    <customLabels>
+        <label>或，添加占位符收件人角色</label>
+        <name>AddPlaceholderRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>添加收件人</label>
+        <name>AddRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>从  添加收件人</label>
+        <name>AddRecipientFrom</name>
+    </customLabels>
+    <customLabels>
+        <label>添加角色</label>
+        <name>AddRole</name>
+    </customLabels>
+    <customLabels>
+        <label>将选定“可用字段”添加到“选定字段”列表</label>
+        <name>AddSelectedAvailableFields</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 按钮添加到默认布局</label>
+        <name>AddTheDocuSignButtonToDefaultLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>添加用户</label>
+        <name>AddUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>添加用户 = 为选定用户添加 DocuSign 包</label>
+        <name>AddUsersAddTheDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>为选定用户添加 DocuSign 包并让这些用户成为 DocuSign 帐户的管理员。</label>
+        <name>AdddocuSignPackageMakeUsersAdministrators</name>
+    </customLabels>
+    <customLabels>
+        <label>地址</label>
+        <name>Address</name>
+    </customLabels>
+    <customLabels>
+        <label>地址行 1</label>
+        <name>AddressLine1</name>
+    </customLabels>
+    <customLabels>
+        <label>地址行 2</label>
+        <name>AddressLine2</name>
+    </customLabels>
+    <customLabels>
+        <label>填写收件人地址</label>
+        <name>AddressRecipients</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须是管理员才能访问此部分。</label>
+        <name>AdminAccessReq</name>
+    </customLabels>
+    <customLabels>
+        <label>搜索文档...</label>
+        <name>AdminHomeSearchDocumentation</name>
+    </customLabels>
+    <customLabels>
+        <label>将选定操作应用到选定用户</label>
+        <name>ApplySelectedActionToSelectedUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>您是否确定要清空该信封</label>
+        <name>AreYouSureVoidEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>需要至少一个 (1) 文档</label>
+        <name>AtLeastOneDocumentIsRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>至少一个 (1) 收件人发生错误</label>
+        <name>AtLeastOneRecipientHasError</name>
+    </customLabels>
+    <customLabels>
+        <label>需要至少一个 (1) 收件人</label>
+        <name>AtLeastOneRecipientRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>附件</label>
+        <name>Attachments</name>
+    </customLabels>
+    <customLabels>
+        <label>验证您的 DocuSign 帐户</label>
+        <name>AuthenticateDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep1 --></label>
+        <name>AutoSetupStep1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep2 --></label>
+        <name>AutoSetupStep2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep3 --></label>
+        <name>AutoSetupStep3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- AutoSetupStep4 --></label>
+        <name>AutoSetupStep4</name>
+    </customLabels>
+    <customLabels>
+        <label>可用文档</label>
+        <name>AvailableDocs</name>
+    </customLabels>
+    <customLabels>
+        <label>可用字段</label>
+        <name>AvailableFields</name>
+    </customLabels>
+    <customLabels>
+        <label>返回</label>
+        <name>Back</name>
+    </customLabels>
+    <customLabels>
+        <label>请选择“返回”以选择 DocuSign 帐户。</label>
+        <name>BackSelectDocuSignAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>下方按钮</label>
+        <name>ButtonBelow</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- CVV2 --></label>
+        <name>CVV2</name>
+    </customLabels>
+    <customLabels>
+        <label>取消</label>
+        <name>Cancel</name>
+    </customLabels>
+    <customLabels>
+        <label>您不能从活动 DocuSign 用户中将自己删除。 如果执行此操作，您将无法管理 DocuSign for Salesforce。</label>
+        <name>CannotRemoveYourselfFromActiveDocuSignUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>副本抄送</label>
+        <name>CarbonCopy</name>
+    </customLabels>
+    <customLabels>
+        <label>已认证传送</label>
+        <name>CertifiedDelivery</name>
+    </customLabels>
+    <customLabels>
+        <label>更改</label>
+        <name>Change</name>
+    </customLabels>
+    <customLabels>
+        <label>字符数剩余 200</label>
+        <name>CharactersRemaining200</name>
+    </customLabels>
+    <customLabels>
+        <label>这些信封事件上的聊天</label>
+        <name>ChatterOnTheseEnvelopeEvents</name>
+    </customLabels>
+    <customLabels>
+        <label>这些收件人事件上的聊天</label>
+        <name>ChatterOnTheseRecipientEvents</name>
+    </customLabels>
+    <customLabels>
+        <label>聊天设置</label>
+        <name>ChatterSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>聊天更新</label>
+        <name>ChatterUpdates</name>
+    </customLabels>
+    <customLabels>
+        <label>请检查您的电子邮件地址并创建 DocuSign 密码，然后返回此页面。</label>
+        <name>CheckEmailCreatePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>选中此复选框意味着通过
+DocuSign 发送文档时，标记器将独立显示，而非
+嵌入 Salesforce 中。</label>
+        <name>CheckingThisBoxMeansThat</name>
+    </customLabels>
+    <customLabels>
+        <label>选中此复选框意味着通过
+DocuSign 签署文档时，签名页面将独立显示，而非
+嵌入 Salesforce 中。 这有助于确保在所有设备上
+都能有正常体验。</label>
+        <name>CheckingThisBoxMeansThatWhen</name>
+    </customLabels>
+    <customLabels>
+        <label>简体中文</label>
+        <name>ChineseSimplified</name>
+    </customLabels>
+    <customLabels>
+        <label>选择字段</label>
+        <name>ChooseFields</name>
+    </customLabels>
+    <customLabels>
+        <label>为  选择筛选选项</label>
+        <name>ChooseFilterOption</name>
+    </customLabels>
+    <customLabels>
+        <label>选择每页显示的行数</label>
+        <name>ChooseNumberOfRows</name>
+    </customLabels>
+    <customLabels>
+        <label>从  选择收件人</label>
+        <name>ChooseRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>选择要在下面的用户表中显示的字段</label>
+        <name>ChooseTheFieldsToDisplay</name>
+    </customLabels>
+    <customLabels>
+        <label>城市</label>
+        <name>City</name>
+    </customLabels>
+    <customLabels>
+        <label>单击此处</label>
+        <name>ClickHere</name>
+    </customLabels>
+    <customLabels>
+        <label>单击此处以重新连接</label>
+        <name>ClickHereToReconnect</name>
+    </customLabels>
+    <customLabels>
+        <label>请单击“编辑 DocuSign 密码”按钮，以输入
+			DocuSign 系统发件人密码。</label>
+        <name>ClickOnEditDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- ClosePopUpAfterComplete --></label>
+        <name>ClosePopUpAfterComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>（完成后关闭弹出窗口）</label>
+        <name>ClosePopup</name>
+    </customLabels>
+    <customLabels>
+        <label>公司名称</label>
+        <name>CompanyName</name>
+    </customLabels>
+    <customLabels>
+        <label>已完成</label>
+        <name>Completed</name>
+    </customLabels>
+    <customLabels>
+        <label>配置 DocuSign For Salesforce</label>
+        <name>ConfigSFDC</name>
+    </customLabels>
+    <customLabels>
+        <label>配置 DocuSign For Salesforce 演示</label>
+        <name>ConfigSFDCDemo</name>
+    </customLabels>
+    <customLabels>
+        <label>配置 DocuSign for Salesforce 演示是一个简单的过程。 如果您在设置过程中被打断，请返回 DocuSign 管理选项卡以继续。 配置演示系统分两步：</label>
+        <name>ConfigSFDCDemoMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>配置 DocuSign for Salesforce 既快速又容易</label>
+        <name>ConfigSFDCEasy</name>
+    </customLabels>
+    <customLabels>
+        <label>最常见的下一步是配置您的布局页面以包括“使用 DocuSign 发送”，以便用户能够使用 DocuSign 发送，正如发送 Salesforce 电子邮件一样。</label>
+        <name>ConfigSendWithDSButton</name>
+    </customLabels>
+    <customLabels>
+        <label>配置标记器...</label>
+        <name>ConfigTagger</name>
+    </customLabels>
+    <customLabels>
+        <label>配置错误：</label>
+        <name>ConfigurationErrorColon</name>
+    </customLabels>
+    <customLabels>
+        <label>配置帐户</label>
+        <name>ConfigureAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>您的帐户已配置。 请单击下面的按钮，以转到 DocuSign 管理页面</label>
+        <name>ConfiguredDSAdmin</name>
+    </customLabels>
+    <customLabels>
+        <label>确认</label>
+        <name>Confirm</name>
+    </customLabels>
+    <customLabels>
+        <label>确认电子邮件已发送至 {0}。  请在激活后输入您的 DocuSign 密码。</label>
+        <name>ConfirmActivateLoginMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>请确认您是否要删除此用户
+			的 DocuSign 凭证</label>
+        <name>ConfirmDeleteTheDocuSignCredentials</name>
+    </customLabels>
+    <customLabels>
+        <label>确认密码</label>
+        <name>ConfirmPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 连接到 Salesforce</label>
+        <name>ConnectDSToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 连接到 Salesforce</label>
+        <name>ConnectDocuSignToSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>连接错误 -</label>
+        <name>ConnectErrorDash</name>
+    </customLabels>
+    <customLabels>
+        <label>控制台</label>
+        <name>Console</name>
+    </customLabels>
+    <customLabels>
+        <label>联系人</label>
+        <name>Contact</name>
+    </customLabels>
+    <customLabels>
+        <label>如果您的帐户仍未正确配置，请与您的系统管理员联系。</label>
+        <name>ContactAdminForConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>联系人页面布局</label>
+        <name>ContactPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>请联系您的 Salesforce 管理员以获得  的读取/更新/删除访问权限</label>
+        <name>ContactSFAdminForAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>请通过以下方式联系 DocuSign 支持</label>
+        <name>ContactSupport</name>
+    </customLabels>
+    <customLabels>
+        <label>联系人</label>
+        <name>Contacts</name>
+    </customLabels>
+    <customLabels>
+        <label>内容</label>
+        <name>Content</name>
+    </customLabels>
+    <customLabels>
+        <label>-- 选择工作区 --</label>
+        <name>ContentWorkspaceListSelectWorkspace</name>
+    </customLabels>
+    <customLabels>
+        <label>继续</label>
+        <name>Continue</name>
+    </customLabels>
+    <customLabels>
+        <label>合同</label>
+        <name>Contract</name>
+    </customLabels>
+    <customLabels>
+        <label>合同页面布局</label>
+        <name>ContractPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>无法验证用户能否在 DocuSign 中发送</label>
+        <name>CouldNotAuthenticateUser</name>
+    </customLabels>
+    <customLabels>
+        <label>无法激活 -</label>
+        <name>CoultNotBeActivatedDash</name>
+    </customLabels>
+    <customLabels>
+        <label>国家/地区</label>
+        <name>Country</name>
+    </customLabels>
+    <customLabels>
+        <label>创建新用户视图</label>
+        <name>CreateANewUserView</name>
+    </customLabels>
+    <customLabels>
+        <label>创建帐户</label>
+        <name>CreateAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>请填写下表，然后单击“创建我的帐户”按钮以设置您的新 DocuSign 帐户。</label>
+        <name>CreateAccountForm</name>
+    </customLabels>
+    <customLabels>
+        <label>在此步中，您必须创建新的 DocuSign 帐户或使用已创建的现有帐户</label>
+        <name>CreateDSOrUseExisting</name>
+    </customLabels>
+    <customLabels>
+        <label>已创建新的 DocuSign 成员资格，并且用户也已成功链接到该成员资格。  用户将收到包含激活链接的电子邮件消息。  完成激活之后，用户必须通过单击“DocuSign 管理”选项卡并在此输入密码来输入其 DocuSign 密码。</label>
+        <name>CreateMemberStatusMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>创建成员资格</label>
+        <name>CreateMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>创建我的帐户</label>
+        <name>CreateMyAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>创建  的新成员资格</label>
+        <name>CreateNewMembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>创建新视图</label>
+        <name>CreateNewView</name>
+    </customLabels>
+    <customLabels>
+        <label>创建免费的 DocuSign 试用帐户或链接现有帐户</label>
+        <name>CreateTrialOrLinkExisting</name>
+    </customLabels>
+    <customLabels>
+        <label>信用卡信息</label>
+        <name>CreditCardInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>当前账单周期结束日期</label>
+        <name>CurrentBillingPeriodEndDate</name>
+    </customLabels>
+    <customLabels>
+        <label>当前账单周期开始日期</label>
+        <name>CurrentBillingPeriodStartDate</name>
+    </customLabels>
+    <customLabels>
+        <label>当前 Salesforce 用户</label>
+        <name>CurrentSalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>已配置 DocuSign 帐户</label>
+        <name>DSAccountConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 管理</label>
+        <name>DSAdmin</name>
+    </customLabels>
+    <customLabels>
+        <label>USER_AUTHENTICATION_FAILED：用户名和密码之一无效，或两者均无效。</label>
+        <name>DSClientAuthenticationException</name>
+    </customLabels>
+    <customLabels>
+        <label>USER_AUTHENTICATION_FAILED</label>
+        <name>DSClient_USER_AUTHENTICATION_FAILED</name>
+    </customLabels>
+    <customLabels>
+        <label>DSCreateEnvRecord DSEnvelope 电子邮件为</label>
+        <name>DSCreateEnvRecordEmailIs</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 电子邮件地址</label>
+        <name>DSEmail</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 信封</label>
+        <name>DSEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DSForSF --></label>
+        <name>DSForSF</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 密码</label>
+        <name>DSPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 能够在实时驱动状态下将信息推送到 Salesforce 中，并将文档和数据推送到您所用的对象中。 要实现此操作，DocuSign 需要登录到 Salesforce。</label>
+        <name>DSPushToSFOnLogin</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 收件人</label>
+        <name>DSRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 收件人电子邮件</label>
+        <name>DSRecipientEmail</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 收件人姓名</label>
+        <name>DSRecipientName</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件重新发送结果</label>
+        <name>DSResendResult</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 状态结果</label>
+        <name>DSStatusResult</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 条款和条件</label>
+        <name>DSTermsConditions</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 至 Salesforce 完成</label>
+        <name>DSToSFComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>已拒绝</label>
+        <name>Declined</name>
+    </customLabels>
+    <customLabels>
+        <label>已在模板中定义</label>
+        <name>DefInTemplate</name>
+    </customLabels>
+    <customLabels>
+        <label>默认电子邮件消息</label>
+        <name>DefaultEmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>默认电子邮件主题</label>
+        <name>DefaultEmailSubject</name>
+    </customLabels>
+    <customLabels>
+        <label>信封默认将于 N 天后到期</label>
+        <name>DefaultExpireEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>默认 N 天后重复提醒</label>
+        <name>DefaultRepeatReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>默认 N 天后发送提醒</label>
+        <name>DefaultSendReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>默认提前 N 天通知到期</label>
+        <name>DefaultWarnOfExpiration</name>
+    </customLabels>
+    <customLabels>
+        <label>删除</label>
+        <name>Del</name>
+    </customLabels>
+    <customLabels>
+        <label>删除</label>
+        <name>Delete</name>
+    </customLabels>
+    <customLabels>
+        <label>删除成员资格</label>
+        <name>DeleteMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>删除  的成员资格</label>
+        <name>DeleteMembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>删除</label>
+        <name>DeleteUppercase</name>
+    </customLabels>
+    <customLabels>
+        <label>已传送</label>
+        <name>Delivered</name>
+    </customLabels>
+    <customLabels>
+        <label>详细信息</label>
+        <name>Details</name>
+    </customLabels>
+    <customLabels>
+        <label>禁用用户电子邮件消息编辑</label>
+        <name>DisableUserEmailMessageEditing</name>
+    </customLabels>
+    <customLabels>
+        <label>禁用用户电子邮件主题编辑</label>
+        <name>DisableUserEmailSubjectEditing</name>
+    </customLabels>
+    <customLabels>
+        <label>已禁用</label>
+        <name>Disabled</name>
+    </customLabels>
+    <customLabels>
+        <label>放弃对“选定字段”列表所做的更改</label>
+        <name>DiscardTheChangesToSelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>显示 {0} 个帐户（共 {1} 个帐户）。</label>
+        <name>Display0Of1Accounts</name>
+    </customLabels>
+    <customLabels>
+        <label>显示帐户页面布局列表，以将“使用 DocuSign 发送”按钮添加到布局</label>
+        <name>DisplayAccountPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>显示 DocuSign 帐户设置页面</label>
+        <name>DisplayAccountSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>显示 DocuSign 控制台</label>
+        <name>DisplayConsole</name>
+    </customLabels>
+    <customLabels>
+        <label>显示联系人页面布局列表，以将“使用 DocuSign 发送”按钮添加到布局。</label>
+        <name>DisplayContactPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>显示合同页面布局列表，以将“使用 DocuSign 发送”按钮添加到布局</label>
+        <name>DisplayContractPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>显示 DocuSign 信封设置页面</label>
+        <name>DisplayEnvelopSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>显示潜在客户页面布局列表，以将“使用 DocuSign 发送”按钮添加到布局</label>
+        <name>DisplayLeadPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>显示“管理用户”页面</label>
+        <name>DisplayManageUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>显示“管理 DocuSign 用户”页面，以将用户添加到 DocuSign 帐户</label>
+        <name>DisplayManageUsersAdd</name>
+    </customLabels>
+    <customLabels>
+        <label>显示“管理 DocuSign 用户”页面，以从 DocuSign 帐户禁用用户</label>
+        <name>DisplayManageUsersDeactivate</name>
+    </customLabels>
+    <customLabels>
+        <label>显示机会页面布局列表，以将“使用 DocuSign 发送”按钮添加到布局</label>
+        <name>DisplayOpportunityPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>显示行位置</label>
+        <name>DisplayRowsWhere</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign InPerson 签名页面显示在其自己的窗口中</label>
+        <name>DisplayTheDocuSignInPerson</name>
+    </customLabels>
+    <customLabels>
+        <label>将 DocuSign 标记器页面显示在其自己的窗口中</label>
+        <name>DisplayTheDocuSignTaggerPage</name>
+    </customLabels>
+    <customLabels>
+        <label>显示 DocuSign 欢迎页</label>
+        <name>DisplayWelcomePage</name>
+    </customLabels>
+    <customLabels>
+        <label>显示页面</label>
+        <name>DisplayingPage</name>
+    </customLabels>
+    <customLabels>
+        <label>使用 DocuSign 执行更多操作</label>
+        <name>DoMoreWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>文档顺序</label>
+        <name>DocOrder</name>
+    </customLabels>
+    <customLabels>
+        <label>要签名的文档</label>
+        <name>DocsForSignature</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 帐户信息已配置。</label>
+        <name>DocuSignAccountAlreadyConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 帐户信息</label>
+        <name>DocuSignAccountInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 聊天</label>
+        <name>DocuSignChatter</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 不会返回此信封的重新发送操作的状态。</label>
+        <name>DocuSignDidNotReturnStatus</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 电子邮件地址</label>
+        <name>DocuSignEmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 信封已取消</label>
+        <name>DocuSignEnvelopeCancelled</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 信封不是 \&apos;已发送\&apos; 或 \&apos;已传送\&apos; 状态，或者未启用 DocuSign 帐户上的 \&apos;信封更正\&apos;。  未发送任何电子邮件。</label>
+        <name>DocuSignEnvelopeNotSentOrDeilivered</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 信封已保存</label>
+        <name>DocuSignEnvelopeSaved</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DocuSignInc --></label>
+        <name>DocuSignInc</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 成员管理</label>
+        <name>DocuSignMemberManagement</name>
+    </customLabels>
+    <customLabels>
+        <label>未配置 DocuSign</label>
+        <name>DocuSignNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>未配置 DocuSign。 请与您的系统
+			管理员联系。</label>
+        <name>DocuSignNotConfiguredContactAdmin</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 发送已完成</label>
+        <name>DocuSignSendingCompleted</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 设置</label>
+        <name>DocuSignSetup</name>
+    </customLabels>
+    <customLabels>
+        <label>未配置 DocuSign 系统发件人</label>
+        <name>DocuSignSystemSenderNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 系统发件人用户</label>
+        <name>DocuSignSystemSenderUser</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 系统发件人用户 ID</label>
+        <name>DocuSignSystemSenderUserId</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 系统发件人用户信息</label>
+        <name>DocuSignSystemSenderUserInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 模板</label>
+        <name>DocuSignTemplates</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 用户</label>
+        <name>DocuSignUser</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 用户 ID</label>
+        <name>DocuSignUserId</name>
+    </customLabels>
+    <customLabels>
+        <label>未配置 DocuSign 用户</label>
+        <name>DocuSignUserNotConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 用户名</label>
+        <name>DocuSignUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>文档</label>
+        <name>Document</name>
+    </customLabels>
+    <customLabels>
+        <label>-- 选择文件夹 --</label>
+        <name>DocumentFolderListSelectFolder</name>
+    </customLabels>
+    <customLabels>
+        <label>文档</label>
+        <name>Documents</name>
+    </customLabels>
+    <customLabels>
+        <label>完成</label>
+        <name>Done</name>
+    </customLabels>
+    <customLabels>
+        <label>荷兰语</label>
+        <name>Dutch</name>
+    </customLabels>
+    <customLabels>
+        <label>每个角色名称都必须在单独的行中输入。</label>
+        <name>EachRoleNameMustBeEntered</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑</label>
+        <name>Edit</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑 DocuSign 帐户信息</label>
+        <name>EditAccountInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑 DocuSign 信封的默认聊天设置</label>
+        <name>EditChatterSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>您不应直接调用“编辑收件人”，而应从“编辑信封”页面调用</label>
+        <name>EditDocFromEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑 DocuSign 密码</label>
+        <name>EditDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑发送 DocuSign 信封时所用的默认电子邮件消息</label>
+        <name>EditEmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑 DocuSign 信封提醒设置</label>
+        <name>EditEnvelopeReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>适当的链接信息</label>
+        <name>EditLinkInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑页面布局</label>
+        <name>EditPageLayouts</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑收件人</label>
+        <name>EditRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑 Salesforce 用户</label>
+        <name>EditSalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑选定用户</label>
+        <name>EditSelectedUser</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑 DocuSign 系统发件人和密码</label>
+        <name>EditSenderNPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>编辑用户视图</label>
+        <name>EditTheUserView</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件</label>
+        <name>EmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>缺少电子邮件地址。</label>
+        <name>EmailAddressMissing</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件正文限制在 2000 个字符以内。</label>
+        <name>EmailBodyLimitedTwoThousand</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件消息</label>
+        <name>EmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件未发送</label>
+        <name>EmailNotSent</name>
+    </customLabels>
+    <customLabels>
+        <label>不允许成员电子邮件。 电子邮件是受限域的一部分。  要链接帐户，请转到“如果您已拥有使用 DocuSign 的帐户并且想要使用该帐户，请单击此处”页面</label>
+        <name>EmailNowAllowedEmailRestricted</name>
+    </customLabels>
+    <customLabels>
+        <label>需要电子邮件地址</label>
+        <name>EmailRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件设置</label>
+        <name>EmailSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件主题</label>
+        <name>EmailSubject</name>
+    </customLabels>
+    <customLabels>
+        <label>电子邮件主题不得为空。</label>
+        <name>EmailSubjectNotBeBlank</name>
+    </customLabels>
+    <customLabels>
+        <label>或向我们发送电子邮件至</label>
+        <name>EmailUsAt</name>
+    </customLabels>
+    <customLabels>
+        <label>启用聊天状态更新</label>
+        <name>EnableChatterUpdates</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- EnableNewMobileTaggingUI --></label>
+        <name>EnableNewMobileTaggingUI</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- EnableNewMobileTaggingUIToolTip --></label>
+        <name>EnableNewMobileTaggingUIToolTip</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- EnableReminderExpiration --></label>
+        <name>EnableReminderExpiration</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Enable Reminder and Expiration Settings Help Text --></label>
+        <name>EnableReminderExpirationHelpText</name>
+    </customLabels>
+    <customLabels>
+        <label>启用 Salesforce 标准限制补偿</label>
+        <name>EnableSalesforceCalloutLimit</name>
+    </customLabels>
+    <customLabels>
+        <label>支持 DocuSign 向 Salesforce 发送实时数据和文档</label>
+        <name>EnableSendDataToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>已启用 - 始终打开</label>
+        <name>EnabledAlwaysOn</name>
+    </customLabels>
+    <customLabels>
+        <label>已启用 - 默认情况下关闭</label>
+        <name>EnabledOffByDefault</name>
+    </customLabels>
+    <customLabels>
+        <label>已启用 - 默认情况下打开</label>
+        <name>EnabledOnByDefault</name>
+    </customLabels>
+    <customLabels>
+        <label>英语</label>
+        <name>English</name>
+    </customLabels>
+    <customLabels>
+        <label>请确保 DocuSign 帐户已启用“会话中”签名。</label>
+        <name>EnsureDocuSignAccountHasSession</name>
+    </customLabels>
+    <customLabels>
+        <label>请输入现有 DocuSign 帐户的电子邮件地址和密码，然后单击“链接帐户”按钮</label>
+        <name>EnterCredentialsLinkAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>请输入 DocuSign 系统发件人凭证，然后单击
+			“更新 DocuSign 凭证”按钮。</label>
+        <name>EnterDocuSignSystemSenderCredentials</name>
+    </customLabels>
+    <customLabels>
+        <label>输入您的密码并单击“更新 DocuSign 密码”，以使用 DocuSign 
+			验证密码并更新您的用户记录</label>
+        <name>EnterPasswordClickUpdateDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>输入密码并单击“更新 DocuSign 密码”，以使用 DocuSign 验证
+			密码并更新系统发件人用户记录。</label>
+        <name>EnterPasswordandClickUpdatePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>输入/删除默认角色。</label>
+        <name>EnterRemoveDefaultRoles</name>
+    </customLabels>
+    <customLabels>
+        <label>输入 Salesforce 自定义 URL 环境的值。</label>
+        <name>EnterValueSalesforceCustomURL</name>
+    </customLabels>
+    <customLabels>
+        <label>信封</label>
+        <name>Envelope</name>
+    </customLabels>
+    <customLabels>
+        <label>无法重新发送信封。 信封不是 \&apos;已发送\&apos; 或 \&apos;已传送\&apos; 状态。</label>
+        <name>EnvelopeCannotBeResent</name>
+    </customLabels>
+    <customLabels>
+        <label>无法创建信封。</label>
+        <name>EnvelopeCouldNotBeCreated</name>
+    </customLabels>
+    <customLabels>
+        <label>无法重新发送信封电子邮件。 未选择此信封的收件人</label>
+        <name>EnvelopeEmaillCannotBeResent</name>
+    </customLabels>
+    <customLabels>
+        <label>未重新发送信封电子邮件。 未选择状态为 \&apos;已发送\&apos; 或 \&apos;已传送\&apos; 的收件人。</label>
+        <name>EnvelopeEmailsNotResent</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 信封 ID</label>
+        <name>EnvelopeID</name>
+    </customLabels>
+    <customLabels>
+        <label>信封 ID：</label>
+        <name>EnvelopeIDColon</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 信封信息</label>
+        <name>EnvelopeInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>设置信封提醒</label>
+        <name>EnvelopeReminder</name>
+    </customLabels>
+    <customLabels>
+        <label>信封设置</label>
+        <name>EnvelopeSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>信封</label>
+        <name>Envelopes</name>
+    </customLabels>
+    <customLabels>
+        <label>环境</label>
+        <name>Environment</name>
+    </customLabels>
+    <customLabels>
+        <label>将成员添加到帐户时发生错误：</label>
+        <name>ErrorAddingMembersToAccountColon</name>
+    </customLabels>
+    <customLabels>
+        <label>我们对此深感抱歉。 您可单击下面的按钮，以返回“管理”页面并重新开始。</label>
+        <name>ErrorAdminPageStartOver</name>
+    </customLabels>
+    <customLabels>
+        <label>进行身份验证时发生错误。</label>
+        <name>ErrorAuthenticating</name>
+    </customLabels>
+    <customLabels>
+        <label>进行身份验证时发生错误。  对用户对象的访问权限不足。</label>
+        <name>ErrorAuthenticatingInsufficientUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>进行身份验证时发生错误。 您没有适当的权限。</label>
+        <name>ErrorAuthenticatingNotHaveProperPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label>错误 - URL 变量错误</label>
+        <name>ErrorBadURLVar</name>
+    </customLabels>
+    <customLabels>
+        <label>错误：</label>
+        <name>ErrorColon</name>
+    </customLabels>
+    <customLabels>
+        <label>在激活 Salesforce 的过程中与 DocuSign 联系时发生错误：</label>
+        <name>ErrorContactingDocuSignActivatingSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>创建 DocuSignEnvelope 时发生错误：对 DocuSignEnvelope 对象的访问权限不足。</label>
+        <name>ErrorCreatingEnvelopeInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>停用 DocuSign 帐户时发生错误。</label>
+        <name>ErrorDeactivatingDocuSignAccounts</name>
+    </customLabels>
+    <customLabels>
+        <label>停用 DocuSign 帐户时发生错误：</label>
+        <name>ErrorDeactivingDocuSignAccountColon</name>
+    </customLabels>
+    <customLabels>
+        <label>错误 =</label>
+        <name>ErrorEquals</name>
+    </customLabels>
+    <customLabels>
+        <label>错误来源</label>
+        <name>ErrorFrom</name>
+    </customLabels>
+    <customLabels>
+        <label>错误位置</label>
+        <name>ErrorIn</name>
+    </customLabels>
+    <customLabels>
+        <label>错误 - 对用户对象的访问权限不足</label>
+        <name>ErrorInsufficientAccessToUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>错误消息</label>
+        <name>ErrorMessages</name>
+    </customLabels>
+    <customLabels>
+        <label>很抱歉，我们遇到了一个错误。 这可能是网络问题影响了 DocuSign 的连接，重试您的请求可能就会成功</label>
+        <name>ErrorNetworkIssueRetry</name>
+    </customLabels>
+    <customLabels>
+        <label>发生了错误。 请联系 service@docusign.com。</label>
+        <name>ErrorOccurredContact</name>
+    </customLabels>
+    <customLabels>
+        <label>请求激活时发生错误。</label>
+        <name>ErrorRequestingActivation</name>
+    </customLabels>
+    <customLabels>
+        <label>检索 DocuSign 控制台信息时发生错误。  如需访问，请与您的系统管理员联系。  错误：</label>
+        <name>ErrorRetrievingDocuSignConsoleInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>设置 SALESFORCE 凭证时出错。 请验证是否已将 DOCUSIGN 添加为\N受信任网络，并检查 SALESFORCE 用户名、密码和\N环境。 错误：</label>
+        <name>ErrorSalesforceCredentialsVerify</name>
+    </customLabels>
+    <customLabels>
+        <label>保存帐户连接信息时发生错误。  对用户对象的访问权限不足。</label>
+        <name>ErrorSavingAccountConnectInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>保存成员时发生错误。  对用户对象的访问权限不足。</label>
+        <name>ErrorSavingMembersInsufficientAccessUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>发送错误</label>
+        <name>ErrorSending</name>
+    </customLabels>
+    <customLabels>
+        <label>错误：无法发送信封。 信封不存在。</label>
+        <name>ErrorUnableToSendEvenlopeNotExist</name>
+    </customLabels>
+    <customLabels>
+        <label>示例：如果第一个角色是“客户”，则与该角色关联的收件人
+			将映射到文档中的 \s1\、\i1\ 选项卡。</label>
+        <name>ExampleIfTheFirstRoleIsCustomer</name>
+    </customLabels>
+    <customLabels>
+        <label>到期月份</label>
+        <name>ExpirationMonth</name>
+    </customLabels>
+    <customLabels>
+        <label>到期年份</label>
+        <name>ExpirationYear</name>
+    </customLabels>
+    <customLabels>
+        <label>分机</label>
+        <name>Ext</name>
+    </customLabels>
+    <customLabels>
+        <label>名字</label>
+        <name>FName</name>
+    </customLabels>
+    <customLabels>
+        <label>传真</label>
+        <name>Fax</name>
+    </customLabels>
+    <customLabels>
+        <label>将显示在下述列表中的字段</label>
+        <name>FieldsThatWillBeDisplayed</name>
+    </customLabels>
+    <customLabels>
+        <label>最终步骤</label>
+        <name>FinalSteps</name>
+    </customLabels>
+    <customLabels>
+        <label>文件夹</label>
+        <name>Folder</name>
+    </customLabels>
+    <customLabels>
+        <label>获取免费的 DocuSign 试用帐户</label>
+        <name>ForFreeDSTrial</name>
+    </customLabels>
+    <customLabels>
+        <label>忘记了您的 DocuSign 密码？</label>
+        <name>ForgotDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>忘记密码？</label>
+        <name>ForgotPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>忘记密码问题答案</label>
+        <name>ForgottenPassAnswer</name>
+    </customLabels>
+    <customLabels>
+        <label>忘记密码问题</label>
+        <name>ForgottenPassQuestion</name>
+    </customLabels>
+    <customLabels>
+        <label>法语</label>
+        <name>French</name>
+    </customLabels>
+    <customLabels>
+        <label>德语</label>
+        <name>German</name>
+    </customLabels>
+    <customLabels>
+        <label>获取您的“使用 DocuSign 发送”按钮以及实时可见性</label>
+        <name>GetSendNRealTimeVisibility</name>
+    </customLabels>
+    <customLabels>
+        <label>为了确保您确实是此签名会话的正确主机，您在 Salesforce 中使用的用户名和电子邮件必须与 DocuSign 中的用户名和电子邮件地址匹配。  请咨询您的管理员，是更改您的 DocuSign 凭证以匹配 Salesforce 凭证，还是更改 Salesforce 凭证以匹配 DocuSign 凭证。</label>
+        <name>GetSigningURLRedirectErrorMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>聊天设置</label>
+        <name>HideChatterSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>隐藏电子邮件消息字段</label>
+        <name>HideEmailMessageField</name>
+    </customLabels>
+    <customLabels>
+        <label>隐藏电子邮件主题字段</label>
+        <name>HideEmailSubjectField</name>
+    </customLabels>
+    <customLabels>
+        <label>隐藏提醒和到期设置</label>
+        <name>HideTheRemindAndExpireSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>隐藏立即发送按钮</label>
+        <name>HideTheSendNowButton</name>
+    </customLabels>
+    <customLabels>
+        <label>隐藏标记按钮</label>
+        <name>HideTheTagButton</name>
+    </customLabels>
+    <customLabels>
+        <label>家庭电话</label>
+        <name>Home</name>
+    </customLabels>
+    <customLabels>
+        <label>亲自签名主机</label>
+        <name>HostInPerson</name>
+    </customLabels>
+    <customLabels>
+        <label>亲自签名主机 - 立即签署</label>
+        <name>HostInPersonDashSignNow</name>
+    </customLabels>
+    <customLabels>
+        <label>如何编辑您的 DocuSign 活动状态更新设置</label>
+        <name>HowToEditYourDocuSignActivity</name>
+    </customLabels>
+    <customLabels>
+        <label>如何使用 DocuSign for Salesforce 发送</label>
+        <name>HowToSendUsingDocuSignSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>我同意</label>
+        <name>IAgreeToThe</name>
+    </customLabels>
+    <customLabels>
+        <label>我已有一个 DocuSign 帐户</label>
+        <name>IHaveDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>我需要一个 DocuSign 帐户</label>
+        <name>INeedDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>如果不能正常工作，请通过以下方式与我们联系</label>
+        <name>IfDoesntWorkContact</name>
+    </customLabels>
+    <customLabels>
+        <label>如果看到 DocuSign 登录屏幕</label>
+        <name>IfYouSeeTheDocuSignLoginScreen</name>
+    </customLabels>
+    <customLabels>
+        <label>未完成</label>
+        <name>Incomplete</name>
+    </customLabels>
+    <customLabels>
+        <label>对 DocuSignEnvelopeDocument 对象的访问权限不足</label>
+        <name>InsufficientAccessDocuSignEnvelopeDocument</name>
+    </customLabels>
+    <customLabels>
+        <label>访问信息不足</label>
+        <name>InsufficientAccessInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>对 DocuSignAccountConfiguration 对象的访问权限不足</label>
+        <name>InsufficientAccessToConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取联系人信息。 对联系人对象的访问权限不足。</label>
+        <name>InsufficientAccessToContact</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取联系人信息。 对潜在客户对象的访问权限不足。</label>
+        <name>InsufficientAccessToLead</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取联系人信息。 对用户对象的访问权限不足。</label>
+        <name>InsufficientAccessToUser</name>
+    </customLabels>
+    <customLabels>
+        <label>对用户对象的访问权限不足</label>
+        <name>InsufficientAccessUserObject</name>
+    </customLabels>
+    <customLabels>
+        <label>对 DocuSign_Envelope_Recipient__c 对象的访问权限不足。</label>
+        <name>InsufficientDocuSignEnvelopeRecipientc</name>
+    </customLabels>
+    <customLabels>
+        <label>选择用户记录的权限不足。</label>
+        <name>InsufficientPriviliegesSelectUserRecords</name>
+    </customLabels>
+    <customLabels>
+        <label>读取权限不足</label>
+        <name>InsufficientReadPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 电子邮件地址或密码无效。</label>
+        <name>InvalidDocuSignEmailPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 权限无效 - 您必须授予用户 DocuSign 发送权限才能使用此产品。 请与您的系统管理员联系。</label>
+        <name>InvalidDocuSignPermissionToUseThisProduct</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- InvalidSourceId --></label>
+        <name>InvalidSourceId</name>
+    </customLabels>
+    <customLabels>
+        <label>无效模板 ID -</label>
+        <name>InvalidTemplateIdDash</name>
+    </customLabels>
+    <customLabels>
+        <label>意大利语</label>
+        <name>Italian</name>
+    </customLabels>
+    <customLabels>
+        <label>日语</label>
+        <name>Japanese</name>
+    </customLabels>
+    <customLabels>
+        <label>韩语</label>
+        <name>Korean</name>
+    </customLabels>
+    <customLabels>
+        <label>姓氏</label>
+        <name>LName</name>
+    </customLabels>
+    <customLabels>
+        <label>语言</label>
+        <name>Language</name>
+    </customLabels>
+    <customLabels>
+        <label>潜在客户</label>
+        <name>Lead</name>
+    </customLabels>
+    <customLabels>
+        <label>潜在客户页面布局</label>
+        <name>LeadPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>潜在客户</label>
+        <name>Leads</name>
+    </customLabels>
+    <customLabels>
+        <label>了解详情</label>
+        <name>LearnMore</name>
+    </customLabels>
+    <customLabels>
+        <label>了解详情：</label>
+        <name>LearnMoreColon</name>
+    </customLabels>
+    <customLabels>
+        <label>库</label>
+        <name>Library</name>
+    </customLabels>
+    <customLabels>
+        <label>这很可能是正在提交的文件缺少文件扩展名或具有 DocuSign 未知的扩展名。</label>
+        <name>LikelyFileMissingFileExtension</name>
+    </customLabels>
+    <customLabels>
+        <label>链接帐户</label>
+        <name>LinkAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>链接您的 DocuSign 帐户</label>
+        <name>LinkDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>链接  的现有成员资格</label>
+        <name>LinkExistingMembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>链接成员资格</label>
+        <name>LinkMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>登录</label>
+        <name>LogIn</name>
+    </customLabels>
+    <customLabels>
+        <label>管理</label>
+        <name>Manage</name>
+    </customLabels>
+    <customLabels>
+        <label>管理帐户</label>
+        <name>ManageAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>&gt;管理 DocuSign 用户帮助</label>
+        <name>ManageDocuSignUsersHelp</name>
+    </customLabels>
+    <customLabels>
+        <label>管理信封</label>
+        <name>ManageEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>管理信封</label>
+        <name>ManageEnvelopes</name>
+    </customLabels>
+    <customLabels>
+        <label>管理 DocuSign 用户</label>
+        <name>ManageUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>从 DocuSign 返回的成员列表与已发送列表的长度不同。</label>
+        <name>MemberListDocuSignNotSameLengthListSent</name>
+    </customLabels>
+    <customLabels>
+        <label>从 DocuSign 返回的成员列表与已发送列表的长度不同。</label>
+        <name>MemberListFromDocuSignNotSameLengthList</name>
+    </customLabels>
+    <customLabels>
+        <label>的成员资格</label>
+        <name>MembershipFor</name>
+    </customLabels>
+    <customLabels>
+        <label>消息</label>
+        <name>Message</name>
+    </customLabels>
+    <customLabels>
+        <label>消息 =</label>
+        <name>MessageEquals</name>
+    </customLabels>
+    <customLabels>
+        <label>中间名</label>
+        <name>MiddleName</name>
+    </customLabels>
+    <customLabels>
+        <label>您的帐户有效，但缺少用作 DocuSign for Salesforce 主帐户的部分必需设置。</label>
+        <name>MissingSettingToBePrimaryAccountSFDC</name>
+    </customLabels>
+    <customLabels>
+        <label>下移</label>
+        <name>MoveDown</name>
+    </customLabels>
+    <customLabels>
+        <label>将选定字段下移一个位置</label>
+        <name>MoveTheSelectedFieldDown</name>
+    </customLabels>
+    <customLabels>
+        <label>将选定字段上移一个位置</label>
+        <name>MoveTheSelectedFieldUp</name>
+    </customLabels>
+    <customLabels>
+        <label>将选定的“选定字段”移回“可用
+			字段”列表</label>
+        <name>MoveTheSelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>上移</label>
+        <name>MoveUp</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须同意 DocuSign 条款和条件。</label>
+        <name>MustAgreeDocuSignTerms</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须具有管理权限才能执行此操作</label>
+        <name>MustHaveAdminPermissionsPerformOperation</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须具有 DocuSign 管理权限才能执行此操作</label>
+        <name>MustHaveDocuSignAdminPermissionsPerformOperation</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须具有管理权限才能执行此操作</label>
+        <name>MustHavePermissionsToPerformOperations</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须提供有效 Salesforce 用户和密码</label>
+        <name>MustProvideValidSalesforceUserAndPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须选择帐户。</label>
+        <name>MustSelectAnAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须指定公司名称。</label>
+        <name>MustSpecifyCompanyName</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须指定电子邮件地址。</label>
+        <name>MustSpecifyEmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须指定名称。</label>
+        <name>MustSpecifyName</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须指定密码。</label>
+        <name>MustSpecifyPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>我的文档</label>
+        <name>MyDocuments</name>
+    </customLabels>
+    <customLabels>
+        <label>名称</label>
+        <name>Name</name>
+    </customLabels>
+    <customLabels>
+        <label>卡片上的名称</label>
+        <name>NameOnCard</name>
+    </customLabels>
+    <customLabels>
+        <label>新建</label>
+        <name>New</name>
+    </customLabels>
+    <customLabels>
+        <label>下一步</label>
+        <name>Next</name>
+    </customLabels>
+    <customLabels>
+        <label>选择“下一步”以将设置添加到您的帐户，或选择“返回”以选择其他帐户。</label>
+        <name>NextOrBackMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>下一个</label>
+        <name>NextUppercase</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoAccessToPage --></label>
+        <name>NoAccessToPage</name>
+    </customLabels>
+    <customLabels>
+        <label>没有可用的 DocuSign 连接</label>
+        <name>NoConnectionDocuSignAvailable</name>
+    </customLabels>
+    <customLabels>
+        <label>没有 DocuSign 访问权限</label>
+        <name>NoDocuSignAccess</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoDocuments --></label>
+        <name>NoDocuments</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoDocumentsDesktop --></label>
+        <name>NoDocumentsDesktop</name>
+    </customLabels>
+    <customLabels>
+        <label>未配置 DocuSign 用户权限</label>
+        <name>NoPermissionConfig</name>
+    </customLabels>
+    <customLabels>
+        <label>您不具备访问 DocuSign 自定义对象的必需权限</label>
+        <name>NoPermissionCustomObj</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoRecipients --></label>
+        <name>NoRecipients</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoRecipientsDesktop --></label>
+        <name>NoRecipientsDesktop</name>
+    </customLabels>
+    <customLabels>
+        <label>没有要显示的行。</label>
+        <name>NoRowsToDisplay</name>
+    </customLabels>
+    <customLabels>
+        <label>您尚未将 Salesforce 用户关联到 DocuSign 系统
+			发件人用户。</label>
+        <name>NotAssociatedSalesforceUserToDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>并非信封的所有者</label>
+        <name>NotEnvelopeOwner</name>
+    </customLabels>
+    <customLabels>
+        <label>您不具备使用 DocuSign 用户信息更新 Salesforce
+			用户记录的必需权限。</label>
+        <name>NotHavePermissionsToUpdateSalesforceUserRecords</name>
+    </customLabels>
+    <customLabels>
+        <label>您没有足够的权限重新发送此信封。 未发送任何电子邮件。</label>
+        <name>NotHaveSufficientPermissionResend</name>
+    </customLabels>
+    <customLabels>
+        <label>您未设置系统发件人密码。</label>
+        <name>NotHaveSystemSenderPassword</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NotSupposedToBeShown --></label>
+        <name>NotSupposedToBeShown</name>
+    </customLabels>
+    <customLabels>
+        <label>收件人注意事项</label>
+        <name>NoteForRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>“注意：您可将“使用 DocuSign 发送”按钮添加到任何
+			Salesforce 标准或自定义对象上的任何页面
+			布局（默认或自定义），上述五项建议是良好的
+			起点。”</label>
+        <name>NoteSendWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>/</label>
+        <name>Of</name>
+    </customLabels>
+    <customLabels>
+        <label>仅可更正状态为 \&apos;已发送\&apos; 或 \&apos;已传送\&apos; 的信封</label>
+        <name>OnlyEnvelopeInSentOrDelivered</name>
+    </customLabels>
+    <customLabels>
+        <label>机会</label>
+        <name>Opportunity</name>
+    </customLabels>
+    <customLabels>
+        <label>机会页面布局</label>
+        <name>OpportunityPageLayout</name>
+    </customLabels>
+    <customLabels>
+        <label>或</label>
+        <name>Or</name>
+    </customLabels>
+    <customLabels>
+        <label>顺序</label>
+        <name>Order</name>
+    </customLabels>
+    <customLabels>
+        <label>角色顺序决定设置为映射目标的定位选项卡。</label>
+        <name>OrderOfTheRolesDetermines</name>
+    </customLabels>
+    <customLabels>
+        <label>页</label>
+        <name>Page</name>
+    </customLabels>
+    <customLabels>
+        <label>密码</label>
+        <name>Password</name>
+    </customLabels>
+    <customLabels>
+        <label>个人信息</label>
+        <name>PersonalInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>电话号码</label>
+        <name>PhoneNumber</name>
+    </customLabels>
+    <customLabels>
+        <label>占位符角色</label>
+        <name>PlaceholderRole</name>
+    </customLabels>
+    <customLabels>
+        <label>计划结束日期</label>
+        <name>PlanEndDate</name>
+    </customLabels>
+    <customLabels>
+        <label>计划 ID</label>
+        <name>PlanID</name>
+    </customLabels>
+    <customLabels>
+        <label>计划名称</label>
+        <name>PlanName</name>
+    </customLabels>
+    <customLabels>
+        <label>计划开始日期</label>
+        <name>PlanStartDate</name>
+    </customLabels>
+    <customLabels>
+        <label>请通过 service@docusign.com 联系 DocuSign 支持。</label>
+        <name>PleaseContactDocuSignSupportAt</name>
+    </customLabels>
+    <customLabels>
+        <label>请联系 DocuSign 支持。 发送电子邮件至：service@docusign.com。</label>
+        <name>PleaseContactDocuSignSupportTo</name>
+    </customLabels>
+    <customLabels>
+        <label>“请联系您的 Salesforce 管理员以获取
+			以下用户对象字段的更新访问权限：”</label>
+        <name>PleaseContactYourSalesforceAdministratorToBeGranted</name>
+    </customLabels>
+    <customLabels>
+        <label>巴西葡萄牙语</label>
+        <name>PortugueseBrazilian</name>
+    </customLabels>
+    <customLabels>
+        <label>可能的错误情况</label>
+        <name>PossibleErrorConditions</name>
+    </customLabels>
+    <customLabels>
+        <label>邮政编码</label>
+        <name>PostCode</name>
+    </customLabels>
+    <customLabels>
+        <label>上一步</label>
+        <name>Previous</name>
+    </customLabels>
+    <customLabels>
+        <label>您的交易存在问题</label>
+        <name>ProblemWithTransaction</name>
+    </customLabels>
+    <customLabels>
+        <label>快速链接</label>
+        <name>QuickLinks</name>
+    </customLabels>
+    <customLabels>
+        <label>接收副本</label>
+        <name>ReceiveCopy</name>
+    </customLabels>
+    <customLabels>
+        <label>收件人</label>
+        <name>Recipient</name>
+    </customLabels>
+    <customLabels>
+        <label>收件人必须具有电子邮件地址</label>
+        <name>RecipientMustHaveEmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>收件人角色设置</label>
+        <name>RecipientRoleSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>收件人和发送</label>
+        <name>RecipientsAndRouting</name>
+    </customLabels>
+    <customLabels>
+        <label>已通过电子邮件通知收件人是否存在任何已清空信封。</label>
+        <name>RecipientsHaveNeenNotifiedEmail</name>
+    </customLabels>
+    <customLabels>
+        <label>尚未签名的收件人将不再具备
+			查看访问权限。</label>
+        <name>RecipientsWhoHaveNotSigned</name>
+    </customLabels>
+    <customLabels>
+        <label>收件人将不再具备签署信封的访问权限。</label>
+        <name>RecipientsWillNoLongerAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>地区</label>
+        <name>Region</name>
+    </customLabels>
+    <customLabels>
+        <label>提醒和到期必须是数字。</label>
+        <name>ReminderExpirationsMustBeNumbers</name>
+    </customLabels>
+    <customLabels>
+        <label>删除</label>
+        <name>Remove</name>
+    </customLabels>
+    <customLabels>
+        <label>删除并关闭用户</label>
+        <name>RemoveAndCloseUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>删除并关闭用户 = 删除选定用户的 DocuSign 包
+			并关闭其 DocuSign 帐户</label>
+        <name>RemoveAndCloseUsersDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>删除选定用户的 DocuSign 包，但允许用户保留其 DocuSign 帐户。</label>
+        <name>RemoveDocuSignPackageSelectedUsersKeepAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>删除选定用户的 DocuSign 包并从主 DocuSign 帐户中关闭其 DocuSign 帐户。</label>
+        <name>RemoveDocuSignPackageSelectedUsrsClose</name>
+    </customLabels>
+    <customLabels>
+        <label>删除用户</label>
+        <name>RemoveUsers</name>
+    </customLabels>
+    <customLabels>
+        <label>删除用户 = 删除选定用户
+			的 DocuSign 包</label>
+        <name>RemoveUsersRemoveTheDocuSignPackage</name>
+    </customLabels>
+    <customLabels>
+        <label>重新发送 DocuSign 信封的电子邮件</label>
+        <name>ResendEmails</name>
+    </customLabels>
+    <customLabels>
+        <label>重新发送 DocuSign 电子邮件已完成</label>
+        <name>ResendEmailsComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>重设密码</label>
+        <name>ResetPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>选择以最大化/最小化欢迎面板</label>
+        <name>ResizeWelcomePanel</name>
+    </customLabels>
+    <customLabels>
+        <label>返回</label>
+        <name>Return</name>
+    </customLabels>
+    <customLabels>
+        <label>返回至</label>
+        <name>ReturnTo</name>
+    </customLabels>
+    <customLabels>
+        <label>返回至 DocuSign 信封</label>
+        <name>ReturnToEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>角色</label>
+        <name>Role</name>
+    </customLabels>
+    <customLabels>
+        <label>角色名称</label>
+        <name>RoleNames</name>
+    </customLabels>
+    <customLabels>
+        <label>需要角色或收件人名称。</label>
+        <name>RoleOrRecipientNameRequired</name>
+    </customLabels>
+    <customLabels>
+        <label>角色用于在使用 DocuSign 进行发送时将文档中的默认定位选项卡
+			映射到收件人。</label>
+        <name>RolesAreUsedToMapDefaultAnchorTabs</name>
+    </customLabels>
+    <customLabels>
+        <label>发送顺序</label>
+        <name>RoutingOrder</name>
+    </customLabels>
+    <customLabels>
+        <label>发送顺序必须等于或大于 1。</label>
+        <name>RoutingOrderMustBeOneOrHeigher</name>
+    </customLabels>
+    <customLabels>
+        <label>每页显示的行数</label>
+        <name>RowsDisplayedPerPage</name>
+    </customLabels>
+    <customLabels>
+        <label>俄语</label>
+        <name>Russian</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 已成功配置为与 Salesforce 配合使用。 所有帐户和用户管理现在均可通过 DocuSign 管理选项卡完成。</label>
+        <name>SFDCCompleteManageAdminTab</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign for Salesforce 设置已完成</label>
+        <name>SFDCSetupComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>Salesforce 环境</label>
+        <name>SalesforceEnv</name>
+    </customLabels>
+    <customLabels>
+        <label>Salesforce 环境</label>
+        <name>SalesforceEnvironment</name>
+    </customLabels>
+    <customLabels>
+        <label>Salesforce 密码</label>
+        <name>SalesforcePass</name>
+    </customLabels>
+    <customLabels>
+        <label>Salesforce 密码</label>
+        <name>SalesforcePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>Salesforce 令牌</label>
+        <name>SalesforceToken</name>
+    </customLabels>
+    <customLabels>
+        <label>Salesforce 用户</label>
+        <name>SalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>保存</label>
+        <name>Save</name>
+    </customLabels>
+    <customLabels>
+        <label>保存 DocuSign 信封设置更改</label>
+        <name>SaveDocuSignEnvelopeChanges</name>
+    </customLabels>
+    <customLabels>
+        <label>保存收件人</label>
+        <name>SaveRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>保存对“选定字段”列表所做的更改</label>
+        <name>SaveTheChangesToTheSelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>在 DocuSign.com 上搜索 DocuSign 文档</label>
+        <name>SearchDocumentation</name>
+    </customLabels>
+    <customLabels>
+        <label>查看更多帐户</label>
+        <name>SeeMoreAccounts</name>
+    </customLabels>
+    <customLabels>
+        <label>选择</label>
+        <name>Select</name>
+    </customLabels>
+    <customLabels>
+        <label>选择用户</label>
+        <name>SelectAUser</name>
+    </customLabels>
+    <customLabels>
+        <label>在此页面上选择要在
+			DocuSign 中激活或停用的所有用户。</label>
+        <name>SelectAllUsersOnThisPage</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须选择至少一个已针对 DocuSign 激活的用户（DSProSFUsername 已设置）才能启用此操作。</label>
+        <name>SelectAtLeastOneUserActivatedDSProSFUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>您必须选择至少一个尚未针对 DocuSign 激活的用户（DSProSFUsername 未设置）才能启用此操作。</label>
+        <name>SelectAtLeastOneUserDSProSFUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>选择列标题以对表内容进行排序。</label>
+        <name>SelectColumnHeaderToSort</name>
+    </customLabels>
+    <customLabels>
+        <label>选择要在下述列表中显示的字段</label>
+        <name>SelectFieldsToDisplayInList</name>
+    </customLabels>
+    <customLabels>
+        <label>选择要应用到下述列表的筛选器</label>
+        <name>SelectFilterToApply</name>
+    </customLabels>
+    <customLabels>
+        <label>您拥有与此电子邮件关联的多个 DocuSign 帐户。  选择要用于 Salesforce 的帐户：</label>
+        <name>SelectOneEmailForSFDC</name>
+    </customLabels>
+    <customLabels>
+        <label>您只能选择有权在 Salesforce 中管理用户且尚未针对 DocuSign 激活的用户（DSProSFUsername 未设置）才能启用此操作。</label>
+        <name>SelectOnlyUsersHavePermissionDSProSFUsername</name>
+    </customLabels>
+    <customLabels>
+        <label>选择 DocuSign 签名</label>
+        <name>SelectSignature</name>
+    </customLabels>
+    <customLabels>
+        <label>选择要添加到 DocuSign 包或从其中删除的用户</label>
+        <name>SelectUserToBeAdded</name>
+    </customLabels>
+    <customLabels>
+        <label>选定文档</label>
+        <name>SelectedDocs</name>
+    </customLabels>
+    <customLabels>
+        <label>选定字段</label>
+        <name>SelectedFields</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 发送已完成</label>
+        <name>SendComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>发送失败</label>
+        <name>SendFailed</name>
+    </customLabels>
+    <customLabels>
+        <label>立即发送</label>
+        <name>SendNow</name>
+    </customLabels>
+    <customLabels>
+        <label>发送设置</label>
+        <name>SendSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>使用 DocuSign 发送 | 更新 DocuSign 文档</label>
+        <name>SendUpdate</name>
+    </customLabels>
+    <customLabels>
+        <label>使用 DocuSign 发送</label>
+        <name>SendWithDS</name>
+    </customLabels>
+    <customLabels>
+        <label>使用 DocuSign 发送 | DocuSign 收件人</label>
+        <name>SendWithDSRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>发送信封</label>
+        <name>SendingEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>已发送</label>
+        <name>Sent</name>
+    </customLabels>
+    <customLabels>
+        <label>设置默认电子邮件消息</label>
+        <name>SetEmailMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>设置 DocuSign 帐户已完成</label>
+        <name>SetUpDocuSignAccountComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>设置您的 DocuSign 帐户</label>
+        <name>SetupDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>设置错误</label>
+        <name>SetupError</name>
+    </customLabels>
+    <customLabels>
+        <label>设置未完成。</label>
+        <name>SetupNotComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>在此之后，您可在 Salesforce 帐户中设置特定用户以使用 DocuSign for Salesforce</label>
+        <name>SetupUsersInSFToUseDS</name>
+    </customLabels>
+    <customLabels>
+        <label>请与 AppExchange 社区分享您的经验。</label>
+        <name>ShareExperienceWithCommunity</name>
+    </customLabels>
+    <customLabels>
+        <label>显示第一页</label>
+        <name>ShowTheFirstPage</name>
+    </customLabels>
+    <customLabels>
+        <label>显示最后一页</label>
+        <name>ShowTheLastPage</name>
+    </customLabels>
+    <customLabels>
+        <label>显示下一页</label>
+        <name>ShowTheNextPage</name>
+    </customLabels>
+    <customLabels>
+        <label>显示上一页</label>
+        <name>ShowThePreviousPage</name>
+    </customLabels>
+    <customLabels>
+        <label>签署</label>
+        <name>Sign</name>
+    </customLabels>
+    <customLabels>
+        <label>亲自签署</label>
+        <name>SignInPerson</name>
+    </customLabels>
+    <customLabels>
+        <label>立即签署状态</label>
+        <name>SignNowStatus</name>
+    </customLabels>
+    <customLabels>
+        <label>注册</label>
+        <name>SignUp</name>
+    </customLabels>
+    <customLabels>
+        <label>注册以获得免费的 DocuSign 试用帐户</label>
+        <name>SignUpFreeDSTrial</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DocuSign --></label>
+        <name>SignWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>签名</label>
+        <name>Signature</name>
+    </customLabels>
+    <customLabels>
+        <label>已签名</label>
+        <name>Signed</name>
+    </customLabels>
+    <customLabels>
+        <label>签名者</label>
+        <name>Signer</name>
+    </customLabels>
+    <customLabels>
+        <label>签名者 - 立即签署</label>
+        <name>SignerDashSignNow</name>
+    </customLabels>
+    <customLabels>
+        <label>签名者名称</label>
+        <name>SignerName</name>
+    </customLabels>
+    <customLabels>
+        <label>签名者角色</label>
+        <name>SignerRole</name>
+    </customLabels>
+    <customLabels>
+        <label>签名者角色已在使用中。 请另行选择。</label>
+        <name>SignerRoleAlreadyInUse</name>
+    </customLabels>
+    <customLabels>
+        <label>签名者类型</label>
+        <name>SignerType</name>
+    </customLabels>
+    <customLabels>
+        <label>源</label>
+        <name>Source</name>
+    </customLabels>
+    <customLabels>
+        <label>西班牙语</label>
+        <name>Spanish</name>
+    </customLabels>
+    <customLabels>
+        <label>错误：指定信封在 DocuSign 中已不复存在。</label>
+        <name>SpecifiedEnvelopeNoLonerExist</name>
+    </customLabels>
+    <customLabels>
+        <label>指定用户不是指定信封的收件人</label>
+        <name>SpecifiedUserNotRecipient</name>
+    </customLabels>
+    <customLabels>
+        <label>开始 DocuSigning</label>
+        <name>StartDocuSigning</name>
+    </customLabels>
+    <customLabels>
+        <label>开始设置</label>
+        <name>StartSetUp</name>
+    </customLabels>
+    <customLabels>
+        <label>州</label>
+        <name>State</name>
+    </customLabels>
+    <customLabels>
+        <label>状态</label>
+        <name>Status</name>
+    </customLabels>
+    <customLabels>
+        <label>信封状态为“已发送”或“已传送”时才能进行更正。</label>
+        <name>StatusCorrectInDocuSignErrorMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>信封状态为“已发送”或“已传送”时才能重新发送 DocuSign 电子邮件。</label>
+        <name>StatusVoidEnvelopeError</name>
+    </customLabels>
+    <customLabels>
+        <label>信封状态为“已发送”或“已传送”时才能进行清空</label>
+        <name>StatusVoidEnvelopeErrorMessage</name>
+    </customLabels>
+    <customLabels>
+        <label>步骤 1</label>
+        <name>Step1</name>
+    </customLabels>
+    <customLabels>
+        <label>步骤 1：设置您的 DocuSign 帐户连接</label>
+        <name>Step1SetUpConnToDS</name>
+    </customLabels>
+    <customLabels>
+        <label>步骤 2</label>
+        <name>Step2</name>
+    </customLabels>
+    <customLabels>
+        <label>步骤 2：将 DocuSign 连接到 Salesforce</label>
+        <name>Step2ConnectDSToSF</name>
+    </customLabels>
+    <customLabels>
+        <label>步骤 1：设置 DocuSign 帐户</label>
+        <name>StepOneSetupDocuSignAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>步骤 2：将 DocuSign 连接到 Salesforce</label>
+        <name>StepTwoConnectDocuSignToSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>街道地址</label>
+        <name>StreetAddress</name>
+    </customLabels>
+    <customLabels>
+        <label>主题</label>
+        <name>Subject</name>
+    </customLabels>
+    <customLabels>
+        <label>后缀</label>
+        <name>Suffix</name>
+    </customLabels>
+    <customLabels>
+        <label>支持站点</label>
+        <name>SupportSite</name>
+    </customLabels>
+    <customLabels>
+        <label>DocuSign 系统发件人</label>
+        <name>SystemSender</name>
+    </customLabels>
+    <customLabels>
+        <label>系统发件人用户已使用 DocuSign 用户 ID
+			和密码进行配置</label>
+        <name>SystemSenderAlreadyConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>标记</label>
+        <name>Tag</name>
+    </customLabels>
+    <customLabels>
+        <label>列表中第一个角色将映射到
+			文档中的“1”选项卡，第二个角色将映射到“2”选项卡，等等。</label>
+        <name>TheFirstRoleInTheListWillMap</name>
+    </customLabels>
+    <customLabels>
+        <label>标题</label>
+        <name>Title</name>
+    </customLabels>
+    <customLabels>
+        <label>至您的现有 DocuSign 帐户</label>
+        <name>ToExistingDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>要清空此信封，请在下面提供清空
+			原因，然后按“清空信封”。 系统会向已签名的收件人发送
+			电子邮件，通知他们此信封已清空，
+			以及您的评语。</label>
+        <name>ToVoidThisEnvelopeProvideReason</name>
+    </customLabels>
+    <customLabels>
+        <label>顶部</label>
+        <name>Top</name>
+    </customLabels>
+    <customLabels>
+        <label>总行数</label>
+        <name>TotalRow</name>
+    </customLabels>
+    <customLabels>
+        <label>您的交易存在问题。</label>
+        <name>TransactionProblem</name>
+    </customLabels>
+    <customLabels>
+        <label>交易信息</label>
+        <name>TransctionInfo</name>
+    </customLabels>
+    <customLabels>
+        <label>受信任网络</label>
+        <name>TrustedNetwork</name>
+    </customLabels>
+    <customLabels>
+        <label>类型</label>
+        <name>Type</name>
+    </customLabels>
+    <customLabels>
+        <label>无法添加附件。  对附件对象的访问权限不足。</label>
+        <name>UnableAddAttachmentInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>无法添加相关内容。  对 ContentVersion 对象的访问权限不足。</label>
+        <name>UnableAddContentInsufficientAccessContentVersion</name>
+    </customLabels>
+    <customLabels>
+        <label>无法添加/更新文档。</label>
+        <name>UnableAddUpdateDocument</name>
+    </customLabels>
+    <customLabels>
+        <label>无法添加/更新 DocuSign 信封。</label>
+        <name>UnableAddUpdateEnvelopes</name>
+    </customLabels>
+    <customLabels>
+        <label>无法添加/更新收件人。</label>
+        <name>UnableAddUpdateRecipients</name>
+    </customLabels>
+    <customLabels>
+        <label>无法配置 DocuSign for Salesforce。  对 DocuSignAccountConfiguration 对象的访问权限不足。</label>
+        <name>UnableConfigureDocuSignSalesforce</name>
+    </customLabels>
+    <customLabels>
+        <label>无法删除收件人。  对 DocuSign_Envelope_Recipient__c 对象的访问权限不足。</label>
+        <name>UnableDeleteDocuSignEnvelopeRecipientc</name>
+    </customLabels>
+    <customLabels>
+        <label>无法查找信封，ID  =</label>
+        <name>UnableFindEvenlopeWithIdEquals</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取附件名称。  对附件对象的访问权限不足。</label>
+        <name>UnableGetAttachmentNameInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>无法从案例获取联系人信息。  对案例对象的访问权限不足。</label>
+        <name>UnableGetContactInformationFromCase</name>
+    </customLabels>
+    <customLabels>
+        <label>无法从机会获取联系人。  对 OpportunityContactRole 对象的访问权限不足。</label>
+        <name>UnableGetContactsFromOpportunity</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取内容信息。  对 ContentWorkspace 对象的访问权限不足。</label>
+        <name>UnableGetContentInformationInsufficientContentWorkspace</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取文档信息。  对附件对象的访问权限不足。</label>
+        <name>UnableGetDocumentInformationInsufficientAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>无法获取文档信息。  对 ContentVersion 对象的访问权限不足。</label>
+        <name>UnableGetDocumentInformationInsufficientAccessContentVersion</name>
+    </customLabels>
+    <customLabels>
+        <label>无法初始化 DocuSign 配置。  对 DocuSignAccountConfiguration 对象的访问权限不足。</label>
+        <name>UnableInitializeDocuSignAccountConfiguration</name>
+    </customLabels>
+    <customLabels>
+        <label>无法加载新帐户的设置信息</label>
+        <name>UnableLoadProvisioningAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>无法从 DocuSign 加载设置信息。 检查用户名、密码或 IntegratorKey 是否无效。</label>
+        <name>UnableLoadProvisioningInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>无法填充文件夹列表。  对文件夹对象的访问权限不足。</label>
+        <name>UnablePopulateFolderList</name>
+    </customLabels>
+    <customLabels>
+        <label>无法发送信封。 信封不存在。</label>
+        <name>UnableSendEvelopeNotExist</name>
+    </customLabels>
+    <customLabels>
+        <label>无法使用 DocuSign 对用户进行身份验证。 用户 ID 或密码不正确</label>
+        <name>UnableToAuthticateUserWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>无法编辑文档。</label>
+        <name>UnableToEditDocuments</name>
+    </customLabels>
+    <customLabels>
+        <label>无法更新收件人。  对 DocuSign_Envelope_Recipient__c 对象的访问权限不足。</label>
+        <name>UnableUpdateRecipientDocuSignEnvelopeRecipientc</name>
+    </customLabels>
+    <customLabels>
+        <label>未知</label>
+        <name>Unknown</name>
+    </customLabels>
+    <customLabels>
+        <label>更新 DocuSign 帐户设置</label>
+        <name>UpdateDSAccSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>更新文档</label>
+        <name>UpdateDoc</name>
+    </customLabels>
+    <customLabels>
+        <label>更新 DocuSign 凭证</label>
+        <name>UpdateDocuSignCredentials</name>
+    </customLabels>
+    <customLabels>
+        <label>更新 DocuSign 密码</label>
+        <name>UpdateDocuSignPassword</name>
+    </customLabels>
+    <customLabels>
+        <label>此信息可在控制台中的 DocuSign 管理选项卡上进行更新</label>
+        <name>UpdateInfoDSAdminTab</name>
+    </customLabels>
+    <customLabels>
+        <label>请在 DocuSign 管理选项卡中更新您的密码</label>
+        <name>UpdatePassword</name>
+    </customLabels>
+    <customLabels>
+        <label>上载附件</label>
+        <name>UploadAttachment</name>
+    </customLabels>
+    <customLabels>
+        <label>如果您已拥有使用 DocuSign 的帐户并且想要使用该帐户</label>
+        <name>UseDSAccount</name>
+    </customLabels>
+    <customLabels>
+        <label>用户</label>
+        <name>User</name>
+    </customLabels>
+    <customLabels>
+        <label>用户已使用 DocuSign 用户 ID 和密码进行配置</label>
+        <name>UserAlreadyConfiguredWithDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>此用户缺少足够的权限。</label>
+        <name>UserLacksSufficientPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label>用户的 DocuSign 成员资格链接已删除</label>
+        <name>UserLinkedDocuSignMembershipDeleted</name>
+    </customLabels>
+    <customLabels>
+        <label>必须提供 Salesforce 用户。</label>
+        <name>UserMustBeProvided</name>
+    </customLabels>
+    <customLabels>
+        <label>用户已成功链接到 DocuSign 成员资格</label>
+        <name>UserSuccessfullyLinkedDocuSignMembership</name>
+    </customLabels>
+    <customLabels>
+        <label>用户</label>
+        <name>Users</name>
+    </customLabels>
+    <customLabels>
+        <label>用户。</label>
+        <name>UsersPeriod</name>
+    </customLabels>
+    <customLabels>
+        <label>使用定位标记在文档中放置签名和数据集
+			位置</label>
+        <name>UsingAnchorTagsToPlaceSignature</name>
+    </customLabels>
+    <customLabels>
+        <label>视图：</label>
+        <name>ViewColon</name>
+    </customLabels>
+    <customLabels>
+        <label>清空信封</label>
+        <name>VoidEnvelope</name>
+    </customLabels>
+    <customLabels>
+        <label>清空信封已完成</label>
+        <name>VoidEnvelopeComplete</name>
+    </customLabels>
+    <customLabels>
+        <label>已清空</label>
+        <name>Voided</name>
+    </customLabels>
+    <customLabels>
+        <label>清空信封将删除您的收件人
+			对信封的访问权限。 清空之后，他们将无法查看或签署
+			信封。</label>
+        <name>VoidingEnvelopeWillRemoveAccess</name>
+    </customLabels>
+    <customLabels>
+        <label>欢迎</label>
+        <name>Welcome</name>
+    </customLabels>
+    <customLabels>
+        <label>您想从哪里开始？</label>
+        <name>WhereToStart</name>
+    </customLabels>
+    <customLabels>
+        <label>工作区</label>
+        <name>Workspace</name>
+    </customLabels>
+    <customLabels>
+        <label>撰写评论</label>
+        <name>WriteAReview</name>
+    </customLabels>
+    <customLabels>
+        <label>帐户配置完成之后，
+			您才能管理信封设置。</label>
+        <name>YouCannotManageEnvelopeSettings</name>
+    </customLabels>
+    <customLabels>
+        <label>您不能选择超过</label>
+        <name>YouCannotSelectMoreThan</name>
+    </customLabels>
+    <customLabels>
+        <label>您未设置密码。 请单击“编辑
+			DocuSign 密码”按钮，以输入 DocuSign 密码。</label>
+        <name>YouDoNotHavePasswordSet</name>
+    </customLabels>
+    <customLabels>
+        <label>您尚未将此 Salesforce 用户关联到您的 DocuSign
+			用户。 请输入您的 DocuSign 凭证，然后单击“更新
+			DocuSign 凭证”按钮。</label>
+        <name>YouHaveNotAssociatedSalesforceUser</name>
+    </customLabels>
+    <customLabels>
+        <label>您尚未获得 DocuSign 的访问权限。 请与
+			您的系统管理员联系。</label>
+        <name>YouHaveNotBeenGrantedDocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label>您的 DocuSign 帐户尚未配置。</label>
+        <name>YourDocuSignAccountNotYetConfigured</name>
+    </customLabels>
+    <customLabels>
+        <label>您的 DocuSign 用户信息</label>
+        <name>YourDocuSignUserInformation</name>
+    </customLabels>
+    <customLabels>
+        <label>您的姓名（您所签署的姓名）</label>
+        <name>YourName</name>
+    </customLabels>
+    <customLabels>
+        <label>邮编</label>
+        <name>Zip</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Add Another Signer --></label>
+        <name>m_AddAnotherSigner</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Add Signer --></label>
+        <name>m_Add_Signer</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Cancel --></label>
+        <name>m_Cancel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Documents --></label>
+        <name>m_DOCUMENTS</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - DocuSign --></label>
+        <name>m_DocuSign</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Done --></label>
+        <name>m_Done</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download DocuSign Android Url --></label>
+        <name>m_Download_DocuSign_Android_Url</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download DocuSign Mobile --></label>
+        <name>m_Download_DocuSign_Mobile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download DocuSign iOS_Url --></label>
+        <name>m_Download_DocuSign_iOS_Url</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Download the DocuSign mobile --></label>
+        <name>m_Download_the_DocuSign_mobile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Email Address --></label>
+        <name>m_EmailAddress</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Email Here --></label>
+        <name>m_EmailHere</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Error - In Person --></label>
+        <name>m_Error_InPerson</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Error - Invalid Email --></label>
+        <name>m_Error_InvalidEmail</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Full Name --></label>
+        <name>m_FullName</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Full Name Here --></label>
+        <name>m_FullNameHere</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Get DocuSign Mobile --></label>
+        <name>m_Get_DocuSign_Mobile</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - In Person --></label>
+        <name>m_InPerson</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- InvalidEmailError --></label>
+        <name>m_InvalidEmailError</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Reorder --></label>
+        <name>m_Reorder</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - SIGNERS --></label>
+        <name>m_SIGNERS</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Save Signer --></label>
+        <name>m_SaveSigner</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Mobile - Edit Page - Via Email --></label>
+        <name>m_ViaEmail</name>
+    </customLabels>
+    <customPageWebLinks>
+        <label>DocuSign 管理</label>
+        <name>DocuSignAdminLink</name>
+    </customPageWebLinks>
+    <customTabs>
+        <label>DocuSign 管理</label>
+        <name>DocuSign_Admin</name>
+    </customTabs>
+    <customTabs>
+        <label>DocuSign 演示</label>
+        <name>DocuSign_Partner_Demo</name>
+    </customTabs>
+</Translations>

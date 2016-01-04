@@ -1,0 +1,1621 @@
+<script language="javascript" type="text/javascript"> 
+
+var gSessionId = "{!API.Session_ID}";
+var gServerUrl = "{!API.Enterprise_Server_URL_130}";
+var gNumTemplates = 0;
+var gLogActivity = new Boolean(true);
+var gDocPassword = "";
+var gIsDraft = new Boolean(true);
+var gIsVisible = new Boolean(true);
+
+var gMMObjProgId = "ApttusMailMerge.MMDataSource";
+var gMMObjInstalled = new Boolean(true);
+var gMMObjVersionStr = "";
+var gMMObjVersion = 0.0;
+var gMMObjBuild = 0;
+var gMMObjRequiredVersion = 1.6;
+var gMMObjRequiredBuild = 0001;
+var gMMObj = null;
+
+var gMergeFieldsServletURL = "/servlet/servlet.MergeFields";
+var gMergeType = "";
+var gMergeTypeMsg = "";
+var gMergeTypeErr = "";
+
+var gAttachmentName = "";
+var gAttachmentBody = "";
+var gUseAsyncMode = true;
+var gTimeBeg = 0;
+var gTimeEnd = 0;
+var gDebugTime = false;
+var gDebugVerbose = false;
+
+var gTable = null;
+var gPageTitle = "";
+var gPageDescription = "";
+var gButtonName = "View";
+var gButtonType = "button";
+var gUseTable = true;
+
+//document output formats
+var cFORMAT_DOC = "doc";
+var cFORMAT_RTF = "rtf";
+var cFORMAT_PDF = "pdf";
+var cFORMAT_XML = "xml";
+var gOutputFormat = cFORMAT_DOC;
+var gExtension = "";
+var cNUM_TEMPLATES_TO_SHOW = 10;
+var cSHOW_GUIDANCE_TEXT = false;
+
+var cTEMPLATE_TYPE = "Apttus__Type__c";
+var cTEMPLATE_TYPE_AGREEMENT = "Agreement";
+var cTEMPLATE_TYPE_CLAUSE = "Clause";
+var cTEMPLATE_TYPE_PROPOSAL = "Proposal";
+var cTEMPLATE_TYPE_SECTION = "Section";
+var cTEMPLATE_TYPE_SUPPORTING_DOC = "Supporting Document";
+var cTEMPLATE_AGREEMENT_TYPES = "Apttus__Agreement_Types__c";
+var cTEMPLATE_GUIDANCE = "Apttus__Guidance__c";
+var cTEMPLATE_ISACTIVE = "Apttus__IsActive__c";
+
+var gObjectType = gAgreementObjName;
+var gObjectId = gContractId;
+var gObjectIdURL = gContractIdURL;
+var gObjectDesc = "Agreement";
+var gObjectName = gAgreementObjNameField;
+var gObjectObj = gAgreementObj;
+var gTemplateType = cTEMPLATE_TYPE_AGREEMENT;
+var gTemplateId = "";
+var gAdminType = gAdminObjName;
+var dAttachRequired= true;
+var gsvrfilename="";
+var gActionName="MergeDocument";
+var gObjToId="";
+//Agreement
+var cERROR_CREATE_INT_SIG_TASK = "ERROR creating internal signature task:\n";
+var cERROR_CREATE_EXT_SIG_TASK = "ERROR creating internal signature task:\n";
+var cERROR_CREATE_SCAN_TASK = "ERROR creating scan & attach task:\n";
+var cERROR_ACTIVATE_CONTRACT = "ERROR activating agreement:\n";
+var gUseServerAgreement = true;
+var gTargetStatusCategoryField = "Apttus__Status_Category__c";
+var gTargetStatusCategory = "{!APTS_Agreement__c.Status_Category__c}";
+var gTargetStatusField = "Apttus__Status__c";
+var gTargetStatus = "{!APTS_Agreement__c.Status__c}";
+var gWorkflowTriggerField = "Apttus__Workflow_Trigger_Viewed_Final__c";
+var gUsingWorkflow = false;
+var cWORKFLOW_MODE = "APTS_UseWorkflow";
+
+//merge server
+var gUseXMLHttpRequest = false;
+var gUseMergeServer = false;
+var gXmlRequestInput = "";
+var gMergeServerURL = "";
+
+//var gXMLRequest = new XMLHttpRequest();
+var gXMLRequest = null;
+var gXMLResponse = null;
+
+var cUSE_MERGE_SERVER = "APTS_UseWizardServer";
+var cUSE_MERGE_SERVER_TIMEOUT_PERIOD = "APTS_UseTimeoutPeriod";
+var bPopupBlocked = false;
+var gTimeStamp = "";
+var gTimeoutPeriod = 20000;
+
+function getWizardMode() {
+	getTimeoutPeriod();
+	getDateTime();
+	
+    try {
+		var msObj = getAdminObjSettings(cUSE_MERGE_SERVER);
+		if (msObj==null) return null;
+        
+		var msName = msObj.name;
+		var msValue = msObj.value;
+		var msCode = msObj.code;
+
+		var q = "select "+cADMIN_CODE+" from "+gAdminObjName+" where "+cADMIN_NAME+"='"+cUSE_MERGE_SERVER+"'";
+		var result = sforce.connection.query(q);
+		if (result.size>0) {
+			var records = result.getArray("records");
+			gMergeServerURL = records[0].get(cADMIN_CODE);
+		}
+
+  		if (msValue.toLowerCase()=="true" || msValue=="1") {
+			gUseMergeServer = true;
+		} else {
+			gUseMergeServer = false;
+		}
+    }
+    catch(ex) {
+    }
+}
+
+function getTimeoutPeriod() {
+    try {
+		var msObj = getAdminObjSettings(cUSE_MERGE_SERVER_TIMEOUT_PERIOD);
+		if (msObj==null) return null;
+        
+		var msName = msObj.name;
+		var msValue = msObj.value;
+
+		var q = "select "+cADMIN_CODE+" from "+gAdminObjName+" where "+cADMIN_NAME+"='"+cUSE_MERGE_SERVER_TIMEOUT_PERIOD+"'";
+		var result = sforce.connection.query(q);
+
+  		if (msValue!=null && msValue!="" && msValue!="0") {
+			gTimeoutPeriod = msValue;
+		}
+    }
+    catch(ex) {
+    }
+}
+
+function getDateTime(){
+    var now = new Date();
+	var gday = now.getDate();
+	var gmth = now.getMonth()+1;
+	var year = now.getYear();
+	
+	gTimeStamp="_"+gmth+"_"+gday+"_"+year;//+"_"+getClockTime();	
+	
+	return gTimeStamp;
+}
+
+function initWizard() {
+	initWizardSilent();
+
+	gHasRecordTypes = hasCustomField("RecordTypeId", gObjectType);
+	initTemplates();
+	
+	if (gNumTemplates==1) {
+		if (inPromptMode()) {
+			return;
+		} else {
+			doMerge();
+		}
+	} else {
+		if (gIsVisible) {
+			return;
+		} else if (gTemplateId!="" && gTemplateId!=null) {
+			doMerge();
+		}
+	}
+}
+
+function initWizardSilent() {
+	init();
+
+	if (!initContractWizard()) {
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function initContractWizard() {
+	if (gUseMergeServer) {
+		return true;
+	} else {
+		return initApttusWizard(false);
+	}
+}
+
+function autoRunWizard(templateId) {
+	initWizardSilent();
+
+	gIsDraft = false;
+	gIsVisible = false;
+	
+	gAction = cACTION_GENERATE_AGREEMENT;
+
+	gMergeType = "Final";
+	gMergeTypeMsg = cCREATE_FINAL_AGREEMENT;
+	gMergeTypeErr = cERROR_CREATE_FINAL_AGREEMENT;
+	
+	gPageTitle = "Generate Agreement";
+	gPageDescription = "Apttus can generate a final version of your agreement from your data.<br>" +
+		"Please choose an agreement template.";
+	gWorkflowTriggerField = "Apttus__Workflow_Trigger_Viewed_Final__c";
+		
+	doAutoMerge(gObjectId,templateId,true);
+}
+
+function initApttusWizard(supressMsgs) {
+	if (isRunningIE()) {
+		gMMObjInstalled = false;
+		
+		try {
+			gMMObj = new ActiveXObject(gMMObjProgId);
+
+			gMMObjInstalled = true;
+			gMMObjVersionStr = gMMObj.GetVersionStr();
+			gMMObjVersion = convertStringToFloat(gMMObj.GetVersion());
+			gMMObjBuild = convertStringToFloat(gMMObj.GetBuild());
+			
+			var sameVersionInstalled = (gMMObjVersion == gMMObjRequiredVersion) ? true : false;
+			var newerVersionInstalled = (gMMObjVersion > gMMObjRequiredVersion) ? true : false;
+			var sameBuildInstalled = (gMMObjBuild == gMMObjRequiredBuild) ? true : false;
+			var newerBuildInstalled = (gMMObjBuild > gMMObjRequiredBuild) ? true : false;
+
+			//check for required version and build of wizard
+			var okToRun = false;
+			if (newerVersionInstalled) {
+				okToRun = true;
+			} else if (sameVersionInstalled) {
+				if (newerBuildInstalled) {
+					okToRun = true;
+				} else if (sameBuildInstalled) {
+					okToRun = true;
+				}
+			}
+			
+			if (gDebug) {
+				writeDebugLn("<p>Apttus Wizard:"+
+					"<br>Installed="+gMMObjInstalled+
+					"<br>Version="+gMMObjVersion+
+					"<br>Build="+gMMObjBuild+
+					"<br>RequiredVersion="+gMMObjRequiredVersion+
+					"<br>RequiredBuild="+gMMObjRequiredBuild+
+					"<br>sameVersion="+sameVersionInstalled+
+					"<br>newerVersion="+newerVersionInstalled+
+					"<br>sameBuild="+sameBuildInstalled+
+					"<br>newerBuild="+newerBuildInstalled+
+					"<br>okToRun="+okToRun);
+			}
+			
+			if (!okToRun) {
+				if (!supressMsgs) {
+					alert("This functionality requires the Apttus Wizard\n"+
+						"version "+gMMObjRequiredVersion+"."+gMMObjRequiredBuild+" or later.\n");
+				}
+
+				return false;
+			}
+		}
+		catch(ex) {
+			//ex.message="Automation server can't create object"
+			if (supressMsgs) {
+				window.setTimeout("installWizardError();",gTimeout);
+				return false;
+				
+			} else {
+				if (confirm("This function requires the Apttus Wizard to be installed.\n"+
+					"If you have installed the Apttus Wizard, you are seeing this message because "+
+					"your Internet Explorer settings are set to not run unsigned ActiveX controls.\n\n"+
+					"Click OK to run the Apttus Wizard by selecting 'Run ActiveX Control' in the "+
+					"Internet Explorer Info Bar near the top of the window, or click Cancel if the "+
+					"Apttus Wizard has not been installed."))
+				{
+					window.setTimeout("installWizardError();",gTimeout);
+					return true;
+				}
+			}
+		}
+		
+		return gMMObjInstalled;
+		
+	} else {
+		if (!supressMsgs) {
+			alert("Sorry, this function can only be used with Internet Explorer.");
+		}
+		return false;
+	}
+}
+
+function installWizardError() {
+	try {
+		/*if (confirm("This function requires the Apttus Wizard to be installed.\n"+
+			"Click OK to contact Apttus for more info or Cancel to continue."))
+		{
+			var installWindow = window.open("http://apttus.com/contact.php", 
+				"ApttusWizard", "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
+		}*/
+		gMMObj = new ActiveXObject(gMMObjProgId);
+	}
+	catch(ex) {
+	}
+}
+
+function doSelectAction() {
+	try {
+		if (gTable!=null) {
+			var ids = gTable.getSelection();
+			if (ids!="" && ids!=null) {
+				gTemplateId = ids;
+				doMerge();
+			}
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function doCancelAction() {
+	navigateTo(gObjectIdURL);
+}
+
+function doAutoMerge(gObjectId,gTemplateId,gLogActivity) {
+	try {
+		gProtectionLevel = getProtectionLevel();
+		showMsgProgress(gMergeTypeMsg);
+				
+		merge();
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+function doMerge() {
+	try {
+		gObjectId = document.getElementById("form_id_lkid").value;
+		if (!gUseTable) {
+			gTemplateId = document.getElementById("bTemplateId").value;
+		}
+		gLogActivity = document.getElementById("divTask").checked;
+		gProtectionLevel = getProtectionLevel();
+
+		var gFormatDropdown = document.getElementById("divOutputFormat");
+		gOutputFormat = gFormatDropdown.options[gFormatDropdown.selectedIndex].value;
+		
+		if (gUseMergeServer) {
+			createFilename(gPageTitle);
+			var xmlRequestInput = document.getElementById("xmlInput");
+			xmlRequestInput.value = doMakeFormRequest();
+			gXmlRequestInput = xmlRequestInput.value;
+			doServerMerge();
+			
+		} else {
+			showMsgProgress(gMergeTypeMsg);
+			window.setTimeout("merge();",gTimeout);
+		}
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+function doServerMerge() {
+	try {
+		preMerge();
+		
+		gDocPassword = getDocumentPassword();
+
+	    if (gUseXMLHttpRequest) {
+	    	makeXMLHttpRequest(gMergeServerURL);	    
+	    } else {
+	    	//var xmlRequestInput = document.getElementById("xmlInput");
+			//xmlRequestInput.value = doMakeFormRequest();
+			//gXmlRequestInput = xmlRequestInput.value;
+
+			if (gNumTemplates==1 && bPopupBlocked==true) {
+				bPopupBlocked=false;			
+			}
+			else {
+				document.dispatch.submit();
+				if (gPageTitle=="Generate Agreement"){
+	    			serveractivateAgreement();
+	    		}
+	    		else {
+	    			createServerActivityLogEntry(null,gPageTitle);
+	    		}
+	    		window.setTimeout("navigateTo(gObjectIdURL);",gTimeoutPeriod);
+			}
+	    }
+	}
+	catch(ex) {
+		alert(ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+//clients should override
+function preMerge() {}
+
+//clients should override
+function postMerge() {}
+
+/*
+function postMerge() {
+	try {
+		var gAttachmentName = "Response.xml";
+		var gAttachmentBody = gXMLResponse;
+		
+		var sObj = new sforce.SObject("Attachment");
+				
+		sObj.ParentId = gObjectId;
+		sObj.OwnerId = "{!User.Id}";
+		sObj.Name = gAttachmentName;
+		sObj.Body = gAttachmentBody;
+		
+		var result = sforce.connection.create([sObj],
+		{
+			onSuccess : createAttachmentSuccess,
+			onFailure : createAttachmentFailure
+		});
+	}
+	catch(ex) {
+		erroralert(cERROR_SAVING_FINAL_AGREEMENT,ex);
+		navigateTo(gObjectIdURL);
+	}
+}*/
+
+function createAttachmentSuccess(result) {
+	if (gLogActivity) {
+		createActivityLogEntry();
+	}
+	navigateTo(gObjectIdURL);
+}
+
+function createAttachmentFailure(error) {
+	erroralert(gSaveErrorMsg,error);
+	navigateTo(gObjectIdURL);
+}
+
+/*
+	//XMLHttpRequest request
+	<Request>
+	    <ActionName>MergeDocument</ActionName>
+	    <CustomerID>user@apttus.com</CustomerID>
+	    <SessionID>sessionId</SessionID>
+	    <ServerURL>https://www.salesforce.com</ServerURL>
+	    <ObjectType>Apttus_APTS_Agreement__c</ObjectType>
+	    <ObjectID>a0G40000000POsw</ObjectID>
+	    <TemplateType>Apttus__APTS_Template__c</TemplateType>
+	    <TemplateID>a014000000CkU3r</TemplateID>
+	    <AdminType>Apttus__APTS_Admin__c</AdminType>
+	    <ProtectionLevel>0</ProtectionLevel>
+	    <DocumentPassword>mypassword</DocumentPassword>
+	    <IsDraft>false</IsDraft>
+	    <Debug>false</Debug>
+	    <UserID>00540000000ny1W</UserID>
+	    <Filename>agreement 2_Original.doc</Filename>
+	    <AttachmentRequired>true</AttachmentRequired>
+	</Request>
+*/
+function doMakeFormRequest() {
+	try {
+		gObjToId="";
+	    gXmlRequestInput = "<Request>";
+	    
+	    gXmlRequestInput += "<ActionName>";
+	    gXmlRequestInput += gActionName;
+	    gXmlRequestInput += "</ActionName>";
+	    
+	    gXmlRequestInput += "<CustomerID>";   
+	    gXmlRequestInput += gUserName;
+	    gXmlRequestInput += "</CustomerID>";
+
+	    gXmlRequestInput += "<SessionID>";
+	    gXmlRequestInput += gSessionId;
+	    gXmlRequestInput += "</SessionID>";
+
+	    gXmlRequestInput += "<ServerURL>";
+	    gXmlRequestInput += gServerUrl;    
+	    gXmlRequestInput += "</ServerURL>";
+
+	    gXmlRequestInput += "<ObjectType>";
+	    gXmlRequestInput += gObjectType;
+	    gXmlRequestInput += "</ObjectType>";
+
+	    gXmlRequestInput += "<ObjectID>";
+	    gXmlRequestInput += gObjectId;  
+	    gXmlRequestInput += "</ObjectID>";
+
+	    gXmlRequestInput += "<TemplateType>";
+	    gXmlRequestInput += gTemplateType;
+	    gXmlRequestInput += "</TemplateType>";
+
+	    gXmlRequestInput += "<TemplateID>";
+	    gXmlRequestInput += gTemplateId;  
+	    gXmlRequestInput += "</TemplateID>";
+
+	    gXmlRequestInput += "<AdminType>";
+	    gXmlRequestInput += gAdminType;
+	    gXmlRequestInput += "</AdminType>";
+
+	    gXmlRequestInput += "<ProtectionLevel>";
+	    gXmlRequestInput += gProtectionLevel;  
+	    gXmlRequestInput += "</ProtectionLevel>";
+
+	    gXmlRequestInput += "<DocumentPassword>";
+	    gXmlRequestInput += gDocPassword;
+	    gXmlRequestInput += "</DocumentPassword>";
+
+	    gXmlRequestInput += "<IsDraft>";
+	    gXmlRequestInput += gIsDraft;    
+	    gXmlRequestInput += "</IsDraft>";
+
+	    gXmlRequestInput += "<Debug>";
+	    gXmlRequestInput += gDebug;
+	    gXmlRequestInput += "</Debug>";
+
+	    gXmlRequestInput += "<UserID>";
+	    gXmlRequestInput += "{!User.Id}";
+	    gXmlRequestInput += "</UserID>";
+
+	    gXmlRequestInput += "<Filename>";
+	    gXmlRequestInput += gsvrfilename;
+	    gXmlRequestInput += "</Filename>";
+	    
+	    gXmlRequestInput +="<AgreementInfo>";
+  	    
+  	    if (gObjectType==gAgreementObjName){
+  	    	gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENT_LINK\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.Link}";
+  	    	gXmlRequestInput +="</data>";
+
+  	    	gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENTOWNER_EMAIL\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.OwnerEmail}";
+  	    	gXmlRequestInput +="</data>";
+  	    
+  	    	gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENTOWNER_FIRSTNAME\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.OwnerFirstName}";
+  	    	gXmlRequestInput +="</data>";
+  	    
+  	    	gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENTOWNER_FULLNAME\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.OwnerFullName}";
+  	    	gXmlRequestInput +="</data>";  	   
+    	
+    		gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENTOWNER_LASTNAME\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.OwnerLastName}";
+  	    	gXmlRequestInput +="</data>";
+  	    
+    		gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENTOWNER_PHONE\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.OwnerPhone}";
+  	    	gXmlRequestInput +="</data>";
+  	    
+  	    	gXmlRequestInput +="<data fieldName=\"APTS_AGREEMENTOWNER_TITLE\">";
+  	   		gXmlRequestInput +="{!APTS_Agreement__c.OwnerTitle}";
+  	    	gXmlRequestInput +="</data>";
+  	    }
+  		gXmlRequestInput +="</AgreementInfo>";
+
+		gXmlRequestInput += "<AttachmentRequired>";
+	    gXmlRequestInput += dAttachRequired;
+	    gXmlRequestInput += "</AttachmentRequired>";	
+
+	    gXmlRequestInput += "</Request>";
+
+	    return gXmlRequestInput;
+	}
+	catch(ex) {
+		alert(ex);
+		return "";
+	}
+}
+
+/*
+function makeXMLHttpRequest(url) {
+    var doc = document.implementation.createDocument("","",null);
+    var reqNode = doc.createElement("request");
+    doc.appendChild(reqNode);
+
+    var node = doc.createElement("ActionName");
+    reqNode.appendChild(node);    
+    var nodeVal = doc.createTextNode("MergeDocument");
+    node.appendChild(nodeVal);    
+    
+    node = doc.createElement("CustomerID");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gUserName);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("SessionID");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gSessionId);
+    node.appendChild(nodeVal);
+
+    node = doc.createElement("ServerURL");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gServerUrl);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("ObjectType");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gObjectType);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("ObjectID");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gObjectId);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("TemplateType");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gTemplateType);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("TemplateID");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gTemplateId);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("AdminType");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gAdminType);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("ProtectionLevel");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gProtectionLevel);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("DocumentPassword");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gDocPassword);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("IsDraft");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gIsDraft);
+    node.appendChild(nodeVal);    
+
+    node = doc.createElement("Debug");
+    reqNode.appendChild(node);    
+    nodeVal = doc.createTextNode(gDebug);
+    node.appendChild(nodeVal);
+
+	//enable cross domain scripting access
+	netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+
+    gXMLRequest = new XMLHttpRequest();
+    gXMLRequest.open("POST",url,true);
+    gXMLRequest.setRequestHeader("Content-Type","text/xml");
+    gXMLRequest.onreadystatechange = processRequest;
+    gXMLRequest.send(doc);
+}
+	
+function makeXMLHttpRequest(url) {
+	try {
+		if (window.XMLHttpRequest)
+			gXMLRequest= new XMLHttpRequest();
+		else if (window.ActiveXObject)
+			gXMLRequest= new ActiveXObject("Microsoft.XMLHTTP");
+		else {alert("XMLHttpRequest not supported!");}
+
+		//netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");// UniversalBrowserWrite");
+		//netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+	
+		gXMLRequest.open("POST",url,true);
+    	gXMLRequest.setRequestHeader("Content-Type","text/xml");
+    	gXMLRequest.onreadystatechange = processRequest;
+    	gXMLRequest.send(doMakeFormRequest);
+    }
+	catch(ex) {
+		alert(ex);
+	}
+}*/
+
+/*
+	//XMLHttpRequest response methods
+	
+	DOMString getAllResponseHeaders();
+	DOMString getResponseHeader(in DOMString header);
+	readonly attribute DOMString responseText;
+	readonly attribute Document responseXML;
+	readonly attribute unsigned short status;
+	readonly attribute DOMString statusText;
+*/
+/*
+function processRequest() {
+	//alert(gXMLRequest.readyState);
+    if (!gXMLRequest || gXMLRequest.readyState!=4) {
+        return;
+    }
+    if (gXMLRequest.status!=200 && gXMLRequest.status!=500) {
+        return;
+    }
+    var responseHeaders = gXMLRequest.getAllResponseHeaders();
+    //alert("responseHeaders:\n"+responseHeaders);
+    
+	gXMLResponse = gXMLRequest.responseText;
+    //gXMLResponse = gXMLRequest.responseXML.documentElement;
+ 	//alert(gXMLResponse);
+ 	var newWin = window.open();
+	var newDoc = newWin.document;
+	newDoc.open("application/msword", "replace");
+	newDoc.write(gXMLResponse);
+	newDoc.close();
+
+	postMerge();
+}
+*/
+
+function preMergeBase() {
+	if (gDebugTime) {
+		gTimeBeg = new Date();
+	}
+			
+	preMerge();
+}
+
+function merge() {
+	try {
+		preMergeBase();
+		
+		if (gMMObjInstalled) {
+			gDocPassword = getDocumentPassword();
+			
+			addMergeFields();
+			
+			if (gDebug) {
+				writeDebugLn("<p>gServerUrl="+gServerUrl+
+					"<br>gObjectType="+gObjectType+
+					"<br>gObjectId="+gObjectId+
+					"<br>gTemplateType="+gTemplateType+
+					"<br>gTemplateId="+gTemplateId+
+					"<br>gAdminType="+gAdminType+
+					"<br>gIsDraft="+gIsDraft+
+					"<br>gIsVisible="+gIsVisible);
+			}
+				
+			gAttachmentName = gMMObj.BuildDataSource(gSessionId, gServerUrl,
+				gObjectType, gObjectId, gTemplateType, gTemplateId, gAdminType,
+				gProtectionLevel, gDocPassword, gIsDraft, gIsVisible, gDebug);
+		}
+		
+		postMergeBase();
+	}
+	catch(ex) {
+		gMMObj = null;
+
+		if (gIsVisible) {
+			erroralert(gMergeTypeErr,ex);
+			navigateTo(gObjectIdURL);
+		}
+	}
+}
+
+function postMergeBase() {
+	if (gDebugTime) {
+		gTimeEnd = new Date();
+		var time = getElapsedTime(gTimeBeg,gTimeEnd);
+		alert("Execution Time:\n"+time);
+	}
+	
+	postMerge();
+}
+
+function initTemplates() {
+	try {
+		var html = "";
+		html = buildPageHeader(html);
+		html = buildPageBody(html);
+		html = buildPageFooter(html);
+
+		//create table to display results
+		gTable = new Table();
+		gTable.setObject(gTemplateObjName);
+		gTable.setCanvas("divBody");
+		gTable.addColumn("Name");
+		gTable.addColumn("Apttus__Guidance__c");
+		gTable.addColumn("Apttus__Category__c");
+		gTable.addColumn("Apttus__Subcategory__c");
+		gTable.setMultiSelect(false);
+		gTable.showHighlights(false);
+	
+		//select all templates
+		var fieldList = getFieldList(gTemplateObjName);
+		var q = "select " + fieldList + " from " + gTemplateObjName;
+		q += " where " + cTEMPLATE_ISACTIVE + " = true ";
+		q += " and " + cTEMPLATE_TYPE + " = '" + gTemplateType + "'";
+
+	    //filter templates based on record type
+	    if (gHasRecordTypes==true) {
+			var recordTypeId;
+			var recordTypeName;
+			var ids = new Array(1);
+			ids[0] = gObjectId;
+	
+			var result = sforce.connection.retrieve("Id,RecordTypeId",gObjectType,ids);
+			gNumApiCalls++;
+			if (result[0]==null) {
+				alert("Error: Could not retrieve templates for this "+gObjectDesc+" (missing RecordTypeId)." +
+					"\nMake sure record types are enabled and reselect the record type for this "+gObjectDesc+".");
+		    	navigateTo(gObjectIdURL);
+		    	return;
+			} else {
+				recordTypeId = result[0].RecordTypeId;
+				if (recordTypeId==null) {
+					alert("Error: Could not retrieve templates (missing RecordTypeId)." +
+						"\nReselect the record type for this "+gObjectDesc+".");
+			    	navigateTo(gObjectIdURL);
+			    	return;
+				} else {
+					ids[0] = recordTypeId;
+					result = sforce.connection.retrieve("Id,Name","RecordType",ids);
+					gNumApiCalls++;
+					if (result[0]==null) {
+						alert("Error: Could not retrieve templates for RecordTypeId '"+recordTypeId+"'." +
+							"\nMake sure record types are enabled and reselect the record type for this "+gObjectDesc+".");
+				    	navigateTo(gObjectIdURL);
+				    	return;
+					} else {
+						recordTypeName = result[0].Name;
+						q += " and "+cTEMPLATE_AGREEMENT_TYPES+" includes ('"+recordTypeName+"')";
+				    }
+				}			
+		    }
+		}
+		q += " order by Name ASC";
+
+		//execute query
+		var result = sforce.connection.query(q);
+		gNumApiCalls++;
+		var records = result.getArray("records");
+		var recordIds = new Array(records.length);
+    	gNumTemplates = records.length;
+   		var nTemplatesFound = 0;
+   		    	
+    	if (gNumTemplates<=0) {
+    		alert("No Templates found.");
+    		navigateTo(gObjectIdURL);
+    		return;
+    	}
+    	
+		if (!gUseTable) {
+			html = "<select id=\"bTemplateId\" size=\""+cNUM_TEMPLATES_TO_SHOW+"\" name=\"bTemplateId\">";
+		}
+        
+		//iterate over the templates
+		for (i=0; i<gNumTemplates; i++) {
+			var tRecord = records[i];
+			var tId = tRecord.Id;
+            var tName = tRecord.Name;
+            var tGuidance = tRecord.get(cTEMPLATE_GUIDANCE);
+
+	       	//for each template, get the id of the attachment that contains the actual template
+	       	//assuming there is only a single attachment associated with each contract template
+			var qrTempAtt = sforce.connection.query("Select Id,Name from Attachment where ParentId = '"+tId+"'");
+	    	gNumApiCalls++;
+	    	var attRecords = qrTempAtt.getArray("records");
+	    	
+	    	if (attRecords.length > 0) {
+	    		//just get the first attachment
+				var tAttRecord = attRecords[0];
+				var tAttId = tAttRecord.Id;
+		        var tAttName = tAttRecord.Name;
+				
+				//check for multiple attachments
+				if (attRecords.length > 1) {
+					alert("There are multiple attachments for this template.\nUsing attachment "+tAttName);
+				}
+		        
+				if (!gUseTable) {
+			        //select first item in list and output the template info in a list
+			        //with the attId as the selected value
+			        if (i==0) {
+			  			//html += "<br><option value=\""+tAttId+"\" selected>";
+			  			html += "<br><option value=\""+tId+"\" selected>";
+			        } else {
+				        //html += "<br><option value=\""+tAttId+"\">";
+				        html += "<br><option value=\""+tId+"\">";
+			        }
+			        
+			        html += tName;
+			        if (cSHOW_GUIDANCE_TEXT) {
+			        	html += " ("+tGuidance+")";
+			        }
+				}
+				
+	            nTemplatesFound += 1;
+	            //recordIds[i] = tAttId;
+	            recordIds[i] = tId;
+	            
+			} else {
+				alert("No attachment found for template '"+tName+"'");
+			}
+		}
+		
+		if (!gUseTable) {
+			html += "<br></select>";
+	        document.getElementById("divTemplate").innerHTML = html;
+		}
+
+		//let the user know if we couldn't retrieve all the templates
+		if (gNumTemplates != nTemplatesFound) {
+    		alert("Not all templates were successfully retrieved.");
+		}
+		
+		//make sure we retrieved at least one template
+		if (nTemplatesFound < 1) {
+    		alert("Error retrieving templates...Cannot continue");
+    		navigateTo(gObjectIdURL);
+		}
+
+		if (gUseTable) {	// && gNumTemplates>1) {
+			gTable.setRecords(records);
+			gTable.setRecordIds(recordIds);
+			gTable.draw();
+		}
+		
+		if (gNumTemplates==1) {
+			gTemplateId = recordIds[0];
+			bPopupBlocked=true;
+		}
+	}
+	catch(ex) {
+		alert(ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function createServerActivityLogEntry(msg,actiontype) {
+	try {	
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		msg = (msg==null) ? "" : "\r" + msg;
+		if (actiontype=="Generate Agreement" || actiontype=="Preview Agreement"){
+			
+			var action = (gMergeType=="Draft") ? "Previewed " : "Generated ";
+			task.Description = action+" "+gObjectDesc+" {!APTS_Agreement__c.FF_Agreement_Number__c}"+msg;
+			task.Subject = action+" "+gObjectDesc+"";
+		}
+		else if (actiontype=="Regenerate Agreement") {
+			task.Description = "Regenerated Agreement {!APTS_Agreement__c.FF_Agreement_Number__c}";
+			task.Subject = "Regenerated Agreement";
+		}
+		else {
+			task.Description = "Generate Supporting document  for agreement {!APTS_Agreement__c.FF_Agreement_Number__c}";
+			task.Subject = "Generate Supporting Document";
+		}
+		
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.WhatId = gObjectId;
+		var result = sforce.connection.create([task]);
+		gNumApiCalls++;
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function buildPageHeader(html) {
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<div class=\"bPageTitle\">";
+	html += "	<div class=\"ptBody secondaryPalette\">";
+	html += "		<div class=\"content\">";
+	html += "			<img src=\"/img/icon/contracts32.png\" alt=\"Agreement\" class=\"pageTitleIcon\" title=\"Agreement\">";
+	html += "			<h1 class=\"pageType\">"+gObjectDesc+" "+gObjectName+"<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "			<h2 class=\"pageDescription\">"+gPageTitle+"</h2>";
+	html += "			<div class=\"blank\">&nbsp;</div>";
+	html += "		</div>";
+	html += "		<div class=\"links\">";
+	html += "			<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help&body=%2Fhelp%2F";
+	html += "			doc%2Fen%2Fhelp2.jsp&target=mail_sending.htm&section=Mail_Merge&showSplash=true', 'Help', 700, 600, ";
+	html += "			'width=700,height=600,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=yes,directories=no,";
+	html += "			location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\"><span ";
+	html += "			class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\"></a>";
+	html += "		</div>";
+	html += "	</div>";
+	html += "	<div class=\"ptBreadcrumb\">";
+	html += "	</div>";
+	html += "</div>";
+	
+	html = buildPageHeaderClient(html);
+	setMain(html);
+	
+	return html;
+}
+
+function buildPageHeaderClient(html) {
+	html += "<div class=\"bDescription\">";
+	html += gPageDescription;
+	html += "</div>";
+	html += "<table>";
+	html += "	<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\""+gObjectIdURL+"\">";
+	html += "	<input type=\"hidden\" name=\"id\" id=\"id\" value=\""+gObjectId+"\">";
+	html += "	<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\""+gObjectIdURL+"\">";
+	html += "	<tr>";
+	html += "		<td>1.</td>";
+	html += "		<td><label for=\"form_id\"><span class=\"requiredMark\">*</span>Specify the "+gObjectDesc+" to merge with document:</label></td>";
+	html += "	</tr>";
+	html += "	<tr>";
+	html += "		<td>&nbsp;</td><td>";
+	html += "		<input type=\"hidden\" name=\"form_id_lkid\" id=\"form_id_lkid\" value=\""+gObjectId+"\">";
+	html += "		<input type=\"hidden\" name=\"form_id_lkold\" id=\"form_id_lkold\" value=\""+gObjectName+"\">";
+	html += "		<input type=\"hidden\" name=\"form_id_lktp\" id=\"form_id_lktp\" value=\""+gObjectObj+"\">";
+	html += "		<input type=\"hidden\" name=\"form_id_lspf\" id=\"form_id_lspf\" value=\"0\">";
+	html += "		<input type=\"hidden\" name=\"form_id_mod\" id=\"form_id_mod\" value=\"0\">";
+	html += "		<span class=\"lookupInput\">";
+	html += "		<input value=\""+gObjectName+"\" maxlength=\"80\" type=\"text\" onchange=\"";
+	html += "			document.getElementById('form_id_lkid').value='';document.getElementById('form_id_mod').value='1';\" ";
+	html += "			id=\"form_id\" size=\"20\" name=\"form_id\">";
+	html += "		<a href=\"JavaScript:openLookup('/_ui/common/data/LookupPage?lknm=form_id&lkfm=mergeForm&lktp=' + ";
+	html += "			document.getElementById('form_id_lktp').value,670,document.getElementById('form_id_mod').value,'&lksrch='";
+	html += " 			+ escapeUTF(document.getElementById('form_id').value),'maxw')\" title=\"Specify the object to merge ";
+	html += "			with document: Lookup (New Window)\" onclick=\"setLastMousePosition(event)\"  id=\"form_id_lkwgt\"><img ";
+	html += "			src=\"/s.gif\" alt=\"Specify the "+gObjectDesc+" to merge with document: Lookup (New Window)\" class=\"lookupPopup\"></a>";
+	html += "		</span>";
+	html += "		</td>";
+	html += "	</tr>";
+
+	var prompt = inPromptMode();
+	
+	if (gUseTable) {
+		html += "	<tr>";
+		html += "		<td colspan=\"2\">&nbsp;</td>";
+		html += "	</tr>";
+		
+		if (prompt) {
+			html += "	<tr>";
+			html += "		<td>2.</td>";
+			html += "		<td><label for=\"accessLevel\"><span class=\"requiredMark\">*</span>Select document protection level:</label></td>";
+			html += "	</tr>";
+			html += "	<tr>";
+			html += "		<td>&nbsp;</td>";
+			html += "		<td>";
+			html += "		<input type=\"radio\" id=\"accessLevel0\" name=\"accessLevel\" value=\""+wdNoProtection+"\">"+cNoProtection+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel1\" name=\"accessLevel\" value=\""+wdAllowOnlyRevisions+"\">"+cAllowOnlyRevisions+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel2\" name=\"accessLevel\" value=\""+wdAllowOnlyComments+"\">"+cAllowOnlyComments+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel3\" name=\"accessLevel\" value=\""+wdAllowOnlyFormFields+"\">"+cAllowOnlyFormFields+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel4\" name=\"accessLevel\" value=\""+wdAllowOnlyReading+"\" checked>"+cAllowOnlyReading+"<br>";
+			html += "		</td>";
+			html += "	</tr>";
+			html += "	<tr>";
+			html += "		<td colspan=\"2\">&nbsp;</td>";
+			html += "	</tr>";
+			html += "	<tr>";
+			html += "		<td>3.</td>";
+			html += "		<td><label for=\"divTemplate\"><span class=\"requiredMark\">*</span>Specify a template and output format below:</label></td>";
+			html += "	</tr>";
+		} else {
+			html += "	<tr>";
+			html += "		<td>2.</td>";
+			html += "		<td><label for=\"divTemplate\"><span class=\"requiredMark\">*</span>Specify a template and output format below:</label></td>";
+			html += "	</tr>";		
+		}
+		
+		html += "	<tr>";
+		html += "		<td>&nbsp;</td>";
+		html += "		<td><input value=\"1\" type=\"checkbox\" id=\"divTask\" checked=\"checked\" name=\"divTask\" /> ";
+		html += "		<label for=\"divTask\">Log an activity (Optional)</label>";
+		html += "		</td>";
+		html += "	</tr>";
+		
+		html += "	<tr>";
+		html += "		<td>&nbsp;</td>";
+		html += "		<td><select id=\"divOutputFormat\">";
+		html += "       	<option id=\"doc\" value=\"doc\" selected>Save As DOC</option>";
+		html += "       	<option id=\"rtf\" value=\"rtf\">Save As RTF</option>";
+		html += "       	<option id=\"pdf\" value=\"pdf\">Save As PDF</option>";
+		if (!gUseMergeServer){
+			html += "       	<option id=\"xml\" value=\"xml\">Save As XML</option>";
+		}
+		html += "   	</select></td>";
+		html += "	</tr>";
+		
+		html += "</table>";
+		
+	} else {
+		html += "	<tr>";
+		html += "		<td colspan=\"2\">&nbsp;</td>";
+		html += "	</tr>";
+		
+		if (prompt) {
+			html += "	<tr>";
+			html += "		<td>2.</td>";
+			html += "		<td><label for=\"accessLevel\"><span class=\"requiredMark\">*</span>Select document protection level:</label></td>";
+			html += "	</tr>";
+			html += "	<tr>";
+			html += "		<td>&nbsp;</td>";
+			html += "		<td>";
+			html += "		<input type=\"radio\" id=\"accessLevel0\" name=\"accessLevel\" value=\""+wdNoProtection+"\">"+cNoProtection+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel1\" name=\"accessLevel\" value=\""+wdAllowOnlyRevisions+"\">"+cAllowOnlyRevisions+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel2\" name=\"accessLevel\" value=\""+wdAllowOnlyComments+"\">"+cAllowOnlyComments+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel3\" name=\"accessLevel\" value=\""+wdAllowOnlyFormFields+"\">"+cAllowOnlyFormFields+"<br>";
+			html += "		<input type=\"radio\" id=\"accessLevel4\" name=\"accessLevel\" value=\""+wdAllowOnlyReading+"\" checked>"+cAllowOnlyReading+"<br>";
+			html += "		</td>";
+			html += "	</tr>";
+			html += "	<tr>";
+			html += "		<td colspan=\"2\">&nbsp;</td>";
+			html += "	</tr>";
+			html += "	<tr>";
+			html += "		<td>3.</td>";
+			html += "		<td><label for=\"divTemplate\"><span class=\"requiredMark\">*</span>Specify the template:</label></td>";
+			html += "	</tr>";	
+		} else {
+			html += "	<tr>";
+			html += "		<td>2.</td>";
+			html += "		<td><label for=\"divTemplate\"><span class=\"requiredMark\">*</span>Specify the template:</label></td>";
+			html += "	</tr>";	
+		}
+		
+		html += "	<tr>";
+		html += "	<td>&nbsp;</td>";
+		html += "	<td>";
+		html += "	<div id=\"divTemplate\">";
+		html += "	</div>";
+		html += "	</td>";
+		html += "	</tr>";
+		html += "	<tr>";
+		html += "		<td colspan=\"2\">&nbsp;</td>";
+		html += "	</tr>";
+		
+		if (prompt) {
+			html += "	<tr>";
+			html += "		<td>4.</td>";
+			html += "		<td><input value=\"1\" type=\"checkbox\" id=\"divTask\" checked=\"checked\" name=\"divTask\" /> ";
+			html += "		<label for=\"divTask\">Log an activity ";
+			html += "		(Optional)</label></td>";
+			html += "	</tr>";
+		} else {
+			html += "	<tr>";
+			html += "		<td>3.</td>";
+			html += "		<td><input value=\"1\" type=\"checkbox\" id=\"divTask\" checked=\"checked\" name=\"divTask\" /> ";
+			html += "		<label for=\"divTask\">Log an activity ";
+			html += "		(Optional)</label></td>";
+			html += "	</tr>";		
+		}
+
+		html += "	<tr>";
+		html += "		<td colspan=\"2\">&nbsp;</td>";
+		html += "	</tr>";
+		html += "	<tr>";
+		html += "		<td></td>";
+		html += "		<td><input value=\"View\" class=\"btn\" type=\"button\" title=\"Generate\" name=\"save\" onclick=\"doMerge()\">";
+		html += "		<input value=\"Cancel\" class=\"btn\" type=\"button\" title=\"Cancel\" name=\"cancel\" onclick=\"navigateTo('"+gObjectIdURL+"')\"></td>";
+		html += "	</tr>";
+		html += "</table>";
+	}
+	
+	return html;
+}
+
+function buildPageBody(html) {
+	if (gUseTable) {
+		html += "<div class=\"bNext\">";
+		html += "	<div class=\"withFilter\">";
+		html += "		<div class=\"clearingBox\">";
+		html += "		</div>";
+		html += "	</div>";
+		html += "</div>";
+		html += "<div class=\"listAgreement\">";
+		html += "<div class=\"bPageBlock secondaryPalette\">";
+		if (gUseMergeServer) {
+			html += "<form id=\"dispatch\" name=\"dispatch\" method=\"post\" action=\""+gMergeServerURL+"\" >";
+			html += "	<input type=\"hidden\" name=\"xmlInput\" id=\"xmlInput\" value='"+gXmlRequestInput+"' />";
+		} else {
+			html += "<form id=\"dispatch\" name=\"dispatch\" method=\"post\">";
+		}
+		html += "	<input type=\"hidden\" name=\"cid\" id=\"cid\" value=\""+gObjectId+"\" />";
+		html += "	<div class=\"pbHeader\">";
+		html += "		<div class=\"buttons\">";
+		html += "			<input value=\""+gButtonName+"\" class=\"btn\" type=\""+gButtonType+"\" name=\""+gButtonName+"\" title=\""+gButtonName+"\" onclick=\"doSelectAction()\" />";
+		html += "			<input value=\"Cancel\" class=\"btn\" type=\""+gButtonType+"\" name=\"cancel\" title=\"Cancel\" onclick=\"doCancelAction()\" />";
+		html += "		</div>";
+		html += "	</div>";
+		html += "	<div id=\"divBody\" class=\"pbBody\">";
+		html += "	</div>";
+		html += "	<div class=\"pbHeader\">";
+		html += "		<div class=\"buttons\">";
+		html += "			<input value=\""+gButtonName+"\" class=\"btn\" type=\""+gButtonType+"\" name=\""+gButtonName+"\" title=\""+gButtonName+"\" onclick=\"doSelectAction()\" />";
+		html += "			<input value=\"Cancel\" class=\"btn\" type=\""+gButtonType+"\" name=\"cancel\" title=\"Cancel\" onclick=\"doCancelAction()\" />";
+		html += "		</div>";
+		html += "	</div>";
+		html += "</form>";
+		html += "<div class=\"pbFooter secondaryPalette\">";
+		html += "	<div class=\"bg\">";
+		html += "	</div>";
+		html += "</div>";
+	}
+	
+	html = buildPageBodyClient(html);
+	setMain(html);
+	//alert(html);
+	return html;
+}
+
+function buildPageBodyClient(html) {
+	return html;
+}
+
+function buildPageFooter(html) {
+	html = buildPageFooterClient(html);
+	setMain(html);
+	
+	return html;
+}
+
+function buildPageFooterClient(html) {
+	return html;
+}
+
+function doRemoveTasks() {
+	try {
+		var q = "select Id from Task where OwnerId='"+gUserId+"' and WhatId='"+gObjectId+"' and Status='Completed'";
+		var result = sforce.connection.query(q);
+		var iter = new sforce.QueryResultIterator(result);
+		var ids = new Array();
+
+		while (iter.hasNext()) {
+			var record = iter.next();
+			if (record==null) continue;
+
+			ids.push(record.Id);
+		}
+		
+		var result = sforce.connection.deleteIds([ids]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_SAVING_FINAL_AGREEMENT,result[0]);
+		}
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+/**
+	TODO: make generic for all object types and get from merge servlet...
+	for now we hardcode the basic four we need until we can write
+	some code that will parse the merge servlet XML and deduce the
+	unique mergefields from the one available in the schema...
+*/
+function addMergeFields() {
+	//include custom merge fields that are NOT available from the schema
+	var accountType = "Account";
+	var contactType = "Contact";
+	var oppType = "Opportunity";
+	
+	if (gObjectType==gAgreementObjName) {
+		//agreement mergefields	
+		gMMObj.AddMergeField(gObjectType,"APTS_Agreement_Link","{!APTS_Agreement__c.Link}");
+		gMMObj.AddMergeField(gObjectType,"APTS_AgreementOwner_Email","{!APTS_Agreement__c.OwnerEmail}");
+		gMMObj.AddMergeField(gObjectType,"APTS_AgreementOwner_FirstName","{!APTS_Agreement__c.OwnerFirstName}");
+		gMMObj.AddMergeField(gObjectType,"APTS_AgreementOwner_FullName","{!APTS_Agreement__c.OwnerFullName}");
+		gMMObj.AddMergeField(gObjectType,"APTS_AgreementOwner_LastName","{!APTS_Agreement__c.OwnerLastName}");
+		gMMObj.AddMergeField(gObjectType,"APTS_AgreementOwner_Phone","{!APTS_Agreement__c.OwnerPhone}");
+		gMMObj.AddMergeField(gObjectType,"APTS_AgreementOwner_Title","{!APTS_Agreement__c.OwnerTitle}");
+		
+	} else if (gObjectType==accountType) {
+		//account mergefields
+		gMMObj.AddMergeField(gObjectType,"Account_FullBillingAddress","{!Account.BillingAddress}");
+		gMMObj.AddMergeField(gObjectType,"Account_Link","{!Account.Link}");
+		gMMObj.AddMergeField(gObjectType,"AccountOwner_Email","{!Account.OwnerEmail}");
+		gMMObj.AddMergeField(gObjectType,"AccountOwner_FirstName","{!Account.OwnerFirstName}");
+		gMMObj.AddMergeField(gObjectType,"AccountOwner_FullName","{!Account.OwnerFullName}");
+		gMMObj.AddMergeField(gObjectType,"AccountOwner_LastName","{!Account.OwnerLastName}");
+		gMMObj.AddMergeField(gObjectType,"AccountOwner_Phone","{!Account.OwnerPhone}");
+		gMMObj.AddMergeField(gObjectType,"AccountOwner_Title","{!Account.OwnerTitle}");
+	
+	} else if (gObjectType==contactType) {
+		//contact mergefields
+		gMMObj.AddMergeField(gObjectType,"Contact_FullMailingAddress","{!Contact.MailingAddress}");
+		gMMObj.AddMergeField(gObjectType,"Contact_FullName","{!Contact.Name}");
+		gMMObj.AddMergeField(gObjectType,"Contact_FullOtherAddress","{!Contact.OtherAddress}");
+		gMMObj.AddMergeField(gObjectType,"Contact_Link","{!Contact.Link}");
+		gMMObj.AddMergeField(gObjectType,"ContactOwner_Email","{!Contact.OwnerEmail}");
+		gMMObj.AddMergeField(gObjectType,"ContactOwner_FirstName","{!Contact.OwnerFirstName}");
+		gMMObj.AddMergeField(gObjectType,"ContactOwner_FullName","{!Contact.OwnerFullName}");
+		gMMObj.AddMergeField(gObjectType,"ContactOwner_LastName","{!Contact.OwnerLastName}");
+		gMMObj.AddMergeField(gObjectType,"ContactOwner_Phone","{!Contact.OwnerPhone}");
+		gMMObj.AddMergeField(gObjectType,"ContactOwner_Title","{!Contact.OwnerTitle}");
+	
+	} else if (gObjectType==oppType) {
+		//opportunity mergefields
+		gMMObj.AddMergeField(gObjectType,"Opportunity_Link","{!Opportunity.Link}");
+		gMMObj.AddMergeField(gObjectType,"OpportunityOwner_Email","{!Opportunity.OwnerEmail}");
+		gMMObj.AddMergeField(gObjectType,"OpportunityOwner_FirstName","{!Opportunity.OwnerFirstName}");
+		gMMObj.AddMergeField(gObjectType,"OpportunityOwner_FullName","{!Opportunity.OwnerFullName}");
+		gMMObj.AddMergeField(gObjectType,"OpportunityOwner_LastName","{!Opportunity.OwnerLastName}");
+		gMMObj.AddMergeField(gObjectType,"OpportunityOwner_Phone","{!Opportunity.OwnerPhone}");
+		gMMObj.AddMergeField(gObjectType,"OpportunityOwner_Title","{!Opportunity.OwnerTitle}");
+	}
+}
+
+var gmfWin = null;
+
+function getMergeFields() {
+	gmfWin = window.open(gMergeFieldsServletURL);
+	setTimeout("getMergeFieldsAction()",gTimeout);
+
+	/*
+	var mergefields = new Array();
+	var nfields = 0;
+	
+	var mf = new Object();
+	mf.Type = "Apttus__APTS_Agreement__c";
+	mf.Name = "OwnerEmail";
+	mf.Value = "{!APTS_Agreement__c.OwnerEmail}";
+	mergefields[nfsields] = mf;
+	nfields++;
+	
+	gMMObj.AddMergeField(mf.Type, mf.Name, mf.Value);
+	gMMObj.GetMergeFields();
+	*/
+}
+
+function getMergeFieldsAction() {
+	try {
+		alert("gmfWin="+gmfWin);
+		alert("window.name="+gmfWin.name);
+		var mfdoc = gmfWin.document;
+		
+		var mftypes = mfdoc.getElementsByTagName("type");
+		alert("mftypes.length="+mftypes.length);
+		
+		//document.open();
+
+		//for (var i=0; i<types.length; i++) {
+		//	var type = types[i];
+		//	alert("type="+type);
+		//	//document.writeln(type);
+		//}
+
+		//document.close();
+		//gMfWin.close();
+		alert("click to continue");
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+
+function getElementsByTagNames(list,obj) {
+	if (!obj) var obj = document;
+	
+	var tagNames = list.split(',');
+	var resultArray = new Array();
+	for (var i=0; i<tagNames.length; i++) {
+		var tags = obj.getElementsByTagName(tagNames[i]);
+		for (var j=0; j<tags.length; j++) {
+			resultArray.push(tags[j]);
+		}
+	}
+	
+	var testNode = resultArray[0];
+	if (!testNode) return [];
+	if (testNode.sourceIndex) {
+		resultArray.sort(function (a,b) {
+				return a.sourceIndex - b.sourceIndex;
+		});
+	}
+	else if (testNode.compareDocumentPosition) {
+		resultArray.sort(function (a,b) {
+				return 3 - (a.compareDocumentPosition(b) & 6);
+		});
+	}
+	return resultArray;
+}
+//Client should not call this methods because i have to log the data this moment.
+//So it shoould be in base class
+//This is for generate agreement from server side
+
+function GetTemplateName() {
+	var fname="";
+    try {
+        var q = "select Name from Apttus__APTS_Template__c where Id = '" + gTemplateId + "'";
+        var result = sforce.connection.query(q);
+        
+        if (result.size > 0) {
+            var records = result.getArray("records");
+            var fname = records[0].get("Name");
+        }
+    }
+    catch(ex) {
+        fname = "";
+    }
+    return fname;
+}
+
+function createfileextension(){
+	if (gOutputFormat==cFORMAT_PDF){
+		gExtension="." + cFORMAT_PDF;
+	}
+	else if (gOutputFormat==cFORMAT_RTF){
+		gExtension="." + cFORMAT_RTF;
+	}
+	else{
+		gExtension="." + cFORMAT_DOC
+	}
+}
+
+function createFilename(actionType){
+	createfileextension();
+	var tfilename=GetTemplateName();
+	if (actionType=="Generate Agreement"){
+		gsvrfilename=gObjectName+"_Original_"+tfilename+gTimeStamp;
+		dAttachRequired=true;
+	}
+	else if (actionType=="Regenerate Agreement"){
+		gsvrfilename=gObjectName+"_Regenerated_"+tfilename+gTimeStamp;
+		dAttachRequired=true;
+	}
+	else if (actionType=="Preview Agreement"){
+		gsvrfilename=gObjectName+"_Preview";
+		dAttachRequired=false;		
+	}
+	else {
+		gsvrfilename=gObjectName+"_"+tfilename+gTimeStamp;
+		dAttachRequired=true;		
+	}
+	if (gsvrfilename.length > 76){
+		gsvrfilename=gsvrfilename.substring(0,76) +gExtension;
+	}
+	else
+	{
+		gsvrfilename=gsvrfilename+gExtension;
+	}	
+	return gsvrfilename;
+}
+
+function createActivityLogEntry(msg) {
+	try {	
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		msg = (msg==null) ? "" : "\r" + msg;
+		var action = (gMergeType=="Draft") ? "Previewed " : "Generated ";
+		task.Description = action+" "+gObjectDesc+" {!APTS_Agreement__c.FF_Agreement_Number__c}"+msg;
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = action+" "+gObjectDesc+"";
+		task.WhatId = gObjectId;
+
+		var result = sforce.connection.create([task]);
+		gNumApiCalls++;
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function getDefaultReminderDuration(){}
+function setWorkflowMode() {
+    try {
+        var q = "select " + cADMIN_VALUE + " from " + gAdminObjName +
+               " where " + cADMIN_NAME + " = '" + cWORKFLOW_MODE + "'";
+        var result = sforce.connection.query(q);
+        gNumApiCalls++;
+        
+        if (result.size > 0) {
+            var records = result.getArray("records");
+            var mode = records[0].get(cADMIN_VALUE);
+            gUsingWorkflow = (mode.toLowerCase()=="true" || mode=="1") ? true : false;
+        }
+    }
+    catch(ex) {
+        gUsingWorkflow = false;
+    }
+}
+
+function serveractivateAgreement() {
+	try {
+		//record activity history
+		var msg = "Status Category changed " +
+			"from '{!APTS_Agreement__c.Status_Category__c}' " +
+			"to '" + gTargetStatusCategory + "'";
+		createServerActivityLogEntry(msg,"Generate Agreement");
+		
+		//update fields and create tasks manually or using workflow
+		var contract = new sforce.SObject(gAgreementObjName);
+		contract.Id = gContractId;
+
+		if (gUsingWorkflow) {
+			contract.set(gWorkflowTriggerField, "True");
+		} else {
+			contract.set(gTargetStatusCategoryField,gTargetStatusCategory);
+			contract.set(gTargetStatusField,gTargetStatus);
+		}
+		
+		var result = sforce.connection.update([contract]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_ACTIVATE_CONTRACT,result[0]);
+		}
+		
+		if (!gUsingWorkflow) {
+			servercreateInternalSignatureTask();
+			servercreateExternalSignatureTask();
+			servercreateScanAndAttachTask();		
+		}
+	}
+	catch(ex) {
+		erroralertalert(cERROR_ACTIVATE_CONTRACT,ex);
+	}
+	
+}
+
+/**
+	View Final Agreement Workflow rule:
+	
+	Create tasks and notifications when users perform View Final Agreement action.
+	- view final should set to external signatures
+	- due dates for signature tasks - + 14 days for external, +5 days after external, + 2 days after internal
+	- external sig task should also have follow up task assigned to requestor (recruiter) field
+	- all tasks assigned to contract generator
+	- completion of ext sig recvd should set other party signed date, same for company signed date
+	- need an email saying we got external sig, also to scheduler ?, and to physician payroll?
+*/
+function servercreateInternalSignatureTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Please review the final version of agreement {!APTS_Agreement__c.Agreement_Number__c} " +
+			"and approve it when your review is complete.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Get Internal Signatures";
+		task.WhatId = gContractId;
+		task.WhoId = "{!APTS_Agreement__c.Company_Signed_ById__c}";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_INT_SIG_TASK,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralertalert(cERROR_CREATE_INT_SIG_TASK,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function servercreateExternalSignatureTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Please review the final version of agreement {!APTS_Agreement__c.Agreement_Number__c} " +
+			"and approve it when your review is complete.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Get External Signatures";
+		task.WhatId = gContractId;
+		task.WhoId = "{!APTS_Agreement__c.Other_Party_Signed_ById__c}";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+				
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_EXT_SIG_TASK,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralertalert(cERROR_CREATE_EXT_SIG_TASK,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+function servercreateScanAndAttachTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Please review the final version of agreement {!APTS_Agreement__c.Agreement_Number__c} " +
+			"and scan and attach the agreement back into Salesforce when your review is complete.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Scan & Attach Agreement";
+		task.WhatId = gContractId;
+		task.WhoId = "{!APTS_Agreement__c.Company_Signed_ById__c}";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_SCAN_TASK,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralertalert(cERROR_CREATE_SCAN_TASK,ex);
+		navigateTo(gContractIdURL);
+	}
+}
+
+
+</script>

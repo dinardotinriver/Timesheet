@@ -1,0 +1,8 @@
+<apex:component >
+    <apex:includeScript value="{!URLFOR($Resource.TH1__ThirdParty, '/bootstrap/bootstrap.3.0.0.min.js')}"/>
+    <!-- All Bootstrap css targets .wrap-bootstrap *
+        Ensure that all bootstrap targeted HTML is inside an element with the .wrap-bootstrap class
+     -->
+    <apex:stylesheet value="{!URLFOR($Resource.TH1__ThirdParty, '/bootstrap/bootstrap.wrapped.3.0.0.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.TH1__ThunderheadResources, 'styles/th-bootstrap.css')}"/>
+</apex:component>

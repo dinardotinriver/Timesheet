@@ -1,0 +1,392 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+{!INCLUDE($SControl.aptsIncludeWizard)}
+
+<script language="javascript" type="text/javascript"> 
+
+var gTargetInitiationType = "Negotiate Contract";
+var gTargetStatusCategory = "In Authoring";
+var gTargetSource = "Third Party Paper";
+var gContractCreated = new Boolean(false);
+var gCommitThisTransaction = new Boolean(false);
+var gFileName = "";
+var gAttachFileNow = new Boolean(false);
+var gAttachmentBody = "";
+
+function initPage() {
+	window.setTimeout("doInit();", 50);
+}
+
+function doInit() {
+	if (! initContractWizard()) {
+		navigateToHome();
+	}
+	gHasRecordTypes = hasCustomField("RecordTypeId", gAgreementObjName);
+	if (gHasRecordTypes==true) {
+		var cancelURL = gHomePageURL;
+		var retURL = gHomePageURL;
+		var entity = "";
+		var save = "1";
+		var saveNewURL = gAgreementObjURL + gEditMode + "?retURL=" + gAgreementObjURL + gViewMode;
+
+		//show custom recordtypeselect.jsp page
+		selectRecordType("doCreateOfflineAgreement()","doCancel()",cancelURL,retURL,entity,save,saveNewURL);
+	} else {
+		doCreateOfflineAgreement();
+	}
+}
+
+function doCreateOfflineAgreement() {
+	newAgreement();
+}
+
+function doCancel() {
+	navigateTo(gHomePageURL);
+}
+ 
+function doCommit(id) {
+	createOfflineAgreement(id);
+}
+
+function doRollback(id) {
+	doCancel();
+}
+
+function createOfflineAgreement(id) {
+	try {
+		//create agreement object
+		var contract = new sforce.SObject(gAgreementObjName);
+		contract.Id = id;
+		
+		//set agreement fields
+		contract.Apttus__Initiation_Type__c = gTargetInitiationType;
+		contract.Apttus__Status_Category__c = gTargetStatusCategory;
+		contract.Apttus__Source__c = gTargetSource;
+		
+		//update the agreement and prompt for attachment
+		var result = sforce.connection.update([contract]);
+		if (result[0].getBoolean("success")) {
+			gContractId = result[0].id;
+			gContractCreated = true;
+			
+			selectAttachment();
+			
+		} else {
+			erroralert(cERROR_CREATE_OFFLINE_AGREEMENT, result[0]);
+			endTransaction();
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_OFFLINE_AGREEMENT + ex);
+		endTransaction();
+	}
+}
+
+function selectAttachment() {
+	buildSelectAttachmentPage();
+	
+	//build html for the attach button
+	var output = "";
+	output =  "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/" + gContractId + "\">";
+	output += "<input type=\"hidden\" name=\"pid\" id=\"pid\" value=\"" + gContractId + "\">";
+	output += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/" + gContractId + "\">";
+	output += "<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"/p/attach/NoteAttach?retURL=%2F" +
+		gContractId + "&amp;pid=" + gContractId + "\">";
+	document.getElementById("divAttach_Attach").innerHTML = output;
+}
+
+function storeContractId(bAttachFile) {
+	gAttachFileNow = bAttachFile;
+	gFileName = document.getElementById("filename").value;
+	
+	var runTransaction = new Boolean(true);
+	if (gAttachFileNow) {
+		if (gFileName == null || gFileName.length <= 0) {
+			alert("Please select a file to attach.");
+			runTransaction = false;
+		}
+	} else {
+		createAttachmentReminderTask();
+	}
+	
+	if (runTransaction) {
+		showMsgProgress("Creating offline agreement...Please wait");
+		window.setTimeout("beginTransaction();", 50);
+	} else {
+		selectAttachment();
+	}
+}
+
+function beginTransaction() {
+	try {
+	    var sObj = new sforce.SObject(gAgreementObjName);
+	    sObj.Id = gContractId;
+
+	    //update the agreement number
+		var result = sforce.connection.update([sObj]);
+		if (result[0].getBoolean("success")) {
+			var ok = new Boolean(true);
+			if (gFileName != null && gFileName.length > 0) {
+				//make sure there is something to attach
+				var fn = getFileNameFromPath(gFileName);
+				var fnExt = getFileNameExtension(gFileName);
+	
+				//store the agreement id in word documents
+				var ext = fnExt.toLowerCase();
+				if (ext=="doc" || ext=="docx") {
+					ok = gMMObj.StoreId(gFileName, gAgreementObjName, gContractId);
+					if (!ok) {
+						alert("ERROR storing AgreementId in the attachment.\nThe offline agreement cannot be created.");
+					}
+				}
+	
+				//get base64 encoded string representation of the document
+				//and attach it to the contract in salesforce
+				if (ok) {
+					gAttachmentBody = gMMObj.Base64Encode(gFileName);
+					createAttachment(gContractId, "{!User.Id}", fn);
+				}
+			}
+			
+			//add activity log entry and commit transaction
+			if (ok) {
+				createActivityLogEntry();
+				gCommitThisTransaction = true;
+			}
+		} else {
+			erroralert(cERROR_CREATE_OFFLINE_AGREEMENT, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_OFFLINE_AGREEMENT + ex);
+	}
+	finally {
+		endTransaction();
+	}
+}
+
+function endTransaction() {
+	if (gCommitThisTransaction==true) {
+		commit_this();
+	} else {
+		rollback_this();
+	}
+}
+
+function commit_this() {
+	editAgreement(gContractId);
+}
+
+function rollback_this() {
+	try {
+		if (gContractCreated==true) {
+			var ids = new Array(1);
+			ids[0] = gContractId;
+			
+			var result = sforce.connection.deleteIds([ids]);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_CREATE_OFFLINE_AGREEMENT, result[0]);
+			}
+		}
+	}
+	catch(ex) {
+		alert("ERROR rolling back create offline agreement transaction:\n" + ex);
+	}
+	finally {
+		alert("Offline Agreement NOT created.");
+		navigateToHome();
+	}
+}
+
+function createAttachment(parentId, ownerId, name) {
+	try {
+		var attachment = new sforce.SObject("Attachment");
+		
+	    attachment.ParentId = parentId;
+	    attachment.OwnerId = ownerId;
+	    attachment.Name = name;
+	    attachment.Body = gAttachmentBody;
+	    
+	   	//let the serializer know the base64 field has already been encoded
+	   	//var bodyProp = attachment.getProperty("body");
+	    //bodyProp.fieldDef.soapType = sforce.SoapObject.SoapType.STRING;
+
+		var result = sforce.connection.create([attachment]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_SAVE_OFFLINE_AGREEMENT, result[0]);
+		}
+	}
+	catch(ex) {
+	    alert(cERROR_SAVE_OFFLINE_AGREEMENT + ex);
+	}
+}
+
+function createActivityLogEntry() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Created Offline Agreement";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Created Offline Agreement";
+		task.WhatId = gContractId;
+		
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_CREATE_ACTIVITY_LOG + ex);
+	}
+}
+
+function createAttachmentReminderTask() {
+	try {
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Please remember to attach a document or scanned image to complete the creation of your " +
+			"offline agreement {!APTS_Agreement__c.Contract_Number__c}";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Not Started";
+		task.Subject = "Attach Document to Offline Agreement";
+		task.WhatId = gContractId;
+		task.WhoId = "";
+		task.IsReminderSet = new Boolean(true);
+		task.ReminderDateTime = getDefaultReminderDuration();
+
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_REMINDER_OFFLINE_AGREEMENT, result[0]);
+		}
+	}
+	catch(ex) {
+		alert(cERROR_REMINDER_OFFLINE_AGREEMENT + ex);
+	}
+}
+
+function buildSelectAttachmentPage() {
+	var html = "";
+	
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<div class=\"bPageTitle\">";
+	html += "<div class=\"ptBody secondaryPalette\">";
+	html += "<div class=\"content\">";
+	html += "<img src=\"/img/icon/contracts32.png\" alt=\"CD/DVD\" class=\"pageTitleIcon\">";
+	html += "<h1 class=\"pageType\">Create Offline Agreement<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "<h2 class=\"pageDescription\">Attach Agreement</h2>";
+	html += "<div class=\"blank\">&nbsp;</div>";
+	html += "</div>";
+	html += "<div class=\"links\">";
+	html += "<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp";
+	html += "?loc=help&body=%2Fhelp%2Fdoc%2Fen%2Fhelp2.jsp&target=notes_add.htm&section=Notes_Attachments'";
+	html += ", 'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,";
+	html += "menubar=yes,directories=no,location=no,dependant=no', false, false);\" ";
+	html += "title=\"Help for this Page (New Window)\">";
+	html += "<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\"></a>";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"ptBreadcrumb\">";
+	html += "</div>";
+	html += "</div>";
+	html += "<!--";
+	html += "<form action=\"/p/attach/NoteAttach\" enctype=\"multipart/form-data\" id=\"editPage\" name=\"editPage\" method=\"POST\">";
+	html += "-->";
+	html += "<form id=\"editPage\" name=\"editPage\">";
+	html += "<div id=\"divAttach_Attach\">";
+	html += "</div>";
+	html += "<table cellpadding=\"0\" cellspacing=\"2\" border=\"0\">";
+	html += "<tr>";
+	html += "<td><strong>1.</strong></td>";
+	html += "<td><strong>Select the File</strong></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td>Type the path of the file or click the Browse button to ";
+	html += "select a document to attach to this offline agreement.</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td style=\"padding-bottom: 1em\">";
+	html += "<input type=\"file\" id=\"filename\" size=\"20\" name=\"file\" ";
+	html += "title=\"Type the path of the file or click the Browse button to find the file.\" /></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td><strong>2.</strong></td>";
+	html += "<td><strong>Click the &quot;Attach File&quot; button, or</strong></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td>Click the button below to create the offline agreement ";
+	html += "with the selected document attached to the agreement.</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td style=\"padding-bottom: 1em\">";
+	html += "<input value=\"Attach File\" class=\"btn\" type=\"button\" title=\"Attach File\" ";
+	html += " onclick=\"javascript:storeContractId(true);\" name=\"Attach\"></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td><strong>3.</strong></td>";
+	html += "<td><strong>Click the &quot;Skip & Attach Later&quot; button.</strong></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td>Click the button below to create the offline agreement ";
+	html += "without specifying an attachment.</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td style=\"padding-bottom: 1em\">";
+	html += "<input value=\"Skip & Attach Later\" class=\"btn\" type=\"button\" title=\"Skip Attach\" ";
+	html += "onclick=\"javascript:storeContractId(false);\" name=\"SkipAttach\"></td>";
+	html += "</tr>";
+	html += "</table>";
+	html += "</form>";
+	html += "<!-- ";
+	html += "<form action=\"/p/attach/NoteAttach\" enctype=\"multipart/form-data\" id=\"editPage_1\" name=\"editPage\" method=\"POST\">";
+	html += "<div id=\"divAttach_Done\">";
+	html += "</div>";
+	html += "<table cellpadding=\"0\" cellspacing=\"2\" border=\"0\">";
+	html += "<tr>";
+	html += "<td><strong>3.</strong></td>";
+	html += "<td><strong>Click the Done button to return to the previous page.</strong></td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td>( This will cancel an in-progress upload. )</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>&nbsp;</td>";
+	html += "<td style=\"padding-bottom: 1em\">";
+	html += "<input value=\" Done \" class=\"btn\" type=\"submit\" title=\"Done\" name=\"cancel\"></td>";
+	html += "</tr>";
+	html += "</table>";
+	html += "</form>";
+	html += "-->";
+
+	setMain(html);
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

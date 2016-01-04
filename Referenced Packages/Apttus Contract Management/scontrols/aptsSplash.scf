@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/11.1/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+
+<script language="javascript" type="text/javascript"> 
+<!--
+var cCONTRACT_MANAGEMENT_APP = "Contract Management";
+
+function initPage() {
+	window.setTimeout("doInit();", 10);
+}
+
+function doInit() {
+	try {
+	    var apps = sforce.connection.describeTabs();
+	    for (var i=0; i<apps.length; i++) {
+	        var app = apps[i];
+	        
+	        if (app.label==cCONTRACT_MANAGEMENT_APP) {
+	        	var tabs = app.getArray("tabs");
+			    for (var j=0; j<tabs.length; j++) {
+			        var tab = tabs[j];
+
+			        var tabIsCustom = tab.custom;
+			        var tabLabel = tab.label;
+			        var tabSObjectName = tab.sobjectName;
+			        var tabURL = tab.url;
+			    
+					var reqURL = "{!$Request.lid}";
+					var scnURL = "{!Scontrol.URL}";
+
+			        if (tabURL==scnURL) {
+			        	if (tabSObjectName==gAgreementObjName) {
+							navigateTo(gAgreementObjURL);
+			        	} else if (tabSObjectName==gTemplateObjName) {
+							navigateTo(gTemplateObjURL);
+			        	} else if (tabSObjectName==gAdminObjName) {
+			        		navigateTo(gAdminObjURL);
+			        	}
+			        }
+			    }
+	        }
+	    }
+	}
+	catch(ex) {
+		alert(ex);
+	}
+}
+//-->
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+ 
+<div id="divMain"><h1>Click the "Don't Show Me This Page Again" button below...</h1></div>
+
+</body>
+</html>

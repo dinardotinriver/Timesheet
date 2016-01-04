@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management Suite</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<link href="/dCSS/Theme2/default/custom.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script type="text/javascript" src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+
+<script language="javascript" type="text/javascript"> 
+/**
+	=================================================================================================
+	Create New Request
+	
+	This custom scontrol link from the home page takes the user to the default salesforce record type
+	selection page to create a new agreement request by constructing a relative URL of the form:
+	=================================================================================================
+*/
+//TODO: generalize this hard coded id field
+var gRecordTypeObj = "01I500000005SrS";
+
+function initPage() {
+	var selectURL = "/setup/ui/recordtypeselect.jsp";
+	var returnURL = "retURL=";
+	var saveNewURL = "save_new_url=" + gAgreementObjURL + gEditMode + "?" + returnURL;
+	var returnHome = new Boolean(true);
+		
+	if (returnHome) {
+		returnURL += gHomePageURL;
+		saveNewURL += gHomePageURL;
+	} else {
+		returnURL += gAgreementObjURL + gViewMode;
+		saveNewURL += gAgreementObjURL + gViewMode;
+	}
+
+	var url;
+	gHasRecordTypes = hasCustomField("RecordTypeId", gAgreementObjName);
+	if (gHasRecordTypes == true) {
+		url = selectURL + "?" + returnURL + "&ent=" + gRecordTypeObj + "&" + saveNewURL;
+	} else {
+		url = gAgreementObjURL + gEditMode + "?" + returnURL;
+	}
+	parent.frames.location.replace(url);
+}
+</script>
+</head>
+ 
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

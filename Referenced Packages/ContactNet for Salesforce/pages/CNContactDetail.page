@@ -1,0 +1,20 @@
+<!--
+* {Purpose} – Used to override contact detail page to display the standard page layout based data.
+* 				The reason why we have to override is to overcome a cross site scripting issue
+* 				which was identified as a shortcoming of how Salesforce has implemented the security.
+*
+* @author	Shah Kadirmohideen
+* @version	2011-12-13
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2011-12-13	Shah Kadirmohideen		Created     
+* 2011-01-04	Mike Eaton				Added showChatter, inlineEdit support
+* =============================================================================
+-->
+<apex:page standardController="Contact">
+<apex:detail relatedList="true" title="true" showChatter="true" inlineEdit="true"/>
+</apex:page>

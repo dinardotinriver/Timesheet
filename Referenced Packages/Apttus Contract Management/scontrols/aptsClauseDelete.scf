@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+
+<script language="javascript" type="text/javascript"> 
+
+function initPage() {
+	window.setTimeout("deleteClauses();",gTimeout);
+} 
+
+function deleteClauses() {
+	try {
+	  	logonAsSuperUser();
+	  	
+		var ids = {!GETRECORDIDS($ObjectType.Agreement_Clause__c)};
+		if (ids.length==0) return;
+		
+		var result = sforce.connection.deleteIds(ids);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_DELETING_IDS,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_DELETING_IDS,ex);
+	}
+	finally {
+		navigateTo(gObjectIdURL);
+	}
+}
+</script>
+</head>
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+<div id="divScript"></div>
+
+</body>
+</html>

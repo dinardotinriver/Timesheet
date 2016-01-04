@@ -1,0 +1,21 @@
+<apex:component controller="TH1.COMMON_CO_GeneralSettings" layout="none">
+    <script type="text/javascript">
+	Thunderhead.SF.require('general-settings').done(function(GeneralSettings) {
+		Thunderhead.SF.extend(GeneralSettings, {
+		    orgNamespace: '{!JSENCODE(OrgNamespace)}',
+		    namespace: '{!JSENCODE(Namespace)}',
+			authUrl: '{!JSENCODE(AuthUrl)}',
+			dashboardAuthUrl: '{!JSENCODE(DashboardAuthUrl)}',
+			salesforceServicesUrl: '{!JSENCODE(SalesforceServicesUrl)}',
+			salesforceBaseUrl: '{!JSENCODE(SalesforceBaseUrl)}',
+			serverInstance: '{!JSENCODE(ServerInstance)}',
+			thinstanceContext: '{!JSENCODE(ThinstanceContext)}',
+			projectId: '{!JSENCODE(ProjectId)}',
+			partnerServerUrl: '{!JSENCODE(PartnerServerUrl)}',
+			draftEditorServerUrl: '{!JSENCODE(DraftEditorServerUrl)}',
+			draftEditorClientProxyUrl: '{!JSENCODE(DraftEditorClientProxyUrl)}',
+			orgIsChatterEnabled: {!OrgIsChatterEnabled}
+		});
+	});
+    </script>
+</apex:component>

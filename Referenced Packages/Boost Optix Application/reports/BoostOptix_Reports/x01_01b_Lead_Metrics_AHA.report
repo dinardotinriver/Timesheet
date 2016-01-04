@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>RulesActivityHistory__c$Name</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.UserRole</field>
+    </columns>
+    <columns>
+        <field>RulesActivityHistory__c$Owner.Profile</field>
+    </columns>
+    <description>Lead Information from RAH contains a bucket field of Boost Data</description>
+    <format>Summary</format>
+    <name>01 01B Lead Metrics from RAH CRT</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>x03_AHA__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>RulesActivityHistory__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,235 @@
+<apex:page controller="mpqc01.CT_MySettingsController" sidebar="false" showChat="false" action="{!CreateMySetting}">
+
+    <apex:form >
+        <apex:pagemessages ></apex:pagemessages>
+        <apex:sectionHeader title="" subtitle="MyPreferences Custom Settings"/>
+        <apex:pageBlock tabStyle="Contact">
+            <apex:pageBlockSection title="Subscriber Field Setup" columns="2" collapsible="false">      
+                          
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="First Name"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldFirstName__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Last Name"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldLastName__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>           
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Home Phone"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldHomePhone__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Mobile Phone"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldMobilePhone__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Email"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldEmailId__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Street"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldStreet__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="City"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldCity__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="State / Province"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldState__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="County"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldCounty__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Country"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldCountry__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Postal Code"/>
+                    <apex:selectList value="{!orgSettings.mpqc01__FieldPostalCode__c}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Fields}"/>                        
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>    
+            
+            <apex:pageBlockSection title="Organization Level Custom Settings" columns="2" collapsible="false">      
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Client Id"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Client_ID__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="User Id"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__User_ID__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Endpoint"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Endpoint__c}" style="width:400px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Base iFrame URL"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Base_iFrame_URL__c}" style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Client Encryption Key"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Client_Encryption_Key__c}" style="width:400px;"/>
+                </apex:pageBlockSectionItem>  
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Encrypted Client Id"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Encrypted_Client_ID__c}" style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Enable Insert Trigger"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Enable_Insert_Trigger__c}"/>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Enable Update Trigger"/>
+                    <apex:inputField value="{!orgSettings.mpqc01__Enable_Update_Trigger__c}"/>
+                </apex:pageBlockSectionItem>                 
+            </apex:pageBlockSection>
+            
+            <center>
+                <apex:commandButton value="Save Organization Settings" action="{!saveOrgSettings}"/>
+            </center>
+            
+            <apex:pageBlockSection title="Profile Level Custom Settings" columns="2" collapsible="false" id="ProfileSettings">      
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Select Profile"/>
+                    <apex:selectList value="{!SelectedProfile}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Profiles}"/>
+                        <apex:actionSupport action="{!refreshProfileSettings}" event="onchange" reRender="ProfileSettings" status="refreshprofile"/>    
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:actionStatus startText="Refreshing.." stopText="" id="refreshprofile"></apex:actionStatus>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Client Id"/>
+                    <apex:inputField value="{!proSettings.mpqc01__Client_ID__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="User Id"/>
+                    <apex:inputField value="{!proSettings.mpqc01__User_ID__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Endpoint"/>
+                    <apex:inputField value="{!proSettings.mpqc01__Endpoint__c}" style="width:400px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Base iFrame URL"/>
+                    <apex:inputField value="{!proSettings.mpqc01__Base_iFrame_URL__c}" style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Client Encryption Key"/>
+                    <apex:inputField value="{!proSettings.mpqc01__Client_Encryption_Key__c}" style="width:400px;"/>
+                </apex:pageBlockSectionItem>  
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Encrypted Client Id"/>
+                    <apex:inputField value="{!proSettings.mpqc01__Encrypted_Client_ID__c}" style="width:350px;"/>
+                </apex:pageBlockSectionItem>                
+                            
+            </apex:pageBlockSection>
+            
+            <center>
+                <apex:commandButton value="Save Profile Settings" action="{!saveProSettings}"/>
+            </center>
+                    
+            <apex:pageBlockSection title="User Level Custom Settings" columns="2" collapsible="false" id="UserSettings">
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Select User"/>
+                    <apex:selectList value="{!SelectedUser}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!Users}"/>
+                        <apex:actionSupport action="{!refreshUserSettings}" event="onchange" reRender="UserSettings" status="refreshuser"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:actionStatus startText="Refreshing.." stopText="" id="refreshuser"></apex:actionStatus>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Client Id"/>
+                    <apex:inputField value="{!mySettings.mpqc01__Client_ID__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="User Id"/>
+                    <apex:inputField value="{!mySettings.mpqc01__User_ID__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Endpoint"/>
+                    <apex:inputField value="{!mySettings.mpqc01__Endpoint__c}" style="width:400px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Base iFrame URL"/>
+                    <apex:inputField value="{!mySettings.mpqc01__Base_iFrame_URL__c}" style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Client Encryption Key"/>
+                    <apex:inputField value="{!mySettings.mpqc01__Client_Encryption_Key__c}" style="width:400px;"/>
+                </apex:pageBlockSectionItem>  
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Encrypted Client Id"/>
+                    <apex:inputField value="{!mySettings.mpqc01__Encrypted_Client_ID__c}" style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                                    
+            </apex:pageBlockSection>
+            <center>                    
+                    <apex:commandButton value="Save User Settings" action="{!saveUserSettings}"/>
+            </center>    
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

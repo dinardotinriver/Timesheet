@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>An Interaction - Helped User navigation and feedback - with an Improved Help Entity or feature</description>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Context__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The Improved Help Context (typically a URL) in use at the time the interaction was logged</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Improved Help Context (typically a URL) in use at the time the interaction was logged</inlineHelpText>
+        <label>Context</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CreatedDateTime__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Formula returning Created Date AND TIME for Interaction reports</inlineHelpText>
+        <label>Created Date/Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Comments / feedback requesting new Help content, ideas for improvement or other remarks</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please provide any new Help content request, ideas for improvement or other comments</inlineHelpText>
+        <label>Description</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>HelpInteractionType__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The type of activity that generated this Help Interaction record</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The type of activity that generated this Help Interaction record</inlineHelpText>
+        <label>Help Interaction Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Callout</fullName>
+                <color>#F3D904</color>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Comment</fullName>
+                <color>#F96FB7</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Full Topic</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Issue</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Resource</fullName>
+                <color>#FF9900</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Search</fullName>
+                <color>#33FFFF</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>System</fullName>
+                <color>#BBBBBB</color>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>HelpReadingList__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Reading List (or Guide) involved in this interaction</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Reading List (or Guide) involved in this interaction</inlineHelpText>
+        <label>Help Reading List</label>
+        <referenceTo>HelpReadingList__c</referenceTo>
+        <relationshipLabel>Help Interactions</relationshipLabel>
+        <relationshipName>Help_Interactions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>HelpResource__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The Help Resource accessed during this Help Interaction</inlineHelpText>
+        <label>Help Resource</label>
+        <referenceTo>HelpResource__c</referenceTo>
+        <relationshipLabel>Help Interactions</relationshipLabel>
+        <relationshipName>HelpInteractions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>HelpTopic__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The Help Topic accessed in this Help Interaction</inlineHelpText>
+        <label>Help Topic</label>
+        <referenceTo>HelpTopic__c</referenceTo>
+        <relationshipLabel>Help Interactions</relationshipLabel>
+        <relationshipName>HelpInteractions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>HelpVoteOption__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The Vote that was cast as part of this interaction</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Vote that was cast as part of this interaction</inlineHelpText>
+        <label>Help Vote Option</label>
+        <referenceTo>HelpVoteOption__c</referenceTo>
+        <relationshipLabel>Help Interactions</relationshipLabel>
+        <relationshipName>HelpInteractions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>HelpedElement__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The Helped Element involved with this Help Interaction</inlineHelpText>
+        <label>Helped Element</label>
+        <referenceTo>HelpedElement__c</referenceTo>
+        <relationshipLabel>Help Interactions</relationshipLabel>
+        <relationshipName>HelpInteractions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>HelpedPageLayout__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The Page Layout within which this Help Interaction took place</inlineHelpText>
+        <label>Helped Page Layout</label>
+        <referenceTo>HelpedPageLayout__c</referenceTo>
+        <relationshipLabel>Help Interactions</relationshipLabel>
+        <relationshipName>HelpInteractions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Help Interaction</label>
+    <listViews>
+        <fullName>Today_s_interations</fullName>
+        <columns>NAME</columns>
+        <columns>HelpInteractionType__c</columns>
+        <columns>Context__c</columns>
+        <columns>Description__c</columns>
+        <columns>HelpTopic__c</columns>
+        <columns>HelpedElement__c</columns>
+        <columns>HelpedPageLayout__c</columns>
+        <columns>HelpReadingList__c</columns>
+        <columns>HelpResource__c</columns>
+        <columns>HelpVoteOption__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Today&apos;s interactions</label>
+    </listViews>
+    <nameField>
+        <displayFormat>{0}</displayFormat>
+        <label>Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Help Interactions</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>HelpedElement__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>HelpTopic__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Description__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+</CustomObject>

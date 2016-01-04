@@ -1,0 +1,4 @@
+<apex:component >
+    <c:LoadJS module="docgen/docusign" />
+	<div id="ds_container"></div>
+</apex:component>

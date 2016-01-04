@@ -1,0 +1,8 @@
+<apex:component >
+<apex:attribute type="String" name="id" description="The id the element will be assigned" required="true"/>
+<apex:attribute type="String" name="label" description="Skywalker button colour" required="true"/>
+<apex:attribute type="String" name="colour" description="Skywalker button colour" required="true"/>
+<apex:attribute type="String" name="onclickMethod" description="Javascript method to call onclick" required="true"/>
+<apex:stylesheet value="{!URLFOR($Resource.TH1__ThunderheadResources, 'styles/oc-styles.css')}"/>
+<input id="{!JSENCODE(id)}" type="button" value="{!JSENCODE(label)}" class="skywalker_button skywalker_{!JSENCODE(colour)}" onclick="{!onclickMethod}"/>
+</apex:component>

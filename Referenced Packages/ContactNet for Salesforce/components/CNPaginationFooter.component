@@ -1,0 +1,64 @@
+<!--
+* {Purpose} – Displays 'Show More' link which can be used for relationship tables.
+*
+* @author	Shah Kadirmohideen
+* @version	2011-12-07
+*/
+ 
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2011-12-07	Shah Kadirmohideen		Created
+* 2012-01-20	Shah Kadirmohideen		Incorporated enhanced list (go to list) functionality related changes.      
+* =============================================================================
+-->  
+<apex:component id="paginationFooterCompId">
+	<apex:attribute name="paginator" description="Paginator object which contains the table data" type="ContactNet.CNPaginator" required="required" />
+	<apex:attribute name="rerenderId" description="Comma separated list of ids which will be used for rerender after the Show More link is clicked" type="String" required="required" />
+	<apex:attribute name="isDownloadMode" description="Indicates if the context is download or regular view" type="Boolean" required="required" />
+	<apex:attribute name="tabName" description="Identifies the tab name in which this paginator is placed" type="String" required="required" />
+	<apex:attribute name="feedbackToEmail" description="Email to address which will be placed on submit feedback link" type="String" required="required" />
+	<apex:attribute name="feedbackSubject" description="Email subject which will be placed on submit feedback link" type="String" required="required" />
+	<apex:attribute name="gotoListURL" description="Email subject which will be placed on submit feedback link" type="String" required="required" />
+	
+	<apex:outputPanel id="paginationId" style="white-space:nowrap">  
+		<br/>
+      	<table width="100%"><tr>
+      	<td align="left" width="10" style="white-space:nowrap">
+      		<table><tr><td>
+      		<apex:outputPanel rendered="{!paginator.HasNextPageLabel}" style="white-space:nowrap">
+		      	<apex:commandLink action="{!paginator.next}" rerender="{!rerenderId}" onclick="displayNextPageLoadingIcon('{!$Component.nextPageImgId}');" 
+		      														oncomplete="resizeWindow('{!tabName}')">
+		        	<apex:outputText value="{!paginator.nextPageLabel}"/>
+		       </apex:commandLink>
+	       </apex:outputPanel>
+	       </td>
+	       <td>
+	       <apex:actionRegion >  
+		       <apex:outputPanel id="gotolistId" style="white-space:nowrap">
+			       <apex:outputPanel rendered="{!paginator.HasNextPageLabel && paginator.oListHandler.gotoListDynamicLabel != null}" style="white-space:nowrap">
+			       		&nbsp;|&nbsp;
+			       </apex:outputPanel>
+			       <apex:outputPanel style="white-space:nowrap">
+				      	<a href="{!gotoListURL}" target="_top" onclick="displayNextPageLoadingIcon('{!$Component.nextPageImgId}');">
+				        	<apex:outputText value="{!paginator.oListHandler.goToListDynamicLabel}"/>
+				       </a>
+				       <apex:actionPoller action="{!paginator.oListHandler.checkObjectCacheStatus}" enabled="{!paginator.oListHandler.bRenderGotoListActionPoller}" rerender="gotolistId" interval="5"/>
+			       </apex:outputPanel>
+		       </apex:outputPanel>
+	       </apex:actionRegion>
+	       </td>
+	       </tr>
+	       </table>
+        </td>
+        <td width="3">&nbsp;</td>
+        <td align="left" width="10" style="white-space:nowrap">
+	        <apex:image value="{!$Resource.ContactNet__CN_IMAGE_Async_Loading_Icon}" width="16" height="16" style="display:none" id="nextPageImgId"/>
+        </td>
+        <td align="right" style="white-space:nowrap">
+        	<apex:outputLink value="mailto:{!feedbackToEmail}?subject={!feedbackSubject}" rendered="{!feedbackToEmail!=null}">Submit Feedback</apex:outputLink>
+        </td>
+        </tr></table>
+	</apex:outputPanel>		     
+</apex:component>

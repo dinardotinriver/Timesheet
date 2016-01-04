@@ -1,0 +1,65 @@
+<!--
+* {Purpose} – Displays a collection of data in expanded/collapsed format based on user interaction with this component.
+*
+* @author	Shah Kadirmohideen
+* @version	2011-12-03
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2011-12-03	Shah Kadirmohideen		Created      
+* =============================================================================
+-->
+<apex:component >
+	<apex:attribute name="collapseData" description="List of string which will be displayed in collapsed mode" type="String[]" required="required" />
+	<apex:attribute name="expandData" description="List of string which will be displayed in expanded mode" type="String[]" required="required" />
+	<apex:attribute name="uniqueId" description="Unique ID represents the entire collection data" type="String" required="required" />
+	<apex:attribute name="isEmail" description="Indicates if the collection contains email data" type="Boolean" />
+	<apex:attribute name="tabName" description="Identifies the tab name in which this component is placed" type="String" required="required" />
+	
+   	<!-- Display Collapsed Data -->
+   	<div id="collapseDataId{!uniqueId}" onmouseover="showHideAlt('expandIcon{!uniqueId}', '')" onmouseout="showHideAlt('', 'expandIcon{!uniqueId}')">
+   			<div style="white-space:nowrap;">
+	   			<apex:repeat value="{!collapseData}" var="data" rows="1">
+	   				<apex:outputText value="{!data}" rendered="{!isEmail==false}"/>
+	   				<apex:outputLink value="mailto:{!data}" rendered="{!isEmail}">{!data}</apex:outputLink>
+	   				&nbsp;
+	   				<apex:outputPanel rendered="{!expandData.size>1}">
+		   				<img src="{!URLFOR($Resource.CN_IMAGE_Expand_Icon)}" id="expandIcon{!uniqueId}" name="expandIcon{!uniqueId}"
+		   									style="visibility:hidden; cursor:pointer"  title="Show More" onclick="showHide('expandDataId{!uniqueId}', 'collapseDataId{!uniqueId}');resizeWindow('{!tabName}')"/>
+		   				<br/>
+	   				</apex:outputPanel>
+	   			</apex:repeat>
+   			</div>
+   			<apex:repeat value="{!collapseData}" var="data" first="1">
+   				<apex:outputText value="{!data}" rendered="{!isEmail==false}"/>
+   				<apex:outputLink value="mailto:{!data}" rendered="{!isEmail}">{!data}</apex:outputLink>
+   				<br/>
+   			</apex:repeat> 
+   	</div>
+   		
+   	<!-- Display Expanded Data -->
+   	<div id="expandDataId{!uniqueId}" style="display:none" onmouseover="showHideAlt('collapseIcon{!uniqueId}', '')" onmouseout="showHideAlt('', 'collapseIcon{!uniqueId}')">
+   			<div style="white-space:nowrap;">
+	   			<apex:repeat value="{!expandData}" var="data" rows="1">
+	   				<apex:outputText value="{!data}" rendered="{!isEmail==false}"/>
+	   				<apex:outputLink value="mailto:{!data}" rendered="{!isEmail}">{!data}</apex:outputLink>
+	   				&nbsp;
+	   				<img src="{!URLFOR($Resource.CN_IMAGE_Collapse_Icon)}" style="visibility:hidden; cursor:pointer" id="collapseIcon{!uniqueId}"
+	   									title="Show Less" onclick="showHide('collapseDataId{!uniqueId}', 'expandDataId{!uniqueId}');resizeWindow('{!tabName}')"/>
+	   				<br/>
+	   			</apex:repeat>
+	   		</div> 
+   			<apex:repeat value="{!expandData}" var="data" first="1">
+   				<apex:outputText value="{!data}" rendered="{!isEmail==false}"/>
+   				<apex:outputLink value="mailto:{!data}" rendered="{!isEmail}">{!data}</apex:outputLink>
+   				<br/>
+   			</apex:repeat> 
+   	</div>
+	
+	<apex:outputPanel rendered="{!collapseData.size==0}">
+		&nbsp;
+	</apex:outputPanel>
+</apex:component>

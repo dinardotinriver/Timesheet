@@ -1,0 +1,8 @@
+<apex:component controller="TH1.APPSET_CO_Settings">
+	<script type="text/javascript" src="{!URLFOR($Resource.ThunderheadResources, 'scripts/HelpUtil.js')}"></script>
+	<script>
+		function showHelp(helpUrl) {
+			Thunderhead.SF.HelpUtil.showHelp(helpUrl + '&sessionid={!URLENCODE($Api.Session_ID)}&url={!URLENCODE(PartnerServerUrl)}&userid={!URLENCODE($User.Id)}');
+		}
+	</script>
+</apex:component>

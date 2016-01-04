@@ -1,0 +1,38 @@
+<!--
+* {Purpose} – Displays page loading message for Contact and Account pages so that the user is aware that the data is being loaded.
+*				While this message is displayed, the relationship data will be loaded asynchronously.
+*
+* @author	Shah Kadirmohideen
+* @version	2011-12-13
+*/
+
+/**
+* CHANGE HISTORY
+* =============================================================================
+* Date			Name					Description
+* 2011-12-13	Shah Kadirmohideen		Created
+* 2011-01-03	Shah Kadirmohideen		Applied replace() function for proper browser navigation      
+* =============================================================================
+
+-->
+<apex:component >
+	<apex:attribute name="renderPage" description="Should this page be rendered or not?" type="Boolean" required="required" />
+	<apex:attribute name="pageLoadingMessage" description="What message to display?" type="String" required="required" />
+	<apex:attribute name="vfPageName" description="What is the name of the visual force page on which this message is displayed?" type="String" required="required" />
+	<apex:attribute name="recordId" description="What is the record id for which this message is displayed?" type="String" required="required" />
+
+  	<apex:pageBlock id="pageLoadingBlock" mode="mainDetail" rendered="{!renderPage==true}">
+		<apex:outputPanel >
+			<apex:outputText value="{!pageLoadingMessage}"/>
+			<apex:image value="{!$Resource.ContactNet__CN_IMAGE_Async_Loading_Icon}" width="16" height="16"/>
+		</apex:outputPanel>
+		<script language="javascript">
+			function invokeVFPage() {
+				window.location.replace("/apex/{!vfPageName}?id={!recordId}&mode=load");
+			}
+			
+			setTimeout("invokeVFPage()", 1000);
+		</script>
+  	</apex:pageBlock>
+
+</apex:component>

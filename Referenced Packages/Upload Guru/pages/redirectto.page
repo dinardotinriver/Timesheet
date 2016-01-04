@@ -1,0 +1,19 @@
+<apex:page controller="vish_file.UploadController" sidebar="false" showHeader="false" standardStylesheets="false">
+Redirecting . . . .
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script>
+    $( document ).ready(function() {             
+        if( '{!JSENCODE(defaultLandingPage) }' == 'multiupload' ){   
+            //window.open("/apex/fileupload?id={!JSENCODE(sid)}","_self");
+            document.getElementById('multiuploadLink').click();
+        }  
+        else if( '{!JSENCODE(defaultLandingPage) }' == 'webcam' ){   
+           // window.open("/apex/webcam?id={!JSENCODE(sid)}","_self");
+            document.getElementById('webcamLink').click();
+        }     
+    });  
+</script>
+
+<a href="/apex/vish_file__fileupload?id={!JSENCODE(sid)}" id="multiuploadLink"></a>
+<a href="/apex/vish_file__webcam?id={!JSENCODE(sid)}" id="webcamLink"></a>
+</apex:page>

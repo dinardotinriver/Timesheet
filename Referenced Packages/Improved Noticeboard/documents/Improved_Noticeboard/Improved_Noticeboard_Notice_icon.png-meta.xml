@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Improved Noticeboard Notice icon</description>
+    <internalUseOnly>false</internalUseOnly>
+    <name>Improved Noticeboard Notice icon</name>
+    <public>true</public>
+</Document>

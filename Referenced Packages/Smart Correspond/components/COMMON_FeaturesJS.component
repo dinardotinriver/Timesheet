@@ -1,0 +1,13 @@
+<apex:component controller="TH1.COMMON_CO_Features" >
+    <c:LoadJS module="features" />
+    <script type="text/javascript">
+	Thunderhead.SF.require('features').done(function(Features) {
+		Thunderhead.SF.extend(Features, {
+			draftEditingIsLicensed: {!DraftEditingIsLicensed},
+			draftEditingFeatureMessage: '{!JSENCODE(DraftEditingFeatureMessage)}',
+			collaborateIsLicensed: {!CollaborateIsLicensed},
+			collaborateFeatureMessage: '{!JSENCODE(CollaborateFeatureMessage)}'
+		});
+	});
+    </script>
+</apex:component>

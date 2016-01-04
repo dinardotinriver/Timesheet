@@ -1,0 +1,3179 @@
+<script language="javascript" type="text/javascript"> 
+
+var gObjectTable = "Apttus__APTS_Agreement__c";
+var gObjectId = "{!APTS_Agreement__c.Id}";
+var gObjectIdURL = "/{!APTS_Agreement__c.Id}";
+var gObjectName = "{!APTS_Agreement__c.Name}";
+var gObjectType = "{!$ObjectType.APTS_Agreement__c}";
+var gObjectTypeURL = "/{!$ObjectType.APTS_Agreement__c}";
+
+var gEmailTemplateObj = "EMailTemplate";
+var gEmailType = "SingleEmailMessage";
+
+//form parameters
+var gEmailTo_p2 = "{!$Request.p2}";
+var gEmailTo_p2_lkid = "{!$Request.p2_lkid}";
+var gEmailTo_p2_lkold = "{!$Request.p2_lkold}";
+var gEmailTo_p2_lktp = "{!$Request.p2_lktp}";
+var gEmailTo_p2_lspf = "{!$Request.p2_lspf}";
+var gEmailTo_p2_mod = "{!$Request.p2_mod}";
+var gEmailTo_p3 = "{!$Request.p3}";
+var gEmailTo_p3_lkid = "{!$Request.p3_lkid}";
+var gEmailTo_p3_lkold = "{!$Request.p3_lkold}";
+var gEmailTo_p3_lktp = "{!$Request.p3_lktp}";
+var gEmailTo_p3_lspf = "{!$Request.p3_lspf}";
+var gEmailTo_p3_mod = "{!$Request.p3_mod}";
+var gEmailToId = "{!$Request.p2_lkid}";
+var gEmailToIds = new Array();
+var gEmailAdditionalTo_p24 = "{!$Request.p24}";
+var gEmailCC_p4 = "{!$Request.p4}";
+var gEmailBCC_p5 = "{!$Request.p5}";
+var gEmailSubject = "{!$Request.p6}";
+var gEmailBody = "";
+var gContactId = "{!User.ContactId}";
+//Added for Image Id, oid
+var gImageServerId = "";
+var gImageServerOid = "{!$Organization.Id}";
+var gBrandTemplateId = "";
+var gImageServerValue = "";
+//Added Email Template Type
+var gEmailTemplateType = "";
+//Modified default Email Body Type to 'Text'
+var gEmailBodyType = "text";
+var gEmailTemplateId = "{!$Request.template_id}";
+var gEmailTemplateSelected = "{!$Request.template_selected}";
+var gEmailAttachmentSelected = "{!$Request.attachment_selected}";
+var gEmailDocumentIds = "{!$Request.documentIds}";
+var gFileId = "{!$Request.file_id}";
+var gParameterNames = "{!$Request.parameterNames}";
+var gParameterValues = "{!$Request.parameterValues}";
+var gFormParmNames = new Array();
+var gFormParmValues = new Array();
+var gSubmitted = "{!$Request.submitted}";
+
+//display preferences
+var gUseCustomForm = true;
+var gAttachFileButtonEnabled = false;
+var gSendUsingTemplate = true;
+var gShowHiddenFields = false;
+var gShowEmailCCFields = false;
+var gShowEmailFormat = false;
+var gShowEmailTo = false;
+var gShowEmailRelatedTo = false;
+var gShowCheckSpelling = false;
+var gToFieldRequired = true;
+var gAddToFieldRequired = true;
+var gBodyFieldRequired = true;
+var gBodyRows = 10;     //default=12
+var gIsVisible = true;
+
+//attachments
+var gDocumentIds = new Array();
+var gNumDocuments = 0;
+var gTemplateAttachmentIds = new Array();
+var gAttachmentIds = new Array();
+var gAttachmentNames = new Array();
+var gNumAttachments = 0;
+var gSelectedAttachmentIds = new Array();
+var gNumSelectedAttachments = 0;
+var gCreateProtectedCopies = true;
+var gProtectedAttachmentIds = new Array();
+var gNumProtectedAttachments = 0;
+var gTempAttachmentIds = new Array();
+var gNumTempAttachments = 0;
+var gIncludeRelatedAttachments = false;
+var gAutoIncludeRelatedAttachments = false;
+var gValidated = true;
+var gDeleteTemplate = true;
+var gWizardInstalled = false;
+
+//object types
+var gObjDocument = "{!$ObjectType.Document}";
+var gObjDocumentMap = "{!$ObjectType.DocumentAttachmentMap}";
+var gObjEmailTemplate = "{!$ObjectType.EmailTemplate}";
+var gObjFolder = "{!$ObjectType.Folder}";
+var gContactIdPrefix = "{!$ObjectType.Contact}";
+var gUserIdPrefix = "{!$ObjectType.User}";
+var gLeadIdPrefix = "{!$ObjectType.Lead}";
+var gGroupIdPrefix = "{!$ObjectType.Group}";
+var gQueueIdPrefix = "{!$ObjectType.QueueSobject}";
+
+var cSENDING_EMAIL = "Sending email notification...Please wait";
+var cERROR_SENDING_EMAIL = "ERROR sending email notification:";
+var cERROR_CREATE_EMAIL_TEMPLATE = "ERROR creating EMailTemplate:";
+var cERROR_SELECT_EMAIL_TEMPLATE = "ERROR selecting EMailTemplate:";
+var cERROR_CREATE_DOCUMENT = "ERROR creating document:";
+var cERROR_PROTECT_DOCUMENT = "ERROR protecting document:";
+
+var cID_LIST_TYPE = "ID";
+var cADDR_LIST_TYPE = "ADDR";
+
+var EmailMessage;
+
+//EmailMessage class
+EmailMessage = function() {
+	this.m_Request = new sforce.SingleEmailMessage();
+	
+	this.m_TargetObjectId = null;
+	this.m_WhatId = null;
+	this.m_TemplateId = null;
+	this.m_ToAddresses = new Array();
+	this.m_nToAddresses = 0;
+	this.m_CcAddresses = new Array();
+	this.m_nCcAddresses = 0;
+	this.m_BccAddresses = new Array();
+	this.m_nBccAddresses = 0;
+	this.m_SaveAsActivity = true;
+	this.m_UseSignature = true;
+	this.m_EmailPriority = "Normal";
+	this.m_ReplyTo = null;
+	this.m_SenderDisplayName = null;
+	this.m_Subject = null;
+	this.m_HtmlBody = null;
+	this.m_PlainTextBody = null;
+	this.m_DocAttachments = new Array();
+	this.m_nDocAttachments = 0;
+	this.m_FileAttachments = new Array();
+	this.m_nFileAttachments = 0;
+};
+
+EmailMessage.prototype.setTargetObjectId = function(v) {
+	if (v=="" || v==null) return;
+	this.m_TargetObjectId = v;
+};
+
+EmailMessage.prototype.setWhatId = function(v) {
+	if (v=="" || v==null) return;
+	this.m_WhatId = v;
+};
+
+EmailMessage.prototype.setTemplateId = function(v) {
+	if (v=="" || v==null) return;
+	this.m_TemplateId = v;
+};
+
+EmailMessage.prototype.addToAddress = function(v) {
+	if (v=="" || v==null) return;
+	this.m_ToAddresses[this.m_nToAddresses++] = v;
+};
+
+EmailMessage.prototype.addCcAddress = function(v) {
+	if (v=="" || v==null) return;
+	this.m_CcAddresses[this.m_nCcAddresses++] = v;
+};
+
+EmailMessage.prototype.addBccAddress = function(v) {
+	if (v=="" || v==null) return;
+	this.m_BccAddresses[this.m_nBccAddresses++] = v;
+};
+
+EmailMessage.prototype.setSaveAsActivity = function(v) {
+	if (v!=true && v!=false) return;
+	this.m_SaveAsActivity = v;
+};
+
+EmailMessage.prototype.setUseSignature = function(v) {
+	if (v!=true && v!=false) return;
+	this.m_UseSignature = v;
+};
+
+EmailMessage.prototype.setEmailPriority = function(v) {
+	if (v!="Highest" && v!="High" && v!="Normal" && v!="Low" && v!="Lowest") return;
+	this.m_EmailPriority = v;
+};
+
+EmailMessage.prototype.setReplyTo = function(v) {
+	if (v=="" || v==null) return;
+	this.m_ReplyTo = v;
+};
+
+EmailMessage.prototype.setSenderDisplayName = function(v) {
+	if (v=="" || v==null) return;
+	this.m_SenderDisplayName = v;
+};
+
+EmailMessage.prototype.setSubject = function(v) {
+	if (v=="" || v==null) return;
+	this.m_Subject = v;
+};
+
+EmailMessage.prototype.setBody = function(v) {
+	if (v=="" || v==null) return;
+	
+	this.setHtmlBody(v);
+	this.setTextBody(v);
+};
+
+EmailMessage.prototype.setHtmlBody = function(v) {
+	if (v=="" || v==null) return;
+	this.m_HtmlBody = v;
+};
+
+EmailMessage.prototype.setTextBody = function(v) {
+	if (v=="" || v==null) return;
+	this.m_PlainTextBody = v;
+};
+
+EmailMessage.prototype.addDocAttachment = function(v) {
+	if (v=="" || v==null) return;
+	this.m_DocAttachments[this.m_nDocAttachments++] = v;
+};
+
+EmailMessage.prototype.addFileAttachment = function(v) {
+	if (v=="" || v==null) return;
+	this.m_FileAttachments[this.m_nFileAttachments++] = v;
+};
+
+EmailMessage.prototype.print = function() {
+	writeDebugLn("m_Request:"+
+		"<br>targetObjectId = "+this.m_TargetObjectId+
+		"<br>toAddresses = "+this.m_ToAddresses+
+		"<br>ccAddresses = "+this.m_CcAddresses+
+		"<br>bccAddresses = "+this.m_BccAddresses+
+		"<br>saveAsActivity = "+this.m_SaveAsActivity+
+		"<br>useSignature = "+this.m_UseSignature+
+		"<br>emailPriority = "+this.m_EmailPriority+
+		"<br>replyTo = "+this.m_ReplyTo+	
+		"<br>senderDisplayName = "+this.m_SenderDisplayName+	
+		"<br>subject = "+this.m_Subject+	
+		"<br>htmlBody = "+this.m_HtmlBody+
+		"<br>textBody = "+this.m_PlainTextBody+
+		"<br>docAttachments = "+this.m_DocAttachments+
+		"<br>fileAttachments= "+this.m_FileAttachments);
+};
+
+EmailMessage.prototype.send = function() {
+	if (this.m_Request==null) return;
+	
+	if (this.m_TargetObjectId!=null && this.m_TargetObjectId!="") {
+		this.m_Request.targetObjectId = this.m_TargetObjectId;
+		this.setSaveAsActivity(false);
+	};
+	if (this.m_ToAddresses!=null && this.m_ToAddresses!="") {
+		this.m_Request.toAddresses = this.m_ToAddresses;
+	};
+	if (this.m_CcAddresses!=null && this.m_CcAddresses!="") {
+		this.m_Request.ccAddresses = this.m_CcAddresses;
+	};
+	if (this.m_BccAddresses!=null && this.m_BccAddresses!="") {
+		this.m_Request.bccAddresses = this.m_BccAddresses;
+	};
+	if (this.m_SaveAsActivity!=null) {
+		this.m_Request.saveAsActivity = this.m_SaveAsActivity;
+	};
+	if (this.m_UseSignature!=null) {
+		this.m_Request.useSignature = this.m_UseSignature;
+	};
+	if (this.m_EmailPriority!=null && this.m_EmailPriority!="") {
+		this.m_Request.emailPriority = this.m_EmailPriority;
+	};
+	if (this.m_ReplyTo!=null && this.m_ReplyTo!="") {
+		this.m_Request.replyTo = this.m_ReplyTo;
+	};
+	if (this.m_SenderDisplayName!=null && this.m_SenderDisplayName!="") {
+		this.m_Request.senderDisplayName = this.m_SenderDisplayName;
+	};
+	if (this.m_Subject!=null && this.m_Subject!="") {
+		this.m_Request.subject = this.m_Subject;
+	};
+	if (this.m_HtmlBody!=null && this.m_HtmlBody!="") {
+		this.m_Request.htmlBody = this.m_HtmlBody;
+	};
+	if (this.m_PlainTextBody!=null && this.m_PlainTextBody!="") {
+		this.m_Request.plainTextBody = this.m_PlainTextBody;
+	};
+	if (this.m_DocAttachments!=null && this.m_DocAttachments.length>0) {
+		this.m_Request.documentAttachments = this.m_DocAttachments;
+	};
+	if (this.m_FileAttachments!=null && this.m_FileAttachments.length>0) {
+		this.m_Request.fileAttachments = this.m_FileAttachments;
+	};
+
+	if (gDebug) { writeDebugLn("<br>m_Request="+this.m_Request); }
+
+	var result = sforce.connection.sendEmail([this.m_Request]);
+	if (gDebug) { writeDebugLn("<br>sendEmail result="+result[0]); }
+	if (!result[0].getBoolean("success")) {
+		throw(result[0]);
+	}
+};
+
+function registerEmptyCellText(msg) {}
+ 
+registerEmptyCellText('Click here to enter content');
+var editAreaIds = null;
+
+function gatherEditableIds() {
+	var tempIds = new Object(20);
+	var elements = document.getElementsByTagName('td');
+	var index = 0;
+	for (var i = 0; i < elements.length; i++) {
+		var element = elements[i];
+		if (element.id != null && element.id.length > 0) {
+			tempIds[index] = element.id;
+			index++;
+		}
+	}
+	
+	editAreaIds = new Object(index);
+	for (var i = 0; i < index; i++) {
+		editAreaIds[i] = tempIds[i]
+	}
+}
+
+function getTopTable() {
+	var topTable = document.getElementById('topTable');
+	var allTables = document.getElementsByTagName("table");
+	if ((!topTable) && allTables) {
+		topTable = allTables[0];
+	}
+	return topTable;
+}
+
+function getDefaultPopupWidth(){
+	var topTable = getTopTable();
+	if (topTable) {
+		return Math.min(Math.max(topTable.offsetWidth + 60, 500), 1024);
+	} else {
+		return 500;
+	}
+}
+
+function getDefaultPopupHeight(){
+	var topTable = getTopTable();
+	if (topTable) {
+		return Math.min(Math.max(topTable.offsetHeight + 200, 500), 768);
+	} else {
+		return 500;
+	}
+}
+
+function initEditor() {
+	if (top != this) {
+		//If Template type is HTML
+		if (gEmailTemplateType == 'html') {
+			gatherEditableIds();
+			setEditableIds(editAreaIds);
+			setLockedImageSrc("/email/wysiwyg/images/locked.gif");
+			setUnlockedImageSrc("/email/wysiwyg/images/unlocked.gif");
+			
+			if (!parent.document.forms['controlForm']) {
+				registerEditForm(window.opener.document.forms['controlForm']);
+			} else {
+				registerEditForm(parent.document.forms['controlForm']);
+			}
+			
+			initializeEditor();
+			
+			//signal the parent that the edit ctr is finished initializing
+			top.editFinishedLoading=true;
+		} else {
+			if (document.body) {
+				//this page is always in quirks mode
+				var width = document.body.scrollWidth;
+				var heigth = document.body.scrollHeight;
+				
+				if (width == 0 && heigth == 0) {
+					//In IE, there is a problem where the document.body.scrollWidth and
+					//scrollHeight are getting returned with a value of 0.  It appears to
+					//be a timing issue between the loading of the main page and the
+					//iframe.  If the values are 0, we will try reloading the frame which
+					//appears to reset the frame's width and height back to the expected values.
+					parent.setFrameWidth(500);
+					parent.setFrameHeight(300);
+					
+					if (parent.numberIframeReloads == undefined || parent.numberIframeReloads < 4) {
+						//We will limit the number of reloads to 4 (perhaps 1 more if there is
+						//a delay loading the parent javascript after the iframe gets loaded, which
+						//can occurr in IE.  After 4 attempts, we will no longer reload and the
+						//iframe will be displayed in the default heigh/width of 300 x 500
+						if (parent.numberIframeReloads != undefined) {
+							parent.numberIframeReloads++;
+						}
+						parent.frames('contentFrame').window.location.reload();
+					}
+				} else {
+					parent.setFrameWidth(width);
+					parent.setFrameHeight(heigth);
+				}
+			}
+		}  
+	} else {
+		window.resizeTo(getDefaultPopupWidth(), getDefaultPopupHeight());
+	}
+}
+    
+//Function to set HTML template with image
+function setHTMLTemplate() {
+   	//get template subject and body
+	/*if (gImageServerId=="") {
+		
+		var resultBT = sforce.connection.retrieve("Id,Value","BrandTemplate",[gBrandTemplateId]);
+		if (resultBT[0]==null) {
+			erroralert(cERROR_SENDING_EMAIL,resultBT[0]);
+			return;
+		}
+		gImageServerId = resultBT[0].Id;
+		var htmlValue = resultBT[0].Value;
+		if (gDebug) {
+			writeDebugLn("<br>gImageServerId="+gImageServerId);
+		}
+	}
+		
+	var bhtml = "";
+	bhtml += "<style>p{margin-top:0px; margin-bottom:0px;}</style><body  style=\" bLabel:body; bEditID:b1st1; background-color:#CCCCCC;\"><CENTER>";
+	bhtml += "<TABLE id=topTable height=450 cellSpacing=0 cellPadding=0 width=500>";
+	bhtml += "  <TBODY>";
+	bhtml += "  <TR vAlign=top>";
+	bhtml += "    <TD style=\"VERTICAL-ALIGN: top; HEIGHT: 100px; BACKGROUND-COLOR: #ffffff; TEXT-ALIGN: left; bLabel: header; bEditID: r1st1\">";
+	bhtml += "    <IMG id=r1sp1 src=\"http://na3.salesforce.com/servlet/servlet.ImageServer?id="+gImageServerId+"&amp;oid="+gImageServerOid+"\" border=0 ";
+	bhtml += "bLabel=\"headerImage\" bEditID=\"r1sp1\" NOSEND=\"1\"></IMG></TD></TR>";
+	bhtml += "  <TR vAlign=top>";
+	bhtml += "    <TD ";
+	bhtml += "    style=\"HEIGHT: 5px; BACKGROUND-COLOR: #aaaaff; bLabel: accent1; bEditID: r2st1\"></TD></TR>";
+	bhtml += "  <TR vAlign=top>";
+	bhtml += "    <TD ";
+	bhtml += "    style=\"FONT-SIZE: 12pt; COLOR: #000000; FONT-FAMILY: arial; BACKGROUND-COLOR: #ffffff; bLabel: main; bEditID: r3st1\" ";
+	bhtml += "    height=300 styleInsert=\"1\">"+gEmailBody;
+	bhtml += "	</TD></TR>";
+	bhtml += "  <TR vAlign=top>";
+	bhtml += "    <TD style=\"HEIGHT: 5px; BACKGROUND-COLOR: #aaaaff; bLabel: accent2; bEditID: r4st1\"></TD></TR>";
+	bhtml += "  <TR vAlign=top>";
+	bhtml += "    <TD style=\"VERTICAL-ALIGN: top; HEIGHT: 100px; BACKGROUND-COLOR: #ffffff; TEXT-ALIGN: left; bLabel: footer; bEditID: r5st1\">";
+	bhtml += "    <IMG id=r5sp1 src=\"http://na3.salesforce.com/servlet/servlet.ImageServer?oid="+gImageServerOid+"&amp;id="+gImageServerId+"\" ";
+	bhtml += "      border=0 bLabel=\"footerImage\" bEditID=\"r5sp1\" NOSEND=\"1\"></IMG></TD></TR>";
+	bhtml += "  <TR vAlign=top>";
+	bhtml += "    <TD style=\"HEIGHT: 5px; BACKGROUND-COLOR: #aaaaff; bLabel: accent3; bEditID: r6st1\"></TD></TR>";
+	bhtml += "</TBODY></TABLE></CENTER>";
+	bhtml += "<BR><BR>";
+	bhtml += "<DIV style=\"DISPLAY: none\"></DIV>";*/
+	
+	return gImageServerValue;
+}
+
+function registerColorFrame(arg) {
+}
+
+function sendToOtherPartyInit() {
+	try {
+		//display preferences
+		gIsVisible = true;
+		gValidated = true;
+		gShowEmailCCFields = true;
+		gShowEmailFormat = false;
+		gShowEmailTo = true;
+		gShowEmailRelatedTo = true;
+		
+		//email type
+		gEmailType = (gShowEmailCCFields==true) ? "SingleEmailMessage" : "MassEmailMessage";
+		
+		//get request parameters
+		var id = "{!$Request.id}";
+		var show = "{!$Request.show}";
+		var toIds = "{!$Request.toIds}";
+		var gSubmitted = "{!$Request.submitted}";
+		if (gSubmitted=="") gSubmitted = false;
+		
+		if (gEmailBCC_p5=="") {
+			gEmailBCC_p5 = "{!$User.Email}";
+		}
+		
+		//logon as superuser first time only
+		//if (!gSubmitted) {
+		logonAsSuperUser();
+		//}
+		
+		//if any request params are present we have already submitted the form
+		//var bInitialized = (id!="" || show!="" || toIds!="" || gEmailTemplateId!="" || gEmailDocumentIds!=null);
+		if (id!="") {
+			gObjectId = id;
+			gObjectIdURL = "/"+gObjectId;
+		}
+		
+		if (show!="") {
+			gIsVisible = show;
+		}
+
+		//convert string of ids to array
+		if (toIds!="") {
+			var num = 0;
+			var pos = 0;
+			var id = "";
+			
+			while (toIds.length > 0) {
+				pos = toIds.indexOf(',');
+				if (pos>0) {
+					id = toIds.substring(0,pos);
+					toIds = toIds.substring(pos+1, toIds.length);
+				} else {
+					id = toIds;
+					toIds = "";
+				}
+				gEmailToIds[num++] = id;
+			}
+		}
+
+		if (gDebug) {
+			writeDebugLn("<br>id="+id);
+			writeDebugLn("<br>show="+show);
+			writeDebugLn("<br>toIds="+toIds);
+			writeDebugLn("<br>gEmailTo_p2="+gEmailTo_p2);
+			writeDebugLn("<br>gEmailTo_p2_lkid="+gEmailTo_p2_lkid);
+			writeDebugLn("<br>gEmailTo_p2_lkold="+gEmailTo_p2_lkold);
+			writeDebugLn("<br>gEmailTo_p2_lktp="+gEmailTo_p2_lktp);
+			writeDebugLn("<br>gEmailTo_p2_lspf="+gEmailTo_p2_lspf);
+			writeDebugLn("<br>gEmailTo_p2_mod="+gEmailTo_p2_mod);
+			writeDebugLn("<br>gEmailTo_p3="+gEmailTo_p3);
+			writeDebugLn("<br>gEmailTo_p3_lkid="+gEmailTo_p3_lkid);
+			writeDebugLn("<br>gEmailTo_p3_lkold="+gEmailTo_p3_lkold);
+			writeDebugLn("<br>gEmailTo_p3_lktp="+gEmailTo_p3_lktp);
+			writeDebugLn("<br>gEmailTo_p3_lspf="+gEmailTo_p3_lspf);
+			writeDebugLn("<br>gEmailTo_p3_mod="+gEmailTo_p3_mod);
+			writeDebugLn("<br>gEmailToId="+gEmailToId);
+			writeDebugLn("<br>gEmailToIds="+gEmailToIds);
+			writeDebugLn("<br>gEmailTemplateId="+gEmailTemplateId);
+			writeDebugLn("<br>gEmailSubject="+gEmailSubject);
+			writeDebugLn("<br>gEmailBody="+gEmailBody);
+			writeDebugLn("<br>gEmailDocumentIds="+gEmailDocumentIds);
+			writeDebugLn("<br>gFileId="+gFileId);
+			writeDebugLn("<br>gParameterNames="+gParameterNames);
+			writeDebugLn("<br>gParameterValues="+gParameterValues);
+		}
+
+		//get template subject and body
+		if (gEmailTemplateId!="") {
+			var fieldList = getFieldList(gEmailTemplateObj);
+			result = sforce.connection.retrieve(fieldList,gEmailTemplateObj,[gEmailTemplateId]);
+			if (result[0]==null) {
+				erroralert(cERROR_SENDING_EMAIL,result[0]);
+				return;
+			}
+			
+			gEmailSubject = result[0].Subject;
+			gEmailBody = result[0].Body;
+			gEmailTemplateType = result[0].TemplateType;
+			gBrandTemplateId = result[0].BrandTemplateId;
+			
+			if (gBrandTemplateId!=null && gBrandTemplateId!="") {
+				var resultBT = sforce.connection.retrieve("Id,Value","BrandTemplate",[gBrandTemplateId]);
+				if (resultBT[0]==null) {
+					erroralert(cERROR_SENDING_EMAIL,resultBT[0]);
+					return;
+				}
+				gImageServerId = resultBT[0].Id;
+				gImageServerValue = resultBT[0].Value;
+				
+				if (gDebug) { writeDebugLn("<br>gImageServerId="+gImageServerId); }
+				if (document.getElementById("html_buff_hidden")){
+					document.getElementById("html_buff_hidden").value = gImageServerValue;
+				}
+			}
+			if (gDebug) {
+				writeDebugLn("<br>gEmailSubject="+gEmailSubject);
+				writeDebugLn("<br>gEmailBody="+gEmailBody);
+				writeDebugLn("<br>gEmailTemplateType="+gEmailTemplateType);
+			}
+
+			//add any attachments from the template
+			var ids = new Array();
+			gTemplateAttachmentIds = new Array();
+			getAttachmentIdsForTemplate(gEmailTemplateId,ids);
+
+			for (var i=0; i<ids.length; i++) {
+				gTemplateAttachmentIds.push(ids[i]);
+			}
+
+			//check if user selected a template we need to resolve
+			//get all form parameters to send to the emailAuthor.jsp page
+			if (gEmailTemplateSelected=="true") {
+				gEmailTemplateSelected = false;
+                    
+				//build custom url to the emailauthor.jsp page
+				var emUrl = "";
+				emUrl += "/email/author/emailauthor.jsp";
+				
+                if (gParameterNames=="" || gParameterValues=="") {
+	                var p3_lkid = "{!APTS_Agreement__c.Id}";
+	                var p3_lkold = "{!APTS_Agreement__c.Name}";
+                
+	                emUrl += "?template_id="+gEmailTemplateId;
+	                emUrl += "&new_template=1";
+	                emUrl += "&retURL="+gObjectIdURL;
+	                
+                    emUrl += "&p2_lkid="+gEmailTo_p2_lkid;
+                    emUrl += "&p2_lkold="+gEmailTo_p2_lkold;
+                    emUrl += "&p2_lktp="+gEmailTo_p2_lktp;
+                    emUrl += "&p2_lspf="+gEmailTo_p2_lspf;
+                    emUrl += "&p2_mod="+gEmailTo_p2_mod;
+                    emUrl += "&p2="+gEmailTo_p2;
+                    
+                    emUrl += "&p3_lkid="+gEmailTo_p3_lkid;
+                    emUrl += "&p3_lkold="+gEmailTo_p3_lkold;
+                    emUrl += "&p3_lktp="+gEmailTo_p3_lktp;
+                    emUrl += "&p3_lspf="+gEmailTo_p3_lspf;
+                    emUrl += "&p3_mod="+gEmailTo_p3_mod;
+                    emUrl += "&p3="+gEmailTo_p3;
+                    
+                    emUrl += "&p24="+gEmailAdditionalTo_p24;
+                    emUrl += "&p4="+gEmailCC_p4;
+                    emUrl += "&p5="+gEmailBCC_p5;
+
+					makeGetRequest(emUrl,myResponseHandler);
+					return;
+					
+                } else {
+					//rebuild list of form parameters
+					var pos = 0;
+					var item = "";
+					
+					var vNames = gParameterNames;
+					gFormParmNames = new Array();
+					gFormParmNames.push("template_id");
+					
+					while (vNames.length > 0) {
+						pos = vNames.indexOf(',');
+						if (pos>0) {
+							item = vNames.substring(0,pos);
+							vNames = vNames.substring(pos+1, vNames.length);
+						} else {
+							item = vNames;
+							vNames = "";
+						}
+					
+						gFormParmNames.push(item);
+					}
+                       
+					var vValues = gParameterValues;
+					gFormParmValues = new Array();
+					gFormParmValues.push(gEmailTemplateId);
+                        
+					while (vValues.length > 0) {
+						pos = vValues.indexOf(',');
+						if (pos>=0) {
+							item = (pos==0) ? "" : vValues.substring(0,pos);
+							vValues = vValues.substring(pos+1, vValues.length);
+						} else {
+							item = vValues;
+							vValues = "";
+						}
+
+						gFormParmValues.push(item);
+					}
+
+					makePostRequest(emUrl,myResponseHandler,gFormParmNames,gFormParmValues);
+					return;
+				}
+			}
+		}
+	
+		sendToOtherPartyInit_Callback();
+	}
+	catch(ex) {
+		throw(ex);
+	}
+}
+
+function sendToOtherPartyInit_Callback() {
+    try {
+        //get previously selected attachments
+        if (gEmailDocumentIds!="") {
+            var pos = 0;
+            var id = "";
+            var ids = gEmailDocumentIds;
+            
+            gDocumentIds = new Array();
+            while (ids.length > 0) {
+                pos = ids.indexOf(',');
+                if (pos>0) {
+                    id = ids.substring(0,pos);
+                    ids = ids.substring(pos+1, ids.length);
+                } else {
+                    id = ids;
+                    ids = "";
+                }
+                
+                gDocumentIds.push(id);
+            }
+
+            //add additional attachments
+            if (gFileId!=null && gFileId!="") {
+                gDocumentIds.push(gFileId);
+            }
+            gFileId = "";
+
+            //add additional attachments from the template
+			for (var ta=0; ta<gTemplateAttachmentIds.length; ta++) {
+                gDocumentIds.push(gTemplateAttachmentIds[ta]);
+            }
+
+            if (gDebug) {
+                writeDebugLn("<br>gDocumentIds="+gDocumentIds);
+            }           
+        }
+
+        //if no template or attachments were selected we're running for the first time
+        //if (gEmailTemplateId=="" && gEmailDocumentIds=="") {
+        if (!gSubmitted) {
+            queryAttachments();
+            
+            if (gNumAttachments>0) {
+                gSelectedAttachmentIds = gAttachmentIds;
+                gNumSelectedAttachments = gNumAttachments;
+            }
+            if (gDebug) {
+                writeDebugLn("<br>gSelectedAttachmentIds="+gSelectedAttachmentIds);
+                writeDebugLn("<br>gNumSelectedAttachments="+gNumSelectedAttachments);
+            }
+    
+			//cleanup temp objects
+			sendToOtherPartyPost();
+
+			//the wizard is NOT required for protecting, encoding, or decoding attachments
+			//if (gUseMergeServer) {
+			//	gWizardInstalled = true;
+			//} else {
+				gWizardInstalled = initApttusWizard(true);
+			//}
+    
+            //prompt user to select attachments if more than one; otherwise automatically
+            //include the attachment in the email to send
+            if (gNumAttachments>1) {
+                showSelectAttachmentPage();
+            } else {
+                if (gAutoIncludeRelatedAttachments) {
+                    var ids = queryRelatedAttachments();
+                    
+                    for (var i=0; i<ids.length; i++) {
+                        gSelectedAttachmentIds[gNumSelectedAttachments++] = ids[i];
+                        if (gDebug) {
+                            writeDebugLn("<br>i="+i);
+                            writeDebugLn("<br>ids[i]="+ids[i]);
+                            writeDebugLn("<br>gSelectedAttachmentIds="+gSelectedAttachmentIds);
+                            writeDebugLn("<br>gNumSelectedAttachments="+gNumSelectedAttachments);
+                        }
+                    }
+                }
+                
+                //always call protect documents since this attaches them to the email
+                //regardless of whether they are protected or not
+                protectDocuments();
+            }
+        } else {
+            if (gUseCustomForm) {
+                showCustomEmailPage();
+            } else {
+                window.setTimeout("_showEmailAuthorPage();",gTimeout);
+            }
+        }
+    }
+    catch(ex) {
+        throw(ex);
+    }
+}
+
+function sendToOtherPartyPost() {
+	try {
+		deleteTempDocuments();
+		deleteTempEmailTemplates();
+	}
+	catch(ex) {
+	}
+}
+
+function sendEmailFromTemplate(type,toIds,templateId) {
+
+	gIsVisible = false;
+	gEmailToIds = toIds;
+	gEmailTemplateId = templateId;
+
+	if (gDebug) {
+		writeDebugLn("<br>gEmailToIds="+gEmailToIds+"<br>gEmailTemplateId="+gEmailTemplateId);
+	}
+
+	queryAttachments();
+	
+	gSelectedAttachmentIds = gAttachmentIds;
+	gNumSelectedAttachments = gNumAttachments;
+	if (gDebug) {
+		writeDebugLn(
+			"<br>gSelectedAttachmentIds="+gSelectedAttachmentIds+
+			"<br>gNumSelectedAttachments="+gNumSelectedAttachments);
+	}
+
+	if (!gDebug) {
+		showMsgProgress(cSENDING_EMAIL);
+	}
+
+	if (type==cID_LIST_TYPE) {
+		sendMassEmail();
+	} else {
+		sendSingleEmailFromTemplate(toIds,templateId);
+	}
+}
+
+function validateForm() {
+	gValidated = true;
+
+	try {	
+		if (gToFieldRequired || gAddToFieldRequired) {
+	        var toId = document.getElementById("p2_lkid").value;    
+	        var addToId = document.getElementById("p24").value;    
+            
+            if (toId=="" && addToId=="") {
+                alert("To or Additional To is required.");            
+                gValidated = false;
+                return false;
+            }
+		}
+
+		var subj = document.getElementById("p6").value;		
+		if (subj=="") {
+			alert("Subject is required.");
+			gValidated = false;
+			return false;
+		}
+
+		if (gBodyFieldRequired) {
+		    //Body is required for text/custom template type
+			if (gEmailTemplateType != 'html') {
+				var body = document.getElementById("p7").value;	
+				if (body=="") {
+					alert("Body is required.");
+					gValidated = false;
+					return false;
+				}
+			}
+		}
+	}
+	catch(ex) {
+		return false;
+	}
+	finally {
+		return gValidated;
+	}
+}
+ 
+function sendSingleEmailMessage() {
+	try {
+		var toId = document.getElementById("p2_lkid").value;
+
+		var sb = new sforce.StringBuffer(); 
+		sb.append(document.getElementById("p24").value);
+		var sbTo = sb.toString();
+
+		sb = new sforce.StringBuffer(); 
+		sb.append(document.getElementById("p4").value);
+		var sbCC = sb.toString();
+
+		sb = new sforce.StringBuffer(); 
+		sb.append(document.getElementById("p5").value);
+		var sbBCC = sb.toString();
+		
+		if (gEmailTemplateId!="" && gEmailTemplateType == "html") {
+			sendSingleEmailHTML(toId,sbTo,sbCC,sbBCC);
+		} else {			
+			var email = new EmailMessage();
+			
+			var userId = gCurrUserInfo.userId;
+			var userName = gCurrUserInfo.userFullName;
+			var userEMail = gCurrUserInfo.userEmail;
+			
+			email.setSenderDisplayName(userName);
+			email.setReplyTo(userEMail);
+
+			if (toId!=null && toId!="") {
+				email.setTargetObjectId(toId);
+			}
+			
+			if (sbTo!=null && sbTo!="") {
+				var items = sbTo.split(",");
+				for (var i=0; i<items.length; i++) {
+					var addr = items[i];
+					email.addToAddress(addr);
+				}
+			}
+			if (sbCC!=null && sbCC!="") {
+				var items = sbCC.split(",");
+				for (var i=0; i<items.length; i++) {
+					var addr = items[i];
+					email.addCcAddress(addr);
+				}
+			}
+			if (sbBCC!=null && sbBCC!="") {
+				var items = sbBCC.split(",");
+				for (var i=0; i<items.length; i++) {
+					var addr = items[i];
+					email.addBccAddress(addr);
+				}
+			}
+		
+			email.setSubject(gEmailSubject);
+			//email.setBody(gEmailBody);
+			//email.templateId = gEmailTemplateId;
+				
+			if (gEmailBodyType=="html") {
+				email.setHtmlBody(gEmailBody);
+				var textBody = convertBRtoLF(gEmailBody);
+				email.setTextBody(textBody);
+			} else {
+				email.setTextBody(gEmailBody);
+				var htmlBody = convertLFtoBR(gEmailBody);
+				email.setHtmlBody(htmlBody);
+			}
+				
+			for (var i=0; i<gDocumentIds.length; i++) {
+				var id = gDocumentIds[i];
+				email.addDocAttachment(id);
+			}
+				
+			setMain("<h1>Please wait...</h1>");
+			email.send();
+
+			//write activity history
+			var attNames = "";
+			for (var k=0; k<gNumAttachments; k++) {
+				if (k>0) { attNames += ", "; }
+				attNames += gAttachmentNames[k];
+			}
+			
+			var msg = "Additional To: "+sbTo+"\n";
+			msg += "CC: "+sbCC+"\n";
+			msg += "BCC: "+sbBCC+"\n";
+			msg += "Attachments: "+attNames+"\n\n";
+			msg += "Subject: "+gEmailSubject+"\n";
+			msg += "Body:\n"+gEmailBody;
+			
+			createEmailActivityLogEntry(toId,gEmailSubject,msg);
+		}
+		
+		//execute post processing handler
+		sendMailCallback();
+	}
+	catch(ex) {
+		erroralert(cERROR_SENDING_EMAIL,ex);
+	}
+	finally {
+		if (gDeleteTemplate) {
+			deleteTemplate(gEmailTemplateId);
+			gEmailTemplateId = "";
+		}
+
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function sendSingleEmail() {
+	try {
+		var request = new sforce.SingleEmailMessage(); 
+		
+		var toId = document.getElementById("p2_lkid").value;
+		if (toId!="" && toId!=null) {
+			request.targetObjectId = toId;
+		}
+				 
+		//to
+		var to = new sforce.StringBuffer(); 
+		to.append(document.getElementById("p24").value);
+		
+		var toArray = new Array();
+		toArray = to.toString().split(",");
+		if (to.toString().length>=1) {
+			request.toAddresses = toArray;
+		}
+		
+		//cc
+		var cc = new sforce.StringBuffer(); 
+		cc.append(document.getElementById("p4").value);
+		
+		var ccArray = new Array();
+		ccArray = cc.toString().split(","); 
+		if (cc.toString().length>=1) {
+			request.ccAddresses = ccArray;
+		}
+				
+		//bcc
+		var bcc = new sforce.StringBuffer(); 
+		bcc.append(document.getElementById("p5").value);
+		
+		var bccArray = new Array();
+		bccArray = bcc.toString().split(",");
+		if (bcc.toString().length>=1) {
+			request.bccAddresses = bccArray;
+		}
+		
+		//if(document.getElementById("useSignature").checked) {
+		//	request.useSignature = true;
+		//} else {
+		//	request.useSignature = false; 
+		//}
+		//request.emailPriority = document.getElementById("emailPriority").value;
+		//request.replyTo = document.getElementById("reply_to").value;	
+		
+		//subject
+		var subj = document.getElementById("p6").value;
+		if (subj!="" && subj!=null) {
+			request.subject = subj;
+		}
+		
+		//body
+		var body = document.getElementById("p7").value;
+		request.plainTextBody = body;
+		request.htmlBody = body;
+		
+		setMain("<h1>Please wait...</h1>");
+	
+		//create template for adding attachments
+		gEmailTemplateId = createTemplateFromForm(subj,body);
+
+		//send the email
+		var result = sforce.connection.sendEmail([request]);
+		if (!result[0].getBoolean("success")) {
+			throw(cERROR_SENDING_EMAIL+result[0]);
+		}
+		
+		//write activity history
+		var attNames = "";
+		for (var k=0; k<gNumAttachments; k++) {
+			if (k>0) { attNames += ", "; }
+			attNames += gAttachmentNames[k];
+		}
+		var contactId = toId;
+		var msg = "Additional To: "+toArray+"\n";
+		msg += "CC: "+ccArray+"\n";
+		msg += "BCC: "+bccArray+"\n";
+		msg += "Attachment: "+attNames+"\n\n";
+		msg += "Subject: "+subj+"\n";
+		msg += "Body:\n"+body;
+		
+		createEmailActivityLogEntry(contactId,subj,msg);
+		sendMailCallback();
+	}
+	catch(ex) {
+		erroralert(cERROR_SENDING_EMAIL,ex);
+	}
+	finally {
+		if (gDeleteTemplate) {
+			deleteTemplate(gEmailTemplateId);
+			gEmailTemplateId = "";
+		}
+
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function sendSingleEmailFromTemplate(toIds,templateId) {
+	try {
+		var request = new sforce.SingleEmailMessage(); 
+		var subj = "";
+		var body = "";
+		
+		setMain("<h1>Please wait...</h1>");
+	
+		//create template for adding attachments
+		gEmailTemplateId = createTemplateFromTemplate(templateId);
+		if (gEmailTemplateId!=null && gEmailTemplateId!="") {
+			var fieldList = getFieldList(gEmailTemplateObj);
+			result = sforce.connection.retrieve(fieldList,gEmailTemplateObj,[gEmailTemplateId]);
+			if (result[0]==null) {
+				erroralert(cERROR_SENDING_EMAIL,result[0]);
+				return;
+			}
+			
+			subj = result[0].Subject;
+			body = result[0].Body;
+		}
+		
+		//we have to send the email to ourself since we can't send using a template
+		//without a targetObjectId (which can only be a user,contact, or lead...)
+		request.targetObjectId = "{!$User.Id}";
+		request.saveAsActivity = false;
+		request.toAddresses = toIds;
+		request.templateId = gEmailTemplateId;
+
+		//send the email
+		var result = sforce.connection.sendEmail([request]);
+		if (!result[0].getBoolean("success")) {
+			throw(result[0]);
+		}
+		
+		//write activity history
+		var attNames = "";
+		for (var k=0; k<gNumAttachments; k++) {
+			if (k>0) { attNames += ", "; }
+			attNames += gAttachmentNames[k];
+		}
+		
+		var msg = "To: "+toIds+"\n";
+		msg += "Attachment: "+attNames+"\n\n";
+		msg += "Subject: "+subj+"\n";
+		msg += "Body:\n"+body;
+		
+		createEmailActivityLogEntry(null,subj,msg);
+		sendMailCallback();
+	}
+	catch(ex) {
+		erroralert(cERROR_SENDING_EMAIL,ex);
+	}
+	finally {
+		if (gDeleteTemplate) {
+			deleteTemplate(gEmailTemplateId);
+			gEmailTemplateId = "";
+		}
+
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function sendSingleEmailHTML(id,to,cc,bcc) {
+	//create template to send email
+	if (!gDebug) { 
+		setMain("<h1>Please wait...</h1>");
+	}
+	
+	//create single email message
+	var request = new sforce.SingleEmailMessage();
+	if (to!=null && to!="") {
+		var items = to.split(",");
+		for (var i=0; i<items.length; i++) {
+			var addr = items[i];
+			request.toAddresses = addr;
+		}
+	}
+	
+	if (cc!=null && cc!="") {
+		var items = cc.split(",");
+		for (var i=0; i<items.length; i++) {
+			var addr = items[i];
+			request.ccAddresses = addr;
+		}
+	}
+	
+	if (bcc!=null && bcc!="") {
+		var items = bcc.split(",");
+		for (var i=0; i<items.length; i++) {
+			var addr = items[i];
+			request.bccAddresses = addr;
+		}
+	}
+	
+	request.bccSender = false;
+	request.useSignature = true;
+	request.emailPriority = "Normal";
+	
+	request.senderDisplayName = gCurrUserInfo.userFullName;
+	request.replyTo = gCurrUserInfo.userEmail;
+
+	//set id of the contact, lead, or user the email will be sent to and optional object to merge with.
+	//if you specify a contact for the targetObjectId field, you can specify a whatId as well.
+	if (id==null || id=="") {
+		var userContactId = "{!$User.ContactId}";
+		if (userContactId==null || userContactId=="") {
+			request.targetObjectId = "{!$User.Id}";
+			request.saveAsActivity = false;
+		} else {
+			request.targetObjectId = userContactId;
+			request.saveAsActivity = true;
+			
+			//whatId can only be specified if the targetObjectId is a contact
+			request.whatId = gObjectId;
+		}
+	} else {
+		//targetObjectId was specified
+		request.targetObjectId = id;
+
+		//whatId can only be specified if the targetObjectId is a contact
+		var idType = id.substring(0,3);
+		if (idType==gContactIdPrefix) {
+			request.whatId = gObjectId;
+		}
+	}
+
+	//set email template id
+	//(when using a template you must specify a contact, lead, or user the email will be sent to)
+	request.templateId = gEmailTemplateId;
+	
+	//add  attachments
+	for (var i=0; i<gDocumentIds.length; i++) {
+		var id = gDocumentIds[i];
+		request.documentAttachments = id;
+	}
+		
+	//send email
+	var result = sforce.connection.sendEmail([request]);
+	if (!result[0].getBoolean("success")) {
+		throw(result[0]);
+	}
+}
+
+function sendMassEmail() {
+	try {
+		//create template to send email
+		if (!gDebug) { setMain("<h1>Please wait...</h1>"); }
+		if (gEmailTemplateId=="") {
+			gEmailTemplateId = createTemplateFromForm(gEmailSubject,gEmailBody);
+		} else {
+			gEmailTemplateId = createTemplateFromTemplate(gEmailTemplateId);
+		}
+		
+		//send multiple requests since we can't mix id types when sending email
+		var mmreq = "";
+		var mmres = "";
+		for (var i=0; i<gEmailToIds.length; i++) {
+			var id = gEmailToIds[i];
+			if (id==null || id=="") {
+				continue;
+			}
+			var idType = id.substring(0,3);
+			if (idType!=gContactIdPrefix && idType!=gUserIdPrefix && idType!=gLeadIdPrefix) {
+				continue;
+			}
+			
+			//create mass email message
+			var request = new sforce.MassEmailMessage();
+			request.bccSender = true;
+			//saveAsActivity must be false when sending mail to users
+			request.saveAsActivity = (idType==gUserIdPrefix) ? false : true;
+			request.useSignature = true;
+			request.emailPriority = "Normal";	//Highest,High,Normal,Low,Lowest
+			//request.replyTo = "";
+			
+			request.targetObjectIds = id;
+			request.templateId = gEmailTemplateId;
+	
+			//send email
+			var result = sforce.connection.sendEmail([request]);
+			if (gDebugNotifications) {
+				mmreq = request;
+				mmres = result;
+				writeDebugLn("<br>request="+request);
+				writeDebugLn("<br>result="+result);
+			}
+			if (!result[0].getBoolean("success")) {
+				throw(result[0]);
+			}
+		}
+		
+		//write activity history
+		var attNames = "";
+		for (var k=0; k<gNumAttachments; k++) {
+			if (k>0) {
+				attNames += ", ";
+			}
+			attNames += gAttachmentNames[k];
+		}
+		
+		var result = sforce.connection.retrieve("Subject,Body",gEmailTemplateObj,[gEmailTemplateId]);
+		if (result[0]==null) {
+			throw(cERROR_SENDING_EMAIL+result[0]);
+		}
+		
+		//create activity history
+		var subject = result[0].Subject;
+		var id = "";
+		var pcId = "{!APTS_Agreement__c.Primary_ContactId__c}";
+		
+		if (pcId!=null && pcId!="") {
+			id = pcId;
+		} else {
+			for (var k=0; k<gEmailToIds.length; k++) {
+				var tmpId = gEmailToIds[k];
+				var idType = tmpId.substring(0,3);
+				if (idType==gContactIdPrefix || idType==gLeadIdPrefix) {
+					id = tmpId;
+					break;
+				}
+			}
+		}
+
+		var msg = "";
+		msg += "Attachment: "+attNames+"\n\n";
+		msg += "Subject: "+subject+"\n";
+		msg += "Body:\n"+result[0].Body;
+		
+		if (gDebug) {
+			msg += "\nmmreq="+mmreq;
+			msg += "\nmmres="+mmres;
+		}
+		
+		createEmailActivityLogEntry(id,subject,msg);
+		
+		//callback
+		sendMailCallback();
+
+		if (gDeleteTemplate) {
+			deleteTemplate(gEmailTemplateId);
+			gEmailTemplateId = "";
+		}
+	}
+	catch(ex) {
+		if (gDeleteTemplate) {
+			deleteTemplate(gEmailTemplateId);
+			gEmailTemplateId = "";
+		}
+
+		erroralert(cERROR_SENDING_EMAIL,ex);
+		throw(ex);
+	}
+}
+
+function createEmailActivityLogEntry(contactOrLeadId,subject,msg) {
+	try {	
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = msg;
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Email: "+subject;
+		task.WhatId = gObjectId;
+		if (contactOrLeadId!="" && contactOrLeadId!=null) {
+			task.WhoId = contactOrLeadId;
+		}
+
+		var result = sforce.connection.create([task]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG,result[0]);
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_ACTIVITY_LOG,ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function sendMailCallback() {
+	//clients should implement
+}
+	
+function createTemplateFromAttachments() {
+	return createTemplateFromForm("","");
+}
+
+function createTemplateFromForm(subj,body) {
+	var emt = new sforce.SObject(gEmailTemplateObj);
+	var templateId = "";
+	
+	emt.Name = "TEMP";
+	emt.TemplateType = "text";
+	emt.TemplateStyle = "none";
+	emt.FolderId = getEmailTemplateFolder();
+	emt.Description = gObjectId;
+	emt.Subject = subj;
+	emt.Body = body;
+	emt.HtmlValue = body;
+	emt.Encoding = "ISO-8859-1";
+	emt.IsActive = true;
+
+	if (gDebug) { writeDebugLn("<br>creating template..."); }
+	var result = sforce.connection.create([emt]);
+	if (gDebug) { writeDebugLn("<br>result="+result); }
+
+	if (result[0].getBoolean("success")) {
+		templateId = result[0].id;
+		for (var i=0; i<gNumSelectedAttachments; i++) {
+			if (gDebug) {
+				writeDebugLn("<br>cloning attachment "+gSelectedAttachmentIds[i]+" to "+templateId);
+			}
+			cloneAttachment(gSelectedAttachmentIds[i],templateId);
+		}		
+	} else {
+		throw(cERROR_CREATE_EMAIL_TEMPLATE+result[0]);
+	}
+
+	return templateId;
+}
+
+function createTemplateFromTemplate(srcTemplateId) {
+    var fieldList = getFieldList(gEmailTemplateObj);
+	result = sforce.connection.retrieve(fieldList,gEmailTemplateObj,[srcTemplateId]);
+	if (result[0]==null) {
+		erroralert(cERROR_SENDING_EMAIL,result[0]);
+		return;
+	}
+
+	var emt = new sforce.SObject(gEmailTemplateObj);
+	var templateId = "";
+	
+	emt.Name = "TEMP";	//result[0].Name + "_Temp";
+	emt.TemplateType = result[0].TemplateType;
+	emt.TemplateStyle = result[0].TemplateStyle;
+	emt.BrandTemplateId = result[0].BrandTemplateId;
+	emt.FolderId = result[0].FolderId;
+	emt.Description = result[0].Description;
+	emt.Subject = result[0].Subject;
+	emt.Body = result[0].Body;
+	emt.HtmlValue = result[0].HtmlValue;
+	emt.Encoding = result[0].Encoding;
+	emt.IsActive = true;
+			
+	if (gDebug) { writeDebugLn("<br>creating template..."); }
+	var result = sforce.connection.create([emt]);
+	if (gDebug) { writeDebugLn("<br>result="+result); }
+	
+	if (result[0].getBoolean("success")) {
+		templateId = result[0].id;
+		for (var i=0; i<gNumSelectedAttachments; i++) {
+			if (gDebug) {
+				writeDebugLn("<br>cloning attachment "+gSelectedAttachmentIds[i]+" to "+templateId);
+			}
+			cloneAttachment(gSelectedAttachmentIds[i],templateId);
+		}
+	} else {
+		throw(cERROR_CREATE_EMAIL_TEMPLATE+result[0]);
+	}
+
+	return templateId;
+}
+
+function deleteTemplate(id) {
+	try {
+        if (id==null || id=="") return;
+        
+		var fieldList = "Id,Name,Description,FolderId";
+		result = sforce.connection.retrieve(fieldList,gEmailTemplateObj,[id]);
+		if (result[0]==null) {
+            erroralert(cERROR_SENDING_EMAIL,result[0]);
+            return;
+		}
+		
+		//make sure we only delete temporary templates
+		var name = result[0].Name;
+		if (name=="TEMP") {
+            var result = sforce.connection.deleteIds([id]);
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function deleteTempDocuments() {
+	try {
+		var folderId = getDocumentFolder();
+		
+		var q = "select Id,Name,Description,FolderId From Document ";
+		q += "where FolderId='"+folderId+"' and Description='TEMP'";
+		
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+
+		if (records.length>0) {
+			var ids = new Array(records.length);
+			for (var i=0; i<records.length; i++) {
+				ids[i] = records[i].Id;
+			}
+		
+			var result = sforce.connection.deleteIds([ids]);
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function deleteTempEmailTemplates() {
+    try {
+        var folderId = getEmailTemplateFolder();
+        
+        var q = "select Id,Name,Description,FolderId From EMailTemplate ";
+        q += "where FolderId='"+folderId+"' and Name='TEMP'";
+        
+        var result = sforce.connection.query(q);
+        var records = result.getArray("records");
+
+        if (records.length>0) {
+            var ids = new Array(records.length);
+            for (var i=0; i<records.length; i++) {
+                ids[i] = records[i].Id;
+            }
+        
+            var result = sforce.connection.deleteIds([ids]);
+        }
+    }
+    catch(ex) {
+    }
+}
+
+function convertLFtoBR(text) {
+    try {
+        if (text==null) return "";
+
+		var re = new RegExp("\n","gi");
+		var rstr = "<br>";
+		
+		return text.replace(re,rstr);
+    }
+    catch(ex) {
+        return text;
+    }
+}
+
+function convertBRtoLF(text) {
+    try {
+        if (text==null) return "";
+        
+        var re = new RegExp("<br>","gi")
+        var rstr = "\n";
+        
+        return text.replace(re,rstr);
+    }
+    catch(ex) {
+        return text;
+    }
+}
+
+function createTempDocuments() {
+	try {
+	    var fieldList = getFieldList("Attachment");
+		for (var i=0; i<gTempAttachmentIds.length; i++) {
+			var id = gTempAttachmentIds[i];
+			
+			var result = sforce.connection.retrieve(fieldList,"Attachment",[id]);
+			if (result[0]==null) {
+				erroralert(cERROR_CREATE_DOCUMENT,result[0]);
+				return;
+			}
+
+	  		//create copy in documents folder
+			var sObj = new sforce.SObject("Document");
+			
+			sObj.AuthorId = "{!$User.Id}";
+			sObj.Body = result[0].Body;
+			sObj.Description = "TEMP";
+			sObj.Name = result[0].Name;
+			sObj.FolderId = getDocumentFolder();
+			sObj.IsPublic = false;
+	
+			var result = sforce.connection.create([sObj]);
+			if (!result[0].getBoolean("success")) {
+				erroralert(cERROR_CREATE_DOCUMENT,result[0]);
+				return;
+			}
+			
+			gDocumentIds[gNumDocuments++] = result[0].id;
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function getDocumentFolder() {
+	try {
+		var q = "select f.Type, f.Name, f.Id, f.AccessType From Folder f ";
+		q += "where f.Name='Apttus Documents' and f.Type='Document' limit 1";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (result.size>0) {
+			return records[0].Id;
+		} else {
+			return "";
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function getEmailTemplateFolder() {
+	try {
+		var q = "select f.Type, f.Name, f.Id, f.AccessType From Folder f ";
+		q += "where f.Name='Apttus Email Templates' and f.Type='Email' limit 1";
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (result.size>0) {
+			return records[0].Id;
+		} else {
+			return "";
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function queryAttachments() {
+    if (gDebug) { writeDebugLn("<br>queryAttachments"); }
+	try {
+		var q = "Select Id,Name from Attachment where ParentId = '"+gObjectId+"'";	
+		if (gDebug) {
+			writeDebugLn("<br>q="+q);
+		}
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		if (gDebug) {
+			writeDebugLn("<br>result="+result);
+			writeDebugLn("<br>records="+records);
+		}
+		
+		for (var i=0; i<records.length; i++) {
+            gAttachmentIds[gNumAttachments] = records[i].Id;
+            gAttachmentNames[gNumAttachments] = records[i].Name;
+            gNumAttachments++;
+            
+            if (gDebug) {
+            	writeDebugLn("<br>gAttachmentIds="+gAttachmentIds+"<br>gNumAttachments="+gNumAttachments);
+            }
+		}
+ 
+     	return records.length;
+	}
+	catch(ex) {
+		erroralert(cERROR_SENDING_EMAIL,ex);
+	}
+}
+
+function getAttachmentIdsForTemplate(id,ids) {
+    if (gDebug) { writeDebugLn("<br>getAttachmentIdsForTemplate"); }
+    try {
+        if (id==null || id=="") return;
+        if (ids==null) return;
+        
+        var q = "Select Id,ParentId,DocumentId,DocumentSequence From DocumentAttachmentMap";
+        q += " where ParentId='"+id+"' order by DocumentSequence"; 
+        if (gDebug) {
+            writeDebugLn("<br>q="+q);
+        }
+        var result = sforce.connection.query(q);
+        var records = result.getArray("records");
+        
+        if (gDebug) {
+            writeDebugLn("<br>result="+result);
+            writeDebugLn("<br>records="+records);
+        }
+        
+        var nids = ids.length;
+        for (var i=0; i<records.length; i++) {
+            ids[nids] = records[i].DocumentId;
+            nids++;
+            
+            if (gDebug) { writeDebugLn("<br>ids="+ids); }
+        }
+    }
+    catch(ex) {
+        erroralert(cERROR_SENDING_EMAIL,ex);
+    }
+}
+
+function getAttachmentIdsForParent(parentId,ids) {
+    if (gDebug) { writeDebugLn("<br>getAttachmentIdsForParent"); }
+	try {
+		if (parentId==null || parentId=="") return;
+		if (ids==null) return;
+		
+		var q = "Select Id,Name from Attachment where ParentId='"+parentId+"'";	
+		if (gDebug) {
+			writeDebugLn("<br>q="+q);
+		}
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (gDebug) {
+			writeDebugLn("<br>result="+result);
+			writeDebugLn("<br>records="+records);
+		}
+		
+		var nids = ids.length;
+		for (var i=0; i<records.length; i++) {
+            ids[nids] = records[i].Id;
+            nids++;
+            
+            if (gDebug) { writeDebugLn("<br>ids="+ids); }
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_SENDING_EMAIL,ex);
+	}
+}
+
+function queryRelatedAttachments() {
+    if (gDebug) { writeDebugLn("<br>queryRelatedAttachments"); }
+	
+	var ids = new Array();
+	var nids = 0;
+	
+	try {
+		//traverse relationships to get parent,child,sibling agreement attachments
+		var myId = "{!APTS_Agreement__c.Id}";
+		var parentId = "{!APTS_Agreement__c.Parent_AgreementId__c}";
+		
+		if (gDebug) {
+			writeDebugLn("<br>myId="+myId);
+			writeDebugLn("<br>parentId="+parentId);
+		}
+
+		if (parentId==null || parentId=="") {
+			return;
+		}
+		
+		//get parent agreements
+		var q = "Select Id,Name,Apttus__Parent_Agreement__c from Apttus__APTS_Agreement__c where Id='"+parentId+"'";	
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (gDebug) {
+			writeDebugLn("<br>parent agreement:");
+			writeDebugLn("<br>q="+q);
+			writeDebugLn("<br>records="+records.length);
+		}
+		
+		//iterate over parent agreements
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var id = records[i].Id;
+			if (gDebug) { writeDebugLn("<br>record="+record); }
+			
+			//get attachments from parent agreement
+			getAttachmentIdsForParent(id,ids);
+		}
+ 
+		//get child agreements
+		var q = "Select Id,Name,Apttus__Parent_Agreement__c from Apttus__APTS_Agreement__c "+
+				"where Apttus__Parent_Agreement__c='"+parentId+"'";	
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+		
+		if (gDebug) {
+			writeDebugLn("<br>child agreements:");
+			writeDebugLn("<br>q="+q);
+			writeDebugLn("<br>records="+records.length);
+		}
+		
+		//iterate over child agreements
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var id = records[i].Id;
+			var idshort = id.substring(0,15);
+			if (gDebug) { writeDebugLn("<br>record="+record); }
+			
+			//get attachments from child agreements excluding myself
+			if (idshort!=myId) {
+				getAttachmentIdsForParent(id,ids);
+			}
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_SENDING_EMAIL,ex);
+	}
+	finally {
+		return ids;
+	}
+}
+
+function getSelectedItems() {
+    var items = new Array();
+	var itemList = document.getElementById("bTemplateId");
+	
+	for (var i=0; i<itemList.length; i++) {
+		var text = itemList.options[i].text;
+		var value = itemList.options[i].value;
+		var isSelected = itemList.options[i].selected;
+		
+		if (isSelected) {
+			items.push(value);
+		}
+	}
+	return items;
+}
+
+function selectAttachmentCallback() {
+	try {
+		gSelectedAttachmentIds = new Array();
+		gNumSelectedAttachments = 0;
+	
+		var ids = getSelectedItems();
+		for (var i=0; i<ids.length; i++) {
+			gSelectedAttachmentIds[gNumSelectedAttachments++] = ids[i];
+			if (gDebug) {
+				writeDebugLn("<br>i="+i);
+				writeDebugLn("<br>ids[i]="+ids[i]);
+				writeDebugLn("<br>gSelectedAttachmentIds="+gSelectedAttachmentIds);
+				writeDebugLn("<br>gNumSelectedAttachments="+gNumSelectedAttachments);
+			}
+		}
+				
+		if (gDebug) {
+			writeDebugLn(
+				"<br>gNumSelectedAttachments="+gNumSelectedAttachments+
+				"<br>gSelectedAttachmentIds="+gSelectedAttachmentIds);
+		}
+	
+		gIncludeRelatedAttachments = document.getElementById("divIncludeRelatedAttachments").checked;
+		if (gDebug) {
+			writeDebugLn("<br>gIncludeRelatedAttachments="+gIncludeRelatedAttachments);
+		}
+
+		setMain("<h1>Please wait...</h1>");
+		window.setTimeout("_selectAttachmentCallback();",gTimeout);
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_EMAIL_TEMPLATE,ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function _selectAttachmentCallback() {
+	try {
+		if (gDebug) { writeDebugLn("<br>selectAttachmentCallback"); }
+	
+		if (gIncludeRelatedAttachments) {
+			var attIds = queryRelatedAttachments();
+			if (gDebug) {
+				writeDebugLn("<br>attIds.length="+attIds.length);
+				writeDebugLn("<br>attIds="+attIds);
+			}
+
+			for (var k=0; k<attIds.length; k++) {
+				gSelectedAttachmentIds[gNumSelectedAttachments++] = attIds[k];
+				if (gDebug) {
+					writeDebugLn("<br>k="+k);
+					writeDebugLn("<br>ids[k]="+attIds[k]);
+					writeDebugLn("<br>gSelectedAttachmentIds="+gSelectedAttachmentIds);
+					writeDebugLn("<br>gNumSelectedAttachments="+gNumSelectedAttachments);
+				}
+			}
+
+			if (gDebug) {
+				writeDebugLn(
+					"<br>gSelectedAttachmentIds="+gSelectedAttachmentIds+
+					"<br>gNumSelectedAttachments="+gNumSelectedAttachments);
+			}
+		}
+		
+		protectDocuments();
+	}
+	catch(ex) {
+		erroralert(cERROR_CREATE_EMAIL_TEMPLATE,ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function protectDocuments() {
+	try {
+		gDocPassword = getDocumentPassword();
+		
+		if (gWizardInstalled && inPromptMode()) {
+			buildSelectProtectionPage();
+		} else {
+			protectDocumentsCallback();
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function protectDocumentsCallback() {
+	gProtectionLevel = getProtectionLevel();
+	if (gDebug) {
+		writeDebugLn("<br>gProtectiosnLevel="+gProtectionLevel+"<br>gDocPassword="+gDocPassword);
+	}
+
+	if (!gWizardInstalled) {
+		setMain("<h1>Please wait...</h1>");
+	}
+	window.setTimeout("_protectDocuments();",gTimeout);
+}
+
+function _protectDocuments() {
+	if (gDebug) { writeDebugLn("<p>_protectDocuments"); }
+	var fnPath = "";
+	
+	try {
+		if (!gDebug && gWizardInstalled) {
+			showMsgProgress("Please wait...Protecting attachments");
+		}
+
+		var fieldList = getFieldList("Attachment");
+		
+		gTempAttachmentIds = new Array();
+		gNumTempAttachments = 0;
+
+		if (gDebug) {
+			writeDebugLn("<br>gNumSelectedAttachments="+gNumSelectedAttachments+
+				"<br>gSelectedAttachmentIds="+gSelectedAttachmentIds+
+				"<br>iterating over selected attachments to protect...");
+		}
+		
+		for (var i=0; i<gNumSelectedAttachments; i++) {
+			var id = gSelectedAttachmentIds[i];
+			if (gDebug) {
+				writeDebugLn("<br>i="+i);
+				writeDebugLn("<br>gSelectedAttachmentIds[i]="+id);
+			}
+			
+			var result = sforce.connection.retrieve(fieldList,"Attachment",[id]);
+			if (result[0]==null) {
+				erroralert(cERROR_PROTECT_DOCUMENT,result[0]);
+				return;
+			}
+			
+			var attObj = result[0];
+			if (gDebug) { writeDebugLn("<br>attObj="+attObj); }
+
+			var fnExt = getFileNameExtension(attObj.Name);
+			var fnExtx = fnExt.toLowerCase();
+			if (fnExtx!="doc" && fnExtx!="docx") {
+				gTempAttachmentIds[gNumTempAttachments++] = id;
+				if (gDebug) {
+					writeDebugLn("<br>fnExtx!=doc && fnExtx!=docx");
+					writeDebugLn("<br>gTempAttachmentIds="+gTempAttachmentIds);
+					writeDebugLn("<br>gNumTempAttachments="+gNumTempAttachments);
+				}
+				continue;
+			}
+		
+			var fnBody = "";
+			var b64body = "";
+			
+			if (gWizardInstalled) {
+				fnPath = gMMObj.GetTempFilePath(attObj.Name)
+				if (gDebug) { writeDebugLn("<br>gMMObj.GetTempFilePath("+attObj.Name+")"); }
+				fnBody = gMMObj.Base64Decode(fnPath,attObj.Body);
+				if (gDebug) { writeDebugLn("<br>gMMObj.Base64Decode("+fnPath+")"); }
+				
+				if (gDebug) { writeDebugLn("<br>gMMObj.Protect("+fnPath+","+gProtectionLevel+","+gDocPassword+")"); }
+				var ok = true;
+				if (gProtectionLevel!=wdNoProtection && gDocPassword!="") {
+					ok = gMMObj.Protect(fnPath,gProtectionLevel,gDocPassword);
+				}
+				if (gDebug) { writeDebugLn("<br>gMMObj.Protect="+ok); }
+				
+				if (!ok) { 
+					gTempAttachmentIds[gNumTempAttachments++] = id;
+					if (gDebug) {
+						writeDebugLn("<br>gTempAttachmentIds="+gTempAttachmentIds);
+						writeDebugLn("<br>gNumTempAttachments="+gNumTempAttachments);
+					}
+					continue;
+				}
+				
+				if (gDebug) { writeDebugLn("<br>gMMObj.Base64Encode("+fnPath+")"); }
+				b64body = gMMObj.Base64Encode(fnPath);
+				
+				if (gDebug) { writeDebugLn("<br>gMMObj.DeleteFile("+fnPath+")"); }
+				gMMObj.DeleteFile(fnPath);
+				if (gDebug) {
+					writeDebugLn("<br>gTempAttachmentIds="+gTempAttachmentIds);
+					writeDebugLn("<br>gNumTempAttachments="+gNumTempAttachments);
+				}				
+			} else {
+				fnBody = attObj.Body;
+				b64body = attObj.Body;
+			}
+			
+			var sObj = new sforce.SObject("Attachment");
+			var sObjId = id;
+			
+			if (gCreateProtectedCopies) {
+				if (gDebug) { writeDebugLn("<br>gCreateProtectedCopies"); }
+				var fn = attObj.Name;
+				var bRename = false;
+				if (bRename) {
+					var fnPre = getFileNamePrefix(fnPath);
+					var fnExt = getFileNameExtension(fnPath);
+					fn = fnPre + "_protected." + fnExt;
+				}
+				
+			    sObj.ParentId = attObj.ParentId;
+			    sObj.OwnerId = attObj.OwnerId;
+			    sObj.Name = fn;
+			    sObj.Body = b64body;
+		
+				//create protected copies as attachments to agreement
+				if (gDebug) { writeDebugLn("<br>creating protected attachment..."); }
+			 	var result = sforce.connection.create([sObj]);
+				if (gDebug) { writeDebugLn("<br>result="+result); }
+				if (!result[0].getBoolean("success")) {
+					erroralert(cERROR_PROTECT_DOCUMENT,result[0]);
+					if (gDebug) { writeDebugLn("<br>erroralert:<br>"+result[0]); }
+					return;
+				}
+				
+				sObjId = result[0].id;
+				gProtectedAttachmentIds[gNumProtectedAttachments++] = sObjId;
+				if (gDebug) {
+					writeDebugLn("<br>gProtectedAttachmentIds="+gProtectedAttachmentIds);
+					writeDebugLn("<br>gNumProtectedAttachments="+gNumProtectedAttachments);
+				}
+						
+			} else {
+				sObj.Id = id;
+				sObj.Body = b64body;
+		
+				if (gDebug) { writeDebugLn("<br>updating attachment with protection..."); }
+				var result = sforce.connection.update([sObj]);
+				if (!result[0].getBoolean("success")) {
+					erroralert(cERROR_PROTECT_DOCUMENT,result[0]);
+					return;
+				}
+			}
+
+			gTempAttachmentIds[gNumTempAttachments++] = sObjId;
+			if (gDebug) {
+				writeDebugLn("<br>gTempAttachmentIds="+gTempAttachmentIds);
+				writeDebugLn("<br>gNumTempAttachments="+gNumTempAttachments);
+			}
+		}
+		
+		if (gDebug) {
+			writeDebugLn(
+				"<br>gNumSelectedAttachments="+gNumSelectedAttachments+
+				"<br>gSelectedAttachmentIds="+gSelectedAttachmentIds+
+				"<br>gNumProtectedAttachments="+gNumProtectedAttachments+
+				"<br>gProtectedAttachmentIds="+gProtectedAttachmentIds+
+				"<br>gNumTempAttachments="+gNumTempAttachments+
+				"<br>gTempAttachmentIds="+gTempAttachmentIds);
+		}
+
+		showEmailAuthorPage();
+	}
+	catch(ex) {
+		erroralert(cERROR_PROTECT_DOCUMENT,ex);
+
+		if (gMMObjInstalled) {
+			gMMObj.DeleteFile(fnPath);
+		}
+		
+		navigateTo(gObjectIdURL);
+	}
+}
+
+function showEmailAuthorPage() {
+	if (!gDebug) {
+		setMain("<h1>Please wait...</h1>");
+	}
+
+	if (gUseCustomForm) {
+		showCustomEmailPage();
+	} else {
+		window.setTimeout("_showEmailAuthorPage();",gTimeout);
+	}
+}
+
+function _showEmailAuthorPage() {
+	var p3_mlktp = "{!$ObjectType.APTS_Agreement__c}";
+	var p3_lkid = "{!APTS_Agreement__c.Id}";
+	var p3_lkold = "{!APTS_Agreement__c.Name}";
+	
+	if (gDebug) {
+		writeDebugLn("<br>gObjectIdURL="+gObjectIdURL+"<br>p3_mlktp="+
+			p3_mlktp+"<br>p3_lkid="+p3_lkid+"<br>p3_lkold="+p3_lkold);
+	}
+
+	var emUrl = "";
+	if (gSendUsingTemplate) {
+		//create template for adding attachments
+		var template_id = "";
+		if (gNumTempAttachments>0) {
+			template_id = createTemplateFromAttachments();
+			if (gDebug) { writeDebugLn("<br>template_id="+template_id); }
+			deleteTempAttachments();
+		}
+
+		//send mail using template
+		emUrl = "/email/author/emailauthor.jsp?retURL="+gObjectIdURL+
+			"&p3_mlktp="+p3_mlktp+"&p3_lkid="+p3_lkid+"&p3_lkold="+p3_lkold;
+		
+		if (gNumTempAttachments>0 && template_id!="") {
+			emUrl += "&template_id="+template_id+"&new_template=1";
+		}
+	
+	} else {
+		//send using documents
+		if (gNumTempAttachments>0) {
+			createTempDocuments();
+			deleteTempAttachments();
+		}
+
+		var ids = "";
+		for (var i=0; i<gDocumentIds.length; i++) {
+			if (ids.length>0) ids += ",";
+			ids += gDocumentIds[i];
+		}
+		
+		gEmailDocumentIds = ids;
+		var doc_id = gDocumentIds[0];
+			
+		if (gDebug) {
+			writeDebugLn("<br>gDocumentIds="+gDocumentIds);
+			writeDebugLn("<br>gEmailDocumentIds="+gEmailDocumentIds);
+			writeDebugLn("<br>doc_id="+doc_id);
+		}
+
+		//send mail using documents
+		emUrl = "/email/author/emailauthor.jsp?doc_id="+doc_id+"&retURL="+gObjectIdURL+
+			"&p3_mlktp="+p3_mlktp+"&p3_lkid="+p3_lkid+"&p3_lkold="+p3_lkold;
+	}
+
+	if (gDebug) {
+		writeDebugLn("<br>emUrl="+emUrl);
+	} else {
+		navigateTo(emUrl);
+	}
+}
+
+function deleteTempAttachments() {
+	if (gCreateProtectedCopies) {
+		try {
+			if (gDebug) { writeDebugLn("<br>deleting protected attachments..."); }
+			var ids = new Array(gNumProtectedAttachments);
+			for (var i=0; i<gNumProtectedAttachments; i++) {
+				ids[i] = gProtectedAttachmentIds[i];
+				if (gDebug) { writeDebugLn("<br>deleteId="+ids[i]); }
+			}
+
+			var result = sforce.connection.deleteIds([ids]);
+			if (gDebug) { writeDebugLn("<br>result="+result); }
+		}
+		catch(ex) {
+		}
+	}
+}
+</script>
+<script type="text/javascript" language="javascript" src="/static/022207/js/spch.js"></script>
+<script src="/email/wysiwyg/htmlTemplateEditScripts.jsp"></script>
+<script>
+//init global event handlers
+initEventHandlers();
+
+function openAttachmentUpload(e) {
+    setLastMousePosition(e);
+    openPopup('/email/author/emailattach.jsp?id={!APTS_Agreement__c.Id}', 'attach', 450, 400, 'width=450,height=400,scrollbars=yes,toolbar=no,status=no,directories=no,menubar=no,resizable=yes', true);
+}
+function openDocumentUpload(e) {
+    try {
+        //set switch so we know user selected an attachment and we need to call custom jsp code
+        gEmailAttachmentSelected = true;
+        document.getElementById("attachment_selected").value = "true";
+
+        saveFormParameters();
+    }
+    catch(ex) {
+    }
+
+	//build custom url to the filepicker.jsp page
+	var fpUrl = "";
+	fpUrl += "/widg/filepicker_fs.jsp";
+	
+	fpUrl += "?eid="+gObjectId;
+	fpUrl += "&omode=1";
+	fpUrl += "&otype=2";
+    fpUrl += "&utype=00P";
+    fpUrl += "&smode=0";
+    fpUrl += "&id="+gObjectId;
+	
+    makeGetRequest(fpUrl,myFilePickerResponseHandler);
+
+    //setLastMousePosition(e);
+    //openPopup('/widg/filepicker_fs.jsp?lktp=015&mode=1&eid={!APTS_Agreement__c.Id}&utype=00P&omode=1&otype=2', 'doc', 450, 450, 'width=450,height=450,scrollbars=yes,toolbar=no,status=no,directories=no,menubar=no,resizable=1', true);
+}
+
+function openTemplateSelector(e) {
+	try {
+		//set switch so we know user selected a template we need to resolve by calling custom jsp code
+		gEmailTemplateSelected = true;
+		document.getElementById("template_selected").value = "true";
+	
+		saveFormParameters();
+	}
+	catch(ex) {
+	}
+	
+	setLastMousePosition(e);
+	openPopup('/email/author/templateselector.jsp', 'template', 600, 300, 'width=600,height=300,scrollbars=yes,toolbar=no,status=no,directories=no,menubar=no,resizable=yes', true);
+}
+
+function saveFormParameters() {
+    try {
+		gParameterNames = "";
+		gParameterNames += "new_template,";
+		gParameterNames += "retURL,";
+		/*gParameterNames += "submitted,";
+		gParameterNames += "parameterNames,";
+		gParameterNames += "parameterValues,";
+		gParameterNames += "cancelURL,";
+		gParameterNames += "docancel,";
+		gParameterNames += "id0,";
+		gParameterNames += "id1,";
+		gParameterNames += "nosave,";
+		gParameterNames += "save,";
+		gParameterNames += "save_new_url,";
+		gParameterNames += "template_id,";
+		gParameterNames += "template_selected,";
+		gParameterNames += "attachment_selected,";
+		gParameterNames += "rtype,";*/
+		gParameterNames += "p2_lkid,";
+		gParameterNames += "p2_lkold,";
+		gParameterNames += "p2_lktp,";
+		gParameterNames += "p2_lspf,";
+		gParameterNames += "p2_mod,";
+		gParameterNames += "p2,";
+		gParameterNames += "p3_lkid,";
+		gParameterNames += "p3_lkold,";
+		gParameterNames += "p3_lktp,";
+		gParameterNames += "p3_lspf,";
+		gParameterNames += "p3_mod,";
+		gParameterNames += "p3";
+	    
+		document.getElementById("parameterNames").value = gParameterNames;
+   
+		gParameterValues = "";
+		gParameterValues += document.getElementById("new_template").value + ",";
+		gParameterValues += document.getElementById("retURL").value + ",";
+		/*gParameterValues += document.getElementById("submitted").value + ",";
+		gParameterValues += document.getElementById("parameterNames").value + ",";
+		gParameterValues += document.getElementById("parameterValues").value + ",";
+		gParameterValues += document.getElementById("cancelURL").value + ",";
+		gParameterValues += document.getElementById("docancel").value + ",";
+		gParameterValues += document.getElementById("id0").value + ",";
+		gParameterValues += document.getElementById("id1").value + ",";
+		gParameterValues += document.getElementById("nosave").value + ",";
+		gParameterValues += document.getElementById("save").value + ",";
+		gParameterValues += document.getElementById("save_new_url").value + ",";
+		gParameterValues += document.getElementById("template_id").value + ",";
+		gParameterValues += document.getElementById("template_selected").value + ",";
+		gParameterValues += document.getElementById("attachment_selected").value + ",";
+		gParameterValues += document.getElementById("rtype").value + ",";*/
+		gParameterValues += document.getElementById("p2_lkid").value + ",";
+		gParameterValues += document.getElementById("p2_lkold").value + ",";
+		gParameterValues += document.getElementById("p2_lktp").value + ",";
+		gParameterValues += document.getElementById("p2_lspf").value + ",";
+		gParameterValues += document.getElementById("p2_mod").value + ",";
+		gParameterValues += document.getElementById("p2").value + ",";
+		gParameterValues += document.getElementById("p3_lkid").value + ",";
+		gParameterValues += document.getElementById("p3_lkold").value + ",";
+		gParameterValues += document.getElementById("p3_lktp").value + ",";
+		gParameterValues += document.getElementById("p3_lspf").value + ",";
+		gParameterValues += document.getElementById("p3_mod").value + ",";
+		gParameterValues += document.getElementById("p3").value;
+		
+		document.getElementById("parameterValues").value = gParameterValues;
+    }
+    catch(ex) {
+        alert(ex);
+    }
+}
+
+//============================================================================
+// templateselector.jsp overrides
+//============================================================================
+function setTemplateId(templateId) {
+	window.opener.document.editPage.template_id.value = templateId;
+	window.opener.document.editPage.new_template.value = '1';
+	window.opener.submitFormNoSave();
+	window.close();
+}
+
+function openAddressEdit(e) {
+    setLastMousePosition(e);
+    openPopup('/email/author/addressedit.jsp?id=000000000000000&retURL=%2Femail%2Fauthor%2Fpopupcloser.jsp', 'address', 460, 200, 'width=460,height=200,scrollbars=yes,toolbar=no,status=no,directories=no,menubar=no,resizable=yes', true);
+}
+
+function openPreview() {
+    function copyValues() {
+        var elems = document.previewForm.elements;
+        for (var i = 0; i < elems.length; i++) {
+            var parentElem = document.controlForm.elements[elems[i].name]
+            if (parentElem) {
+                elems[i].value = parentElem.value;
+            }
+        }
+    }
+    copyValues();
+    document.previewForm.submit();
+}
+
+//function deleteAttachment(seqId, delType) {
+function deleteAttachment(id) {
+    if (window.confirm('Are you sure?')) {
+        //document.editPage.deleter.value = seqId;
+        //document.editPage.deleter_type.value = delType;
+ 
+        //remove attachment id from our list
+        var newIds = new Array();
+        var newIdList = "";
+        
+        for (var i=0; i<gDocumentIds.length; i++) {
+            var docId = gDocumentIds[i];
+            if (docId!=id) {
+                newIds.push(docId);
+            
+                if (newIdList.length>0) {
+                    newIdList += ",";
+                }
+                newIdList += docId;
+            }            
+        }
+        
+        gDocumentIds = newIds;
+        gNumDocuments--;
+
+	    document.editPage.documentIds.value = newIdList;
+
+        submitForm();
+    }
+}
+
+function cancelForm() {
+	deleteTempAttachments();
+	deleteTempDocuments();
+	deleteTempEmailTemplates();
+	
+    document.editPage.docancel.value = '1';
+    document.editPage.submit();
+    
+	navigateTo(gObjectIdURL);
+}
+
+function submitForm() {
+    function copyValues() {
+        var elems = document.editPage.elements;
+        for (var i = 0; i < elems.length; i++) {
+            if (document.controlForm) {
+                var parentElem = document.controlForm.elements[elems[i].name]
+                if (parentElem) {
+                    elems[i].value = parentElem.value;
+                }
+            }
+        }
+    }
+    
+    copyValues();
+    
+    document.editPage.docancel.value = '0';
+    document.editPage.submitted.value = true;
+    document.editPage.submit();
+}
+
+function submitFormNoSave() {
+	try {
+		document.editPage.nosave.value = '1';
+		if (!gUseCustomForm) {
+			document.editPage.save.value = 'nosave';
+		}
+		submitForm();
+	}
+	catch(ex) {
+		erroralert('Error in submitFormNoSave()',ex);
+	}
+}
+   
+function sendEmail() {
+	var bRunDefault = false;
+	if (bRunDefault) {
+		var confirmSend = true;
+		if (false) {
+			confirmSend = window.confirm('Are you sure?');
+		}
+		if (confirmSend) {
+			document.editPage.nosave.value = '0';
+			document.editPage.save.value = '1';
+	        
+			submitForm();
+		}
+	} else {
+	    try {
+			if (document.editPage.docancel.value=='1') {
+ 				return;
+			}
+			if (validateForm()) {
+				//save form values
+				gEmailToIds = new Array();
+				gEmailToIds[0] = document.getElementById("p2_lkid").value;
+				gEmailTemplateId = document.getElementById("template_id").value;
+				gEmailSubject = document.getElementById("p6").value;
+				//get text or custom body only
+				if (gEmailTemplateType != 'html') {
+					gEmailBody = document.getElementById("p7").value;
+				} else { //get HTML body
+					gEmailBody = gEmailBody;
+				}
+				gEmailDocumentIds = document.getElementById("documentIds").value;
+				gDocumentIds = new Array();
+				var nIds = 0;
+				
+				var sb = new sforce.StringBuffer(); 
+				sb.append(gEmailDocumentIds);
+
+				var items = sb.toString().split(",");
+				if (items!=null && items!="") {
+					for (var i=0; i<items.length; i++) {
+						gDocumentIds[nIds++] = items[i];
+					}
+				}
+
+				if (gDebug) {
+					writeDebugLn("<br>gEmailToIds="+gEmailToIds+
+						"<br>gEmailTemplateId="+gEmailTemplateId+
+						"<br>gEmailSubject="+gEmailSubject+
+						"<br>gEmailBody="+gEmailBody);
+				}
+				
+				if (gEmailType=="SingleEmailMessage") {
+					window.setTimeout("sendSingleEmailMessage();",gTimeout);
+				} else {
+					window.setTimeout("sendMassEmail();",gTimeout);
+				}
+			}
+	    }
+	    catch(ex) {
+	    	erroralert(cERROR_SENDING_EMAIL,ex);
+	    	navigateTo(gObjectIdURL);
+	    }
+	}
+}
+
+var delim = ";";
+
+function pickupValue(additionalToValue, ccValue, bccValue) {
+    if (additionalToValue != '') {
+        if (document.editPage.p24.value != '') {
+            document.editPage.p24.value += delim;
+        }
+        document.editPage.p24.value += additionalToValue;
+    }
+    if (ccValue != '') {
+        if (document.editPage.p4.value != '') {
+            document.editPage.p4.value += delim;
+        }
+        document.editPage.p4.value += ccValue;
+    }
+    if (bccValue != '') {
+        if (document.editPage.p5.value != '') {
+            document.editPage.p5.value += delim;
+        }
+        document.editPage.p5.value += bccValue;
+    }
+    closePopup();
+}
+
+/*
+ * Called by popup warning message to exit back to text mode
+ */
+function continueToTextMode() {
+    return true;
+}
+
+function switchTextModeToHTMLForce() {
+    window.location='/email/author/emailauthor.jsp?no_scan=1&textmode=r';
+}
+
+function invokeSuspiciousContentPopupDelay() {
+    window.setTimeout('invokeSuspiciousContentPopup()', 25);
+}
+
+function invokeSuspiciousContentPopup() {
+    return openPopupFocus('/_ui/core/email/message/HtmlEmailResponseConfirmPage?severity=severe&requested_id={!APTS_Agreement__c.Id}&conc=switchTextModeToHTMLForce&canc=continueToTextMode','popup',550,290,'width=550,height=290,resizable=no,toolbar=no,status=no,scrollbars=yes,menubar=no,directories=no,location=no,dependant=no',false,true);
+}
+
+function switchTextModeOnSuspiciousContent() {
+	return openPopupFocus('/_ui/core/email/message/HtmlEmailResponseConfirmPage?severity=severe&requested_id={!APTS_Agreement__c.Id}&conc=switchTextModeToHTMLForce&canc=continueToTextMode','popup',550,290,'width=550,height=290,resizable=no,toolbar=no,status=no,scrollbars=yes,menubar=no,directories=no,location=no,dependant=no',false,true);
+}
+
+function switchTextMode() {
+	document.editPage.textmode.value = 'r';
+	submitFormNoSave();   
+}
+
+function bodyOnLoad() {
+	setFocusOnLoad();
+	
+	if (typeof(startSessionTimer)!='undefined') {startSessionTimer(); };
+	if (typeof(ActivityReminder)!='undefined') {ActivityReminder.initialize([], false, true);};
+	if ((window.sfdcPage) && (sfdcPage.executeOnloadQueue)){sfdcPage.executeOnloadQueue();};
+}
+
+function bodyOnBeforeUnload() {
+	if ((window.sfdcPage) && (sfdcPage.executeOnBeforeUnloadQueue)){sfdcPage.executeOnBeforeUnloadQueue();};
+}
+
+function bodyOnFocus() {
+	closePopup();
+}
+
+function bodyOnUnload() {
+}
+
+//============================================================================
+// filepicker_fs.jsp overrides
+//============================================================================
+
+// For straight attachments.
+/*
+<form action="/widg/filepicker_results.jsp?eid=xx&omode=1&otype=2&utype=00P&smode=0&id=xx"
+    id="editPage" method="post" name="editPage">
+    
+    <input name="eid" id="eid" value="">
+    <input name="fid" id="fid" value="">
+</form>
+
+function doDone() {
+	if (!top.ignoreClose) {
+		top.ignoreClose = true;
+		if (top.window.opener.submitFormNoSave) {
+			top.window.opener.submitFormNoSave();
+		}
+		top.window.close();
+	}
+}
+  
+// For passing values back to brand template edit.
+function saveValue() {
+	top.ignoreClose = true;
+	var newValue = document.editPage.elements['null'].value;
+	
+	top.window.opener.document.editPage.elements['null'].value = newValue;
+	top.window.opener.document.getElementById('contentFrame').contentWindow.attributeObj.src = newValue;
+	top.window.opener.document.getElementById('contentFrame').contentWindow.resizeTopFrame();
+	top.window.close();
+}
+
+// For passing values back to HTML template edit.
+function submitForm(editForm) {
+	top.ignoreClose = true;
+	top.window.opener.createImage(editForm);
+	top.window.close();
+}
+
+// For passing values back to doc select screen.
+function setParentFileId(fileId) {
+	top.ignoreClose = true;
+	top.window.opener.document.editPage.file_id.value = fileId;
+	
+	if (top.window.opener.document.editPage.file_id.onchange) {
+		top.window.opener.document.editPage.file_id.onchange();
+	}
+	if (top.window.opener.document.editPage.new_template) {
+		top.window.opener.document.editPage.new_template.value = '1';
+	}
+	if (top.window.opener.submitFormNoSave) {
+		top.window.opener.submitFormNoSave();
+	}
+	top.window.close();
+}
+
+function setLocalFileId(fileId, entityId) {
+	top.ignoreClose = true;
+	
+	document.editPage.fid.value = fileId;
+	document.editPage.eid.value = entityId;
+	document.editPage.submit();
+}
+*/
+
+function setLocalFileId(fileId, entityId) {
+	top.ignoreClose = true;
+
+	document.editPage.file_id.value = fileId;
+	document.editPage.fid.value = fileId;
+	document.editPage.eid.value = entityId;
+	document.editPage.submit();
+}
+
+//============================================================================
+
+function showCustomEmailPage() {
+	if (gNumTempAttachments>0) {
+		createTempDocuments();
+		deleteTempAttachments();
+	}
+
+	var ids = "";
+	for (var i=0; i<gDocumentIds.length; i++) {
+		if (ids.length>0) ids += ",";
+		ids += gDocumentIds[i];
+	}
+	
+	gEmailDocumentIds = ids;
+		
+	if (gDebug) {
+		writeDebugLn("<br>gDocumentIds="+gDocumentIds);
+		writeDebugLn("<br>gEmailDocumentIds="+gEmailDocumentIds);
+	}
+
+	var html = "";
+	var typeHidden = (gShowHiddenFields) ? "" : "type=\"hidden\" ";
+	
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height=\"1\" width=\"1\" alt=\"Content Starts Here\" class=\"skiplink\" title=\"Content Starts Here\"></a>";
+	html += "<div class=\"bPageTitle\">";
+	html += "	<div class=\"ptBody secondaryPalette\">";
+	html += "		<div class=\"content\">";
+	html += "			<img src=\"/s.gif\" alt=\"Home\" class=\"pageTitleIcon\" title=\"Home\" /><h1 class=\"pageType\">";
+	html += "			Task<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "			<h2 class=\"pageDescription\">Send an Email</h2>";
+	html += "			<div class=\"blank\">&nbsp;</div>";
+	html += "		</div>";
+	html += "		<div class=\"links\">";
+	html += "			<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help&target=email_send.htm&section=Email', 'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,menubar=yes,directories=no,location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\">";
+	html += "			<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\" title /></a></div>";
+	html += "	</div>";
+	html += "	<div class=\"ptBreadcrumb\">";
+	html += "	</div>";
+	html += "</div>";
+
+	if (gUseCustomForm) {
+		html += "<form id=\"editPage\" name=\"editPage\" method=\"post\">";
+	} else {
+		html += "<form action=\"/email/author/emailauthor.jsp\" id=\"editPage\" name=\"editPage\" ";
+		html += "method=\"post\" onsubmit=\"if (window.ffInAlert) { return false; }\">";	
+	}
+
+    //toggle template selected switch
+    var templateSelected = "false";
+    if (gEmailTemplateSelected=="true") {
+        templateSelected = "false";
+    }
+
+    var attachmentSelected = "false";
+    if (gEmailAttachmentSelected=="true") {
+        attachmentSelected = "false";
+    }
+
+    html += "   <input "+typeHidden+"name=\"submitted\" id=\"submitted\" value=\""+gSubmitted+"\" />";
+    html += "   <input "+typeHidden+"name=\"parameterNames\" id=\"parameterNames\" value=\""+gParameterNames+"\" />";
+    html += "   <input "+typeHidden+"name=\"parameterValues\" id=\"parameterValues\" value=\""+gParameterValues+"\" />";
+	html += "	<input "+typeHidden+"name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "	<input "+typeHidden+"name=\"docancel\" id=\"docancel\" value=\"0\" />";
+	html += "	<input "+typeHidden+"name=\"id\" id=\"id0\" value=\"\" />";
+	html += "	<input "+typeHidden+"name=\"id\" id=\"id1\" value=\"\" />";
+	html += "	<input "+typeHidden+"name=\"new_template\" id=\"new_template\" value=\"1\" />";
+	html += "	<input "+typeHidden+"name=\"nosave\" id=\"nosave\" value=\"0\" />";
+	html += "	<input "+typeHidden+"name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "	<input "+typeHidden+"name=\"save_new_url\" id=\"save_new_url\" value=\"/email/author/emailauthor.jsp?retURL=%2F{!APTS_Agreement__c.Id}&amp;p3_lkid={!APTS_Agreement__c.Id}\" />";
+	html += "	<input "+typeHidden+"name=\"template_id\" id=\"template_id\" value=\""+gEmailTemplateId+"\" />";
+	html += "	<input "+typeHidden+"name=\"template_selected\" id=\"template_selected\" value=\""+templateSelected+"\">";
+    html += "   <input "+typeHidden+"name=\"attachment_selected\" id=\"attachment_selected\" value=\""+attachmentSelected+"\">";
+	html += "	<input "+typeHidden+"name=\"rtype\" id=\"rtype\" value />";
+	html += "	<div class=\"bPageBlock bEditBlock secondaryPalette\" id=\"ep\">";
+	html += "		<div class=\"pbHeader\">";
+	html += "			<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
+	html += "				<tr>";
+	html += "					<td class=\"pbTitle\">";
+	html += "					<img src=\"/s.gif\" alt=\"\" width=\"1\" height=\"1\" class=\"minWidth\" title /><h2 class=\"mainTitle\">";
+	html += "					</h2>";
+	html += "					</td>";
+	html += "					<td class=\"pbButton\">";
+	html += "					<input value=\"Send\" class=\"btn\" type=\"button\" name=\"send\" onclick=\"sendEmail();\" title=\"Send\" />";
+	html += "					<input value=\"Select Template\" class=\"btn\" type=\"button\" name=\"template\" onclick=\"openTemplateSelector(event)\" title=\"Select Template (New Window)\" />";
+    if (gAttachFileButtonEnabled) {
+        html += "               <input value=\"Attach File\" class=\"btn\" type=\"button\" name=\"attach\" onclick=\"openDocumentUpload(event)\" title=\"Attach File (New Window)\" />";
+    }
+    if (gShowCheckSpelling) {
+        html += "               <input value=\"Check Spelling\" class=\"btn\" type=\"button\" name=\"spell\" onclick=\"doSpell('en', document.editPage.p7, document.location.protocol + '//' + document.location.host + '/servlet/com.spellchecker.net.sproxy.SProxy', true, undefined, undefined, 'Our SpellChecker feature does not support Internet Explorer 3.0.  However,it does support the following browsers:IE 4+,Netscape 4+', 'We are sorry,currently we do not support Netscape Navigator 3.0,Internet Explorer 3.0. Please upgrade your browser', 'There is nothing to check', 'Spell Check Navigation', 'Spell Check Content', 'Spell Check Actions', 'Suggest All', 'blank - ignore');\" title=\"Check Spelling (New Window)\" />";   
+    }
+	html += "					<input value=\"Cancel\" class=\"btn\" type=\"button\" name=\"cancel\" onclick=\"cancelForm();\" title=\"Cancel\" /></td>";
+	html += "				</tr>";
+	html += "			</table>";
+	html += "		</div>";
+	html += "		<div class=\"pbBody\">";
+	html += "			<div class=\"pbSubheader first tertiaryPalette\" id=\"head_1_ep\">";
+	html += "				<span class=\"pbSubExtra\"><span class=\"requiredLegend\">";
+	html += "				<span class=\"requiredExampleOuter\">";
+	html += "				<span class=\"requiredExample\">&nbsp;</span></span><span class=\"requiredText\"> ";
+	html += "				= Required Information</span></span></span><h3>Edit Email<span class=\"titleSeparatingColon\">:</span></h3>";
+	html += "			</div>";
+	html += "			<div class=\"pbSubsection\">";
+	html += "				<table class=\"detailList\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
+	if (gShowEmailFormat) {
+		html += "					<tr>";
+		html += "						<td class=\"labelCol\">Email Format</td>";
+		html += "						<td class=\"data2Col\" colspan=\"3\">&nbsp;<b>Text-Only</b>&nbsp; ";
+		html += "						[ <a href=\"javascript:switchTextMode()\"><b>Switch to HTML</b></a> ";
+		html += "						]</td>";
+		html += "					</tr>";
+	}
+	html += "					<tr>";
+	//if (gToFieldRequired) {
+	//	html += "						<td class=\"labelCol requiredInput\"><label for=\"p2\">";
+	//	html += "						<span class=\"requiredMark\">*</span>To</label></td>";
+	//	html += "						<td class=\"data2Col\" colspan=\"3\">";
+	//	html += "						<div class=\"requiredInput\">";
+	//	html += "							<div class=\"requiredBlock\">";
+	//	html += "							</div>";
+	//} else {
+		html += "						<td class=\"labelCol \"><label for=\"p2\">";
+		html += "						To</label></td>";
+		html += "						<td class=\"data2Col\" colspan=\"3\">";
+		html += "							<div class=\"requiredBlock\">";
+		html += "							</div>";
+	//}
+	html += "							<input "+typeHidden+"name=\"p2_lkid\" id=\"p2_lkid\" value=\""+gEmailTo_p2_lkid+"\" />";
+	html += "							<input "+typeHidden+"name=\"p2_lkold\" id=\"p2_lkold\" value=\""+gEmailTo_p2_lkold+"\" />";
+	if (gEmailTo_p2_lktp=="") {
+		gEmailTo_p2_lktp=gContactIdPrefix;
+	}
+	html += "							<input "+typeHidden+"name=\"p2_lktp\" id=\"p2_lktp\" value=\""+gEmailTo_p2_lktp+"\" />";
+	html += "							<input "+typeHidden+"name=\"p2_lspf\" id=\"p2_lspf\" value=\""+gEmailTo_p2_lspf+"\" />";
+	html += "							<input "+typeHidden+"name=\"p2_mod\" id=\"p2_mod\" value=\""+gEmailTo_p2_mod+"\" />";
+	html += "							<span class=\"lookupInput\">";
+	html += "							<input id=\"p2\" maxlength=\"80\" name=\"p2\" value=\""+gEmailTo_p2+"\" onchange=\"document.getElementById('p2_lkid').value='';document.getElementById('p2_mod').value='1';\" size=\"20\" type=\"text\" /><a href=\"JavaScript: openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm=p2&lktp=' + document.getElementById('p2_lktp').value,670,document.getElementById('p2_mod').value,'&lksrch=' + escapeUTF(document.getElementById('p2').value),'maxw')\" id=\"p2_lkwgt\" onclick=\"setLastMousePosition(event)\" title=\"To Lookup (New Window)\"><img src=\"/s.gif\" alt=\"To Lookup (New Window)\" class=\"lookupPopup\" title=\"To Lookup (New Window)\" /></a></span></td>";
+	html += "					</tr>";
+	if (gShowEmailRelatedTo) {
+		html += "					<tr>";
+		html += "						<td class=\"labelCol\">";
+		html += "						<label>Related To</label></td>";
+		html += "						<td class=\"data2Col\" colspan=\"3\">";
+		html += "						<div style=\"white-space: nowrap\">";
+		html += "							<select id=\"p3_mlktp\" name=\"p3_mlktp\" onchange=\"document.getElementById('p3_lktp').value=document.getElementById('p3_mlktp').options[document.getElementById('p3_mlktp').selectedIndex].value;document.getElementById('p3_lkid').value='';document.getElementById('p3_mod').value='1';\" title=\"Object Type\">";
+		//html += "							<option value=\"001\">Account</option>";
+		html += "							<option value=\"{!$ObjectType.APTS_Agreement__c}\" selected>Agreement</option>";
+		//html += "							<option value=\"02i\">Asset</option>";
+		//html += "							<option value=\"006\">Opportunity</option>";
+		html += "							</select>";
+		html += "							<input "+typeHidden+"name=\"p3_lkid\" id=\"p3_lkid\" value=\"{!APTS_Agreement__c.Id}\" />";
+		html += "							<input "+typeHidden+"name=\"p3_lkold\" id=\"p3_lkold\" value=\"{!APTS_Agreement__c.Name}\" />";
+		html += "							<input "+typeHidden+"name=\"p3_lktp\" id=\"p3_lktp\" value=\"{!$ObjectType.APTS_Agreement__c}\" />";
+		html += "							<input "+typeHidden+"name=\"p3_lspf\" id=\"p3_lspf\" value=\"0\" />";
+		html += "							<input "+typeHidden+"name=\"p3_mod\" id=\"p3_mod\" value=\"0\" />";
+		html += "							<span class=\"lookupInput\">";
+		html += "							<input id=\"p3\" maxlength=\"80\" name=\"p3\" onchange=\"document.getElementById('p3_lkid').value='';document.getElementById('p3_mod').value='1';\" size=\"20\" title=\"&lt;label&gt;Related To&lt;/label&gt;\" type=\"text\" value=\"{!APTS_Agreement__c.Name}\" /><a href=\"JavaScript: openLookup('/_ui/common/data/LookupPage?lkfm=editPage&lknm=p3&lktp=' + document.getElementById('p3_lktp').value,670,document.getElementById('p3_mod').value,'&lksrch=' + escapeUTF(document.getElementById('p3').value),'maxw')\" id=\"p3_lkwgt\" onclick=\"setLastMousePosition(event)\" title=\"&lt;label&gt;Related To&lt;/label&gt;\"><img src=\"/s.gif\" alt=\"Related To Lookup (New Window)\" class=\"lookupPopup\" title=\"Related To Lookup (New Window)\" /></a></span></div>";
+		html += "						</td>";
+		html += "					</tr>";
+	}
+	if (gShowEmailCCFields) {
+		html += "					<tr>";
+		html += "						<td class=\"labelCol\">";
+		html += "						<a href=\"javascript: openPopup('/email/author/emailccbcclookup.jsp?wid={!APTS_Agreement__c.Id}', 'CCBCCLookup', 420, 490, 'width=420,height=490,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no', true);\" onclick=\"javascript: setLastMousePosition(event);\" title=\"Additional To (New Window)\">";
+		html += "						Additional To:</a></td>";
+		html += "						<td class=\"data2Col\" colspan=\"3\">";
+		html += "						<textarea cols=\"65\" id=\"p24\" maxlength=\"2000\" name=\"p24\" rows=\"2\" type=\"text\" wrap=\"soft\">"+gEmailAdditionalTo_p24+"</textarea></td>";
+		html += "					</tr>";
+		html += "					<tr>";
+		html += "						<td class=\"labelCol\">";
+		html += "						<a href=\"javascript: openPopup('/email/author/emailccbcclookup.jsp?wid={!APTS_Agreement__c.Id}', 'CCBCCLookup', 420, 490, 'width=420,height=490,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no', true);\" onclick=\"javascript: setLastMousePosition(event);\" title=\"CC (New Window)\">";
+		html += "						CC:</a></td>";
+		html += "						<td class=\"data2Col\" colspan=\"3\">";
+		html += "						<textarea cols=\"65\" id=\"p4\" maxlength=\"2000\" name=\"p4\" rows=\"2\" title=\"CC\" type=\"text\" wrap=\"soft\">"+gEmailCC_p4+"</textarea></td>";
+		html += "					</tr>";
+		html += "					<tr>";
+		html += "						<td class=\"labelCol\">";
+		html += "						<a href=\"javascript: openPopup('/email/author/emailccbcclookup.jsp?wid={!APTS_Agreement__c.Id}', 'CCBCCLookup', 420, 490, 'width=420,height=490,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no', true);\" onclick=\"javascript: setLastMousePosition(event);\" title=\"BCC (New Window)\">";
+		html += "						BCC:</a></td>";
+		html += "						<td class=\"data2Col\" colspan=\"3\">";
+		html += "						<textarea cols=\"65\" id=\"p5\" maxlength=\"2000\" name=\"p5\" rows=\"2\" title=\"BCC\" type=\"text\" wrap=\"soft\">"+gEmailBCC_p5+"</textarea></td>";
+		html += "					</tr>";	
+	}
+	html += "					<tr>";
+	html += "						<td class=\"labelCol requiredInput\"><label for=\"p6\">";
+	html += "						<span class=\"requiredMark\">*</span>Subject</label></td>";
+	html += "						<td class=\"data2Col\" colspan=\"3\">";
+	html += "						<div class=\"requiredInput\">";
+	html += "							<div class=\"requiredBlock\">";
+	html += "							</div>";
+	html += "							<input class=\" \" id=\"p6\" maxlength=\"100\" name=\"p6\" size=\"70\" type=\"text\" value=\""+gEmailSubject+"\" /></div>";
+	html += "						</td>";
+	html += "					</tr>";
+	
+	if (gBodyFieldRequired) {
+	    // Editor for HTML content
+		if (gEmailTemplateId != "" && gEmailTemplateType=="html") {
+		    html += "<br/>";
+			html += "<tr  class=\"detailRow\"><td colspan='4'><input "+typeHidden+"id=\"html_buff_hidden\" name=\"html_buff_hidden\" value=\"\" /></td></tr>";
+			html += "<tr  class=\"detailRow\"><td colspan='4'><input "+typeHidden+"id=\"html_misc_hidden\" name=\"html_misc_hidden\" value=\">";
+			html += "<img id='c1r1_locked_img' style=' width:24; height:22;' onmouseover='changeHand(this)' ></td></tr>";
+			html += "<tr  class=\"detailRow last\"><td colspan='4'><input "+typeHidden+"id=\"html_body_hidden\" name=\"html_body_hidden\" value=\"\"/></td></tr></table/></div></div>";
+			html += "<div class=\"pbFooter secondaryPalette\"><div class=\"bg\"></div></div></div>";
+			if (window.sfdcPage && window.sfdcPage.initButtons) { window.sfdcPage.initButtons([]); }
+			html += "</form><br/>";
+			html += "<form  id=\"controlForm\" method=\"post\" name=\"controlForm\" onsubmit=\"if (window.ffInAlert) { return false; }\" >";
+			html += "<input "+typeHidden+"name=\"c1r1_editor_value\" value=\"\">";
+			html += "<input "+typeHidden+"name=\"c1r1_locked\" value=\"0\">";
+			html += "    <table border=0 cellpadding=0 cellspacing=0 width=600 height=50 id=\"editCtrls\">";
+			html += "        <tr>";
+			html += "           <td height=100%>";
+			html += "                <table border=0 bgColor=\"#000000\" cellpadding=0 cellspacing=1 id=\"controlRoleUp\" width=100% >";
+			html += "                    <tr>";
+			html += "                        <td align=left>";
+			html += "                            <table border=0 bgColor=\"#CCCCCC\" cellpadding=5 cellspacing=0 width=100% ><tr><td>";
+			html += "        <TABLE bgColor=\"#CCCCCC\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"1\">";
+			html += "        <FORM name=\"controlForm\">";
+			
+			html += "        <TR>";
+			html += "            <TD style=\"font-family:arial;font-size:8pt;font-weight:bold;\" NOWRAP colspan=2>";
+			html += "                Formatting Controls";
+			html += "            </TD>";
+			html += "        <tr>";
+			html += "            <TD style=\"font-family:arial;font-size:8pt;\">";
+			html += "                <SELECT id=\"ph0\" title=\"Font\" ONCHANGE=\"format('fontname',this[this.selectedIndex].value);this.selectedIndex=0\" style=\"cursor:pointer\"  title=\"Font Family\">";
+			html += "                    <OPTION id=\"ph1\">Font";
+			html += "                    <OPTION id=\"ph2_0\" VALUE=\"Geneva,Arial,Sans-Serif\">Arial";
+			html += "                    <OPTION id=\"ph2_1\" VALUE=\"Verdana,Geneva,Arial,Helvetica,Sans-Serif\">Verdana";
+			html += "                    <OPTION id=\"ph2_2\" VALUE=\"Times New Roman,Times,Serif\">Times";
+			html += "                    <OPTION id=\"ph2_3\" VALUE=\"Courier, Monospace\">Courier";
+			html += "                </SELECT>";
+			html += "            </td>";
+			html += "            <TD style=\"font-family:arial;font-size:8pt;\" NOWRAP>";
+			html += "                <SELECT id=\"ph3\" title=\"Size\" ONCHANGE=\"format('fontSize',this[this.selectedIndex].value);this.selectedIndex=0\" style=\"cursor:pointer\" title=\"Font Size\">";
+			html += "                    <OPTION id=\"ph4\">Size";
+			html += "                    <OPTION id=\"ph5\" VALUE=\"1\">8px";
+			html += "                    <OPTION id=\"ph6\" VALUE=\"2\">9px";
+			html += "                    <OPTION id=\"ph7\" VALUE=\"3\">10px";
+			html += "                    <OPTION id=\"ph8\" VALUE=\"4\">11px";
+			html += "                    <OPTION id=\"ph9\" VALUE=\"5\">12px";
+			html += "                    <OPTION id=\"ph10\" VALUE=\"6\">14px";
+			html += "                    <OPTION id=\"ph11\" VALUE=\"7\">16px";
+			html += "                </SELECT>";
+			html += "            </td>";
+			html += "            <TD style=\"font-family:arial;font-size:8pt;\" NOWRAP>";
+			html += "                <img alt=\"Set background color  (New Window)\" src=\"/email/wysiwyg/images/ed_color_bg.gif\" id=\"ph13\" border=\"1\"  width=\"18\" ";
+			html += "height=\"18\" ONCLICK=\"askForColor(this, 'BackColor');\" title=\"Set background color\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Set text color  (New Window)\" src=\"/email/wysiwyg/images/ed_color_fg.gif\" id=\"ph14\" border=\"1\"  width=\"18\"";
+			html += " height=\"18\" ONCLICK=\"askForColor(this, 'ForeColor');\" title=\"Set text color\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Bold selected text\" src=\"/email/wysiwyg/images/ed_format_bold.gif\" id=\"ph15\" border=\"1\"  width=\"18\"";
+			html += " height=\"18\" ONCLICK=\"format('bold');\" title=\"Bold selected text\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Italic selected text\" src=\"/email/wysiwyg/images/ed_format_italic.gif\" id=\"ph16\" border=\"1\"  width=\"18\"";
+			html += " height=\"18\" ONCLICK=\"format('italic');\" title=\"Italic selected text\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Underline selected text\" src=\"/email/wysiwyg/images/ed_format_underline.gif\" id=\"ph17\" border=\"1\"  width=\"18\" ";
+			html += "height=\"18\" ONCLICK=\"format('underline');\" title=\"Underline selected text\" style=\"cursor:pointer\"    >";
+			html += "            </td>";
+			html += "            <TD style=\"font-family:arial;font-size:8pt;\" NOWRAP>";
+			html += "                <img alt=\"\" src=\"/email/wysiwyg/images/ed_link.gif\" id=\"ph18\" border=\"1\"  width=\"18\" height=\"18\" ONCLICK=\"createLink";
+			html += "('Please enter the URL for the link you want to create.', 'http:\/\/');\" title=\"Insert a link\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Left justify\" src=\"/email/wysiwyg/images/ed_align_left.gif\" id=\"ph19\" border=\"1\"  width=\"18\" height=\"18\" ";
+			html += "ONCLICK=\"format('justifyleft');\" title=\"Left justify\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Center justify\" src=\"/email/wysiwyg/images/ed_align_center.gif\" id=\"ph20\" border=\"1\"  width=\"18\" height=\"18\" ";
+			html += "ONCLICK=\"format('justifycenter');\" title=\"Center justify\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Right justify\" src=\"/email/wysiwyg/images/ed_align_right.gif\" id=\"ph21\" border=\"1\"  width=\"18\" height=\"18\" ";
+			html += "ONCLICK=\"format('justifyright');\" title=\"Right justify\" style=\"cursor:pointer\"    >";
+			html += "            </td>";
+			html += "            <TD style=\"font-family:arial;font-size:8pt;\" NOWRAP>";
+			html += "                <img alt=\"Create bulleted list\" src=\"/email/wysiwyg/images/ed_list_bullet.gif\" id=\"ph22\" border=\"1\"  width=\"18\" ";
+			html += "height=\"18\" ONCLICK=\"format('insertunorderedlist');\" title=\"Create bulleted list\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Create numbered list\" src=\"/email/wysiwyg/images/ed_list_num.gif\" id=\"ph23\" border=\"1\"  width=\"18\" height=\"18\" ";
+			html += "ONCLICK=\"format('insertorderedlist');\" title=\"Create numbered list\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Indent\" src=\"/email/wysiwyg/images/ed_indent_more.gif\" id=\"ph24\" border=\"1\"  width=\"18\" height=\"18\" ";
+			html += "ONCLICK=\"format('indent');\" title=\"Indent\" style=\"cursor:pointer\"    >";
+			html += "                <img alt=\"Outdent\" src=\"/email/wysiwyg/images/ed_indent_less.gif\" id=\"ph25\" border=\"1\"  width=\"18\" height=\"18\" ";
+			html += "ONCLICK=\"format('outdent');\" title=\"Outdent\" style=\"cursor:pointer\"    >";
+			html += "            </td>";
+			html += "        </tr>";
+			html += "        </FORM>";
+			html += "        <TR><TD>";
+			html += "        </TD></TR>";
+			html += "    </TABLE>";
+			//registerImageURL('/widg/filepicker_fs.jsp?lktp=015&otype=1&fpimg=1');
+			html += "                            </td></tr></table>";
+			html += "                        </td>";
+			html += "                    </tr>";
+			html += "                </table>";
+			html += "            </td>";
+			html += "        </tr>";
+			html += "    </table>";
+			html += "    <table id=\"altTable\" style=\"position:absolute;visibility:hidden;\" cellspacing=\"1\" cellpadding=\"0\" border=\"0\" bgcolor=\"#000000\">";
+			html += "        <tr>";
+			html += "            <td>";
+			html += "                <table width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" bgcolor=\"#FFFFCC\">";
+			html += "                    <tr>";
+			html += "                        <td id=\"altText\">";
+			html += "                        </td>";
+			html += "                    </tr>";
+			html += "                </table>";
+			html += "            </td>";
+			html += "        </tr>";
+			html += "    </table>";
+			html += "<br/><iframe  height=\"180\" id=\"colorpicker\" name=\"colorpicker\" onblur=\"hideFrame(this)\" onload=\"registerColorFrame(this)\" ";
+			html += "onmouseout=\"hideFrame(this)\" scrolling=\"no\" src=\"/email/wysiwyg/color.html\" style=\"visibility:hidden; position: absolute;\" title=\"Color ";
+			html += "Picker\" width=\"250\"></iframe></form>";
+			registerEditFrameName('contentFrame')
+			html += "<table border=0 cellspacing=0 bgcolor=\"#FFFFFF\" cellpadding=0>";
+			html += "	<tr><td width=10></td><td>";
+			html += "		<table border=0 cellspacing=1 bgcolor=\"#000000\" cellpadding=\"0\">";
+			html += "			<tr><td> <iFrame title=\"Content\" scrolling=\"no\" id=\"contentFrame\"";
+			html += " frameborder=0 src=\"/email/author/emailauthorframe.jsp?email_type=html&template_id="+gEmailTemplateId+"&p2_lkid="+gEmailTo_p2_lkid+"&p3_lkid="+gEmailTo_p3_lkid+"&preview=1\"></iFrame>";
+			html += "			<input type=\"hidden\" name=\"c1r1_editor_value\" value=\"\">";
+			html += "		</td></tr></table>";
+			html += "</td></tr></table> <br/>";
+	
+		} else {
+			html += "					<tr>";
+			html += "					<td class=\"labelCol requiredInput\"><label for=\"p7\">";
+			html += "					<span class=\"requiredMark\">*</span>Body</label></td>";
+			html += "					<td class=\"data2Col\" colspan=\"3\">";
+			html += "					<div class=\"requiredInput\">";
+			html += "						<div class=\"requiredBlock\"></div>";
+			html += "					<textarea cols=\"93\" id=\"p7\" maxlength=\"32000\" name=\"p7\" rows=\""+gBodyRows+"\" type=\"text\" wrap=\"soft\">"+gEmailBody+"</textarea></td>";
+		}
+	} else {
+		html += "					<tr>";
+		html += "					<td class=\"labelCol \"><label for=\"p7\">Body</label></td>";
+		html += "					<td class=\"data2Col\" colspan=\"3\">";
+		html += "						<div class=\"requiredBlock\"></div>";
+		html += "					<textarea cols=\"93\" id=\"p7\" maxlength=\"32000\" name=\"p7\" rows=\""+gBodyRows+"\" type=\"text\" wrap=\"soft\">"+gEmailBody+"</textarea></td>";
+	}
+	html += "					</tr>";
+	html += "				</table>";
+	html += "			</div>";
+	html += "		</div>";
+	html += "		<div class=\"pbBottomButtons\">";
+	html += "			<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
+	html += "				<tr>";
+	html += "					<td class=\"pbTitle\">";
+	html += "					<img src=\"/s.gif\" alt=\"\" width=\"1\" height=\"1\" class=\"minWidth\" title />";
+	html += "					</td>";
+	html += "					<td class=\"pbButtonb\">";
+	html += "					<input value=\"Send\" class=\"btn\" type=\"button\" name=\"send\" onclick=\"sendEmail();\" title=\"Send\" />";
+	html += "					<input value=\"Select Template\"class=\"btn\" type=\"button\" name=\"template\" onclick=\"openTemplateSelector(event)\" title=\"Select Template (New Window)\" />";
+    if (gAttachFileButtonEnabled) {
+	   html += "                <input value=\"Attach File\" class=\"btn\" type=\"button\" name=\"attach\" onclick=\"openDocumentUpload(event)\" title=\"Attach File (New Window)\" />";
+    }
+    if (gShowCheckSpelling) {
+        html += "               <input value=\"Check Spelling\" class=\"btn\" type=\"button\" name=\"spell\" onclick=\"doSpell('en', document.editPage.p7, document.location.protocol + '//' + document.location.host + '/servlet/com.spellchecker.net.sproxy.SProxy', true, undefined, undefined, 'Our SpellChecker feature does not support Internet Explorer 3.0.  However,it does support the following browsers:IE 4+,Netscape 4+', 'We are sorry,currently we do not support Netscape Navigator 3.0,Internet Explorer 3.0. Please upgrade your browser', 'There is nothing to check', 'Spell Check Navigation', 'Spell Check Content', 'Spell Check Actions', 'Suggest All', 'blank - ignore');\" title=\"Check Spelling (New Window)\" />";
+    }
+	html += "					<input value=\"Cancel\" class=\"btn\" type=\"button\" name=\"cancel\" onclick=\"cancelForm();\" title=\"Cancel\" /></td>";
+	html += "				</tr>";
+	html += "			</table>";
+	html += "	</div>";
+	html += "	<div class=\"pbFooter secondaryPalette\">";
+	html += "		<div class=\"bg\">";
+	html += "		</div>";
+	html += "	</div>";
+	html += "</div>";
+	
+	html += "<input "+typeHidden+"name=\"debug\" id=\"debug\" value=\""+gDebug+"\">";
+	html += "<input "+typeHidden+"name=\"documentIds\" id=\"documentIds\" value=\""+gEmailDocumentIds+"\">";
+    html += "<input "+typeHidden+"name=\"file_id\" id=\"file_id\" value=\""+gFileId+"\">";
+	html += "<input "+typeHidden+"name=\"textmode\" id=\"textmode\" value=\"t\">";
+	html += "<input "+typeHidden+"name=\"save\" id=\"save\" value=\"1\">";
+	html += "<input "+typeHidden+"name=\"deleter\" id=\"deleter\" value>";
+	html += "<input "+typeHidden+"name=\"deleter_type\" id=\"deleter_type\" value>";
+	html += "</form>";
+	html += "<br>";
+	html += "<div class=\"bRelatedList\">";
+	//html += "	<div class=\"bNext\">";
+	//html += "		<div class=\"withFilter\">";
+	//html += "			<div class=\"clearingBox\">";
+	//html += "			</div>";
+	//html += "		</div>";
+	//html += "	</div>";
+	html += "	<div class=\"listRelatedObject homeBlock\">";
+	html += "		<div class=\"bPageBlock secondaryPalette\">";
+	html += "			<div class=\"pbHeader\">";
+	html += "				<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
+	html += "					<tr>";
+	html += "						<td class=\"pbTitle\">";
+	html += "							<img src=\"/s.gif\" alt=\"\" width=\"1\" height=\"1\" class=\"minWidth\" title />";
+	html += "							<h3>Attachments</h3>";
+	html += "						</td>";
+	if (gAttachFileButtonEnabled) {
+		html += "					<td class=\"pbButton\">";
+		html += "						<input value=\"Attach File\" class=\"btn\" name=\"attach\" onclick=\"openDocumentUpload(event)\" title=\"Attach File\" type=\"button\" />";
+		html += "					</td>";
+	}
+	html += "						<td class=\"pbHelp\">&nbsp;";
+	html += "						</td>";
+	html += "					</tr>";
+	html += "				</table>";
+	html += "			</div>";
+	html += "			<div class=\"pbBody\">";
+	html += "				<table class=\"list\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
+
+	try {
+		if (gDocumentIds.length>0) {
+			html += "<tr class=\"headerRow\">";
+			html += "	<th class=\"actionColumn\" scope=\"col\">Action</th>";
+			html += "	<th scope=\"col\" class>File</th>";
+			html += "	<th scope=\"col\" class>Size</th>";
+			html += "</tr>";
+			
+			result = sforce.connection.retrieve("Id,Name,BodyLength","Document",gDocumentIds);
+			if (result[0]==null) {
+				erroralert(cERROR_SENDING_EMAIL,result[0]);
+				return;
+			}
+	
+			if (result.length>0) {
+				for (var i=0; i<result.length; i++) {
+					var isEven = (i%2 == 0) ? true : false;
+					var idOdd = !isEven;
+					var type = (isEven==true) ? "even" : "odd";
+					
+					if (i==0) type += " first";
+					if (i==result.length-1) type += " last";
+					var attNum = i+1;
+					
+					html += "<tr class=\" dataRow "+type+"\" onblur=\"if (window.hiOff){hiOff(this);}\" onfocus=\"if (window.hiOn){hiOn(this);}\" onmouseout=\"if (window.hiOff){hiOff(this);}\" onmouseover=\"if (window.hiOn){hiOn(this);}\">";
+					html += "	<td class=\"actionColumn\">";
+                    //html += "   <a href=\"#\" class=\"actionLink\" onclick=\"deleteAttachment("+attNum+", '00P');\" title=\"Del - row 1 - "+result[i].Name+"\">";
+					html += "	<a href=\"#\" class=\"actionLink\" onclick=\"deleteAttachment('"+result[i].Id+"');\" title=\"Del - row "+attNum+" - "+result[i].Name+"\">";
+					html += "	Del</a></td>";
+					html += "	<th scope=\"row\" class=\" dataCell  \">";
+					//html += "	<a href=\"/servlet/servlet.TempAttachment?id="+result[i].Id+"&attach="+attNum+"\" target=\"_TOP\">";
+					html += "	<a href=\"/"+result[i].Id+"\" target=\"_TOP\">";
+					html += result[i].Name+"</a></th>";
+					html += "	<td class=\" dataCell  \">"+result[i].BodyLength+"</td>";
+					html += "</tr>";
+				}
+			}
+		} else {
+			html += "<tr class=\"headerRow\">";
+			html += "	<th scope=\"col\" class=\"noRowsHeader\">no attachments</th>";
+			html += "</tr>";
+	    }			
+	}
+	catch(ex) {
+		//alert(ex);
+	}
+	
+	html += "				</table>";
+	html += "			</div>";
+	html += "			<div class=\"pbFooter secondaryPalette\">";
+	html += "				<div class=\"bg\">";
+	html += "				</div>";
+	html += "			</div>";
+	html += "		</div>";
+	html += "	</div>";
+	html += "	<div class=\"listElementBottomNav\">";
+	html += "	</div>";
+	html += "</div>";
+
+	setMain(html);
+}
+
+function showSelectAttachmentPage() {
+	var isMultiSelect = false;
+	var html = "";
+	
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<form name=\"editPage\" id=\"editPage\">";
+	html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<div class=\"bPageTitle\">";
+	html += "<div class=\"ptBody secondaryPalette\">";
+	html += "<div class=\"content\">";
+	html += "<img src=\"/img/icon/contracts32.png\" alt=\"Contract\" class=\"pageTitleIcon\">";
+	html += "<h1 class=\"pageType\">Send An Email<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "<h2 class=\"pageDescription\">Select Agreement Attachments</h2>";
+	html += "</div>";
+	html += "<div class=\"links\">";
+	html += "<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help";
+	html += "&body=%2Fhelp%2Fdoc%2Fen%2Fhelp2.jsp&target=mail_sending.htm&section=Mail_Merge&showSplash=true', ";
+	html += "'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=yes,";
+	html += "directories=no,location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\">";
+	html += "<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\"></a>";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"ptBreadcrumb\">";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"bDescription\">";
+	html += "Choose one or more appropriate attachment(s) to include and click Select.  Otherwise, click Cancel.<br>";
+	html += "To select multiple attachments, hold the Cntl key down while selecting.";	
+	html += "</div>";
+	html += "<table>";
+	html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\">";
+	html += "<input type=\"hidden\" name=\"id\" id=\"id\" value=\"{!APTS_Agreement__c.Id}\">";
+	html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\">";
+	html += "<tr>";
+	//html += "<td><label for=\"divTemplate\"><span class=\"requiredMark\">*</span>Attachments for this agreement:</label></td>";
+	html += "</tr>";
+	
+	html += "	<tr>";
+	html += "		<td>&nbsp;</td>";
+	//html += "		<td><input value=\"1\" type=\"checkbox\" id=\"divIncludeRelatedAttachments\" checked=\"checked\" name=\"divTask\" /> ";
+	html += "		<td><input value=\"0\" type=\"checkbox\" id=\"divIncludeRelatedAttachments\" name=\"divTask\" /> ";
+	html += "		<label for=\"divTask\">Include attachments from parent and sibling agreements?</label>";
+	html += "		</td>";
+	html += "	</tr>";
+	html += "	<tr>";
+	html += "		<td>&nbsp;</td>";
+	html += "	</tr>";
+		
+	html += "<td>&nbsp;</td>";
+	html += "<td>";
+	html += "<div id=\"divTemplate\">";
+
+	html += "<select id=\"bTemplateId\" size=\"5\" name=\"bTemplateId\" multiple=\""+isMultiSelect+"\">";
+	for (var i=0; i<gAttachmentNames.length; i++) {
+		var attId = gAttachmentIds[i];
+		var attName = gAttachmentNames[i];
+		var selectFirst = new Boolean(false);
+		
+		if (i==0 && selectFirst=="true") {
+			html += "<br><option value=\"" + attId + "\" selected>";
+		} else {
+			html += "<br><option value=\"" + attId + "\">";
+		}
+		html += attName;
+	}
+	html += "<br></select>";
+
+	html += "</div>";
+	html += "</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td colspan=\"2\">&nbsp;</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td></td>";
+	html += "<td><input value=\"Select\" class=\"btn\" type=\"button\" title=\"Select\" name=\"save\" ";
+	html += "onclick=\"selectAttachmentCallback()\">";
+	html += "<input value=\"Cancel\" class=\"btn\" type=\"button\" title=\"Cancel\" name=\"cancel\" ";
+	html += "onclick=\"navigateTo('/{!APTS_Agreement__c.Id}')\"></td>";
+	html += "</tr>";
+	html += "</table>";
+	
+	setMain(html);
+}
+
+function buildSelectProtectionPage() {
+	var html = "";
+
+	html += "<a name=\"skiplink\">";
+	html += "<img src=\"/s.gif\" height='1' width='1' alt=\"Content Starts Here\" class=\"skiplink\"></a>";
+	html += "<form name=\"editPage\" id=\"editPage\">";
+	html += "<input type=\"hidden\" name=\"cancelURL\" id=\"cancelURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"retURL\" id=\"retURL\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<input type=\"hidden\" name=\"save_new_url\" id=\"save_new_url\" value=\"/{!APTS_Agreement__c.Id}\" />";
+	html += "<div class=\"bPageTitle\">";
+	html += "<div class=\"ptBody secondaryPalette\">";
+	html += "<div class=\"content\">";
+	html += "<img src=\"/img/icon/contracts32.png\" alt=\"Contract\" class=\"pageTitleIcon\">";
+	html += "<h1 class=\"pageType\">"+gPageTitle+"<span class=\"titleSeparatingColon\">:</span></h1>";
+	html += "<h2 class=\"pageDescription\">"+gPageDescription+"</h2>";
+	html += "</div>";
+	html += "<div class=\"links\">";
+	html += "<a href=\"javascript:openPopupFocusEscapePounds('/help/doc/user_ed.jsp?loc=help";
+	html += "&body=%2Fhelp%2Fdoc%2Fen%2Fhelp2.jsp&target=mail_sending.htm&section=Mail_Merge&showSplash=true', ";
+	html += "'Help', 700, 600, 'width=700,height=600,resizable=yes,toolbar=no,status=no,scrollbars=yes,menubar=yes,";
+	html += "directories=no,location=no,dependant=no', false, false);\" title=\"Help for this Page (New Window)\">";
+	html += "<span class=\"helpLink\">Help for this Page</span><img src=\"/s.gif\" alt=\"\" class=\"helpImage\"></a>";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"ptBreadcrumb\">";
+	html += "</div>";
+	html += "</div>";
+	html += "<div class=\"bDescription\">";
+	html += "Apttus can automatically attach a copy of your agreement to the email with specific protection<br>";
+	html += "to allow or prevent other parties from altering the document.";
+	html += "</div>";
+	html += "<table>";
+	html += "	<tr>";
+	html += "		<td>1.</td>";
+	html += "		<td><label for=\"accessLevel\"><span class=\"requiredMark\">*</span>Please select an agreement protection level:</label></td>";
+	html += "	</tr>";
+	html += "	<tr>";
+	html += "		<td>&nbsp;</td>";
+	html += "		<td>";
+	html += "		<input type=\"radio\" id=\"accessLevel0\" name=\"accessLevel\" value=\""+wdNoProtection+"\">"+cNoProtection+"<br>";
+	html += "		<input type=\"radio\" id=\"accessLevel1\" name=\"accessLevel\" value=\""+wdAllowOnlyRevisions+"\">"+cAllowOnlyRevisions+"<br>";
+	html += "		<input type=\"radio\" id=\"accessLevel2\" name=\"accessLevel\" value=\""+wdAllowOnlyComments+"\">"+cAllowOnlyComments+"<br>";
+	html += "		<input type=\"radio\" id=\"accessLevel3\" name=\"accessLevel\" value=\""+wdAllowOnlyFormFields+"\">"+cAllowOnlyFormFields+"<br>";
+	html += "		<input type=\"radio\" id=\"accessLevel4\" name=\"accessLevel\" value=\""+wdAllowOnlyReading+"\" checked>"+cAllowOnlyReading+"<br>";
+	html += "		</td>";
+	html += "	</tr>";
+	html += "	<tr>";
+	html += "		<td colspan=\"2\">&nbsp;</td>";
+	html += "	</tr>";
+	html += "<tr>";
+	html += "<td></td>";
+	html += "<td><input value=\"Select\" class=\"btn\" type=\"button\" title=\"Select\" name=\"save\" ";
+	html += "onclick=\"protectDocumentsCallback()\">";
+	html += "<input value=\"Cancel\" class=\"btn\" type=\"button\" title=\"Cancel\" name=\"cancel\" ";
+	html += "onclick=\"navigateTo('/{!APTS_Agreement__c.Id}')\"></td>";
+	html += "</tr>";
+	html += "</table>";
+
+	setMain(html);
+}
+</script>

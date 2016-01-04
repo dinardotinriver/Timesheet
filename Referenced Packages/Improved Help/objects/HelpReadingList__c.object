@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>IHReadingListProperties</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>IHReadingListProperties</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>IHReadingListProperties</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <compactLayoutAssignment>IHCompactReadingList</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>IHCompactReadingList</fullName>
+        <fields>Name</fields>
+        <label>IH Compact Reading List</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>An ordered list containing Help Topics (as Reading List Entries)</description>
+    <enableActivities>true</enableActivities>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Controls the visibility of this Reading List: if unchecked, it is not available to Helped Users.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Controls the visibility of this Reading List: if unchecked, it is not available to Helped Users.</inlineHelpText>
+        <label>Active?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Detailed description of this Help Reading List</inlineHelpText>
+        <label>Description</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>FeaturedUntil__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Enter a date to feature this Reading List on all Topics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter a date to feature this Reading List on all Topics</inlineHelpText>
+        <label>Featured Until</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NumberOfEntries__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The Number of Help Topic Entries in this Reading List</inlineHelpText>
+        <label>Number of Entries</label>
+        <summaryForeignKey>HelpReadingListEntry__c.HelpReadingList__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>ReadingListStatus__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Current content lifecycle management status for this Reading List</inlineHelpText>
+        <label>Reading List Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>New</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Drafted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Submitted for Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Suspended</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Obsolete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ReadingListType__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Defines the way this Reading List will appear to end users and how it will operate</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Defines the way this Reading List will appear to end users and how it will operate</inlineHelpText>
+        <label>Reading List Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Linear Guide</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Linear Guide</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Reading List</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Summary__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Short description of this Help Reading List</inlineHelpText>
+        <label>Summary</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Visibility__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Classification to enable context-based visibility using data sharing rules.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Classification to enable context-based visibility using data sharing rules.</inlineHelpText>
+        <label>Visibility</label>
+        <picklist>
+            <picklistValues>
+                <fullName>All</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Internal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partners</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Help Reading List</label>
+    <listViews>
+        <fullName>AllCurrentFeaturedReadingLists</fullName>
+        <columns>NAME</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>FeaturedUntil__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>3. All Featured Reading Lists (Current)</label>
+    </listViews>
+    <listViews>
+        <fullName>AllFeaturedReadingLists</fullName>
+        <columns>NAME</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>FeaturedUntil__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>2. All Featured Reading Lists</label>
+    </listViews>
+    <listViews>
+        <fullName>AllReadingLists</fullName>
+        <columns>NAME</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>1. All Reading Lists</label>
+    </listViews>
+    <listViews>
+        <fullName>AllReadingListsWNoTopics</fullName>
+        <columns>NAME</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NumberOfEntries__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>4. Reading Lists with NO Help Topics</label>
+    </listViews>
+    <listViews>
+        <fullName>AllReadingListsWnoSum</fullName>
+        <columns>NAME</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Summary__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>5. Reading Lists with NO Summary</label>
+    </listViews>
+    <listViews>
+        <fullName>X6_All_My_Featured_Reading_Lists</fullName>
+        <columns>NAME</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>FeaturedUntil__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>7. All My Featured Reading Lists</label>
+    </listViews>
+    <listViews>
+        <fullName>X6_All_My_Reading_Lists</fullName>
+        <columns>NAME</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Mine</filterScope>
+        <label>6. All My Reading Lists</label>
+    </listViews>
+    <listViews>
+        <fullName>X8_All_Guide_Reading_Lists</fullName>
+        <columns>NAME</columns>
+        <columns>ReadingListType__c</columns>
+        <columns>Summary__c</columns>
+        <columns>Visibility__c</columns>
+        <columns>FeaturedUntil__c</columns>
+        <columns>NumberOfEntries__c</columns>
+        <columns>ReadingListStatus__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ReadingListType__c</field>
+            <operation>equals</operation>
+            <value>Linear Guide,Non-Linear Guide</value>
+        </filters>
+        <label>8. All Guide Reading Lists</label>
+    </listViews>
+    <nameField>
+        <label>Help Reading List Name</label>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Help Reading Lists</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Visibility__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Summary__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ReadingListStatus__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>NumberOfEntries__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>FeaturedUntil__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>UPDATEDBY_USER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Summary__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>NumberOfEntries__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>UPDATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LAST_UPDATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>NumberOfEntries__c</searchFilterFields>
+        <searchFilterFields>Summary__c</searchFilterFields>
+        <searchFilterFields>OWNER.FIRST_NAME</searchFilterFields>
+        <searchFilterFields>OWNER.LAST_NAME</searchFilterFields>
+        <searchFilterFields>UPDATEDBY_USER</searchFilterFields>
+        <searchFilterFields>LAST_UPDATE</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
+        <searchResultsAdditionalFields>Summary__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>FeaturedUntil__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>NumberOfEntries__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UPDATEDBY_USER</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <validationRules>
+        <fullName>FeaturedUntilPast</fullName>
+        <active>true</active>
+        <description>Reading List Featured Until date may not be set in the past</description>
+        <errorConditionFormula>FeaturedUntil__c &lt; today()</errorConditionFormula>
+        <errorDisplayField>FeaturedUntil__c</errorDisplayField>
+        <errorMessage>Featured Until may not be set to a date in the past.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>NewRL</fullName>
+        <availability>online</availability>
+        <description>Add a new Reading List</description>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>New Reading List</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>// --------------------------------------------------------------------------------------------------
+// THIS FUNCTION SHOULD BE COPIED FROM jsQAMenu.js 
+// IN THE IMPROVED HELP RESOURCES FILE
+// --------------------------------------------------------------------------------------------------
+
+function getVFRoot(U) {
+		
+		var root = &apos;&apos;;
+		var nspace = &apos;iahelp&apos;;
+		var host = U.toUpperCase();
+
+		try {
+			if (host.substr(host.indexOf(&apos;.&apos;) + 1, 10) == &apos;SALESFORCE&apos;) {
+				// SF address: chop off https://
+				host = host.substr(8);
+	
+				// Convert to VF address
+				host = host.replace(&apos;SALESFORCE&apos;, &apos;visual.force&apos;);
+	
+				// Chop off tail part of address
+				host = host.substring(0, host.indexOf(&apos;/&apos;));
+	
+			} else {
+				// VF address: chop off namespace
+				host = host.substr(host.indexOf(&quot;.&quot;) + 1);
+	
+				// Chop off tail part of address
+				host = host.substring(0, host.indexOf(&apos;.COM&apos;) + 4);
+			}
+	
+			root = &apos;https://&apos; + nspace + &apos;.&apos; + host;
+			
+		} catch (e) {
+			root = &apos;&apos;;
+		}
+		
+		return root;
+	}
+
+
+
+var root = getVFRoot(document.URL);
+
+// NB: make this &quot;look&quot; like a call from an SF page (thereby setting mode to new and back button visible)
+var U = root + &apos;/apex/IHReadingListProperties?save_new=1&apos;;
+document.location = U;</url>
+    </webLinks>
+</CustomObject>

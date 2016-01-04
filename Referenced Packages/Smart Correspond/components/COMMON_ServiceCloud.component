@@ -1,0 +1,64 @@
+<apex:component >
+<script src="/support/console/29.0/integration.js" type="text/javascript"></script>
+<script>
+if (sforce.console.isInConsole()) {
+    	
+    	var currentObjectId;
+    	
+    	$( document ).ready(function() {
+        	sforce.console.getFocusedSubtabObjectId(showObjectId);
+    	});
+        
+        //Primary tab focus 
+        var onFocusedPrimaryTabCallback = function (result) {
+            var focusedSubtabId = function focusedSubtabId(result) {
+                updateObject(result.id);
+            };
+            sforce.console.getFocusedSubtabObjectId(focusedSubtabId);
+        };  
+        sforce.console.onFocusedPrimaryTab(onFocusedPrimaryTabCallback);
+    
+        //Sub tab focus
+        var onFocusedSubtabCallback = function (result) {
+            var focusedSubtabId = function focusedSubtabId(result) {
+                updateObject(result.id);
+            };
+            sforce.console.getFocusedSubtabObjectId(focusedSubtabId);
+        };  
+        sforce.console.onFocusedSubtab(onFocusedSubtabCallback);
+        
+        // Get object id first time in
+        var showObjectId = function showObjectId(result) {
+            updateObject(result.id);
+        };
+        
+        function openPrimaryTab(urlToOpen) {
+	        sforce.console.openPrimaryTab(null, urlToOpen, false, 
+	            'ONE Connect', openSuccess, 'salesforceTab');
+	    }
+	    
+	    var openSuccess = function openSuccess(result) {
+	        sforce.console.focusPrimaryTabById(result.id);
+	    };
+	    
+	    //Call to load details for an object     
+	    function updateObject(objectIdParam){
+	       var isValidSalesforceId = false;
+	       var isCustomerKeyChanged = false;
+	       
+	       if(objectIdParam != undefined && objectIdParam != null && objectIdParam != undefined && objectIdParam.length >= 15){
+	          isValidSalesforceId = true;
+	       }
+	       
+	       if(isValidSalesforceId && currentObjectId != objectIdParam){
+	          isCustomerKeyChanged = true;
+	       }
+	       
+	       if(isCustomerKeyChanged){
+	        	currentObjectId = objectIdParam;
+	        	objectChangedCallback(currentObjectId);
+	       }
+	    }
+    }
+</script>
+</apex:component>

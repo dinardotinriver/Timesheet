@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Apttus Contract Management</title>
+<link href="/dCSS/Theme2/default/common.css" type="text/css" media="handheld,print,projection,screen,tty,tv" rel="stylesheet">
+<script src="/js/functions.js"></script>
+<script src="/soap/ajax/13.0/connection.js"></script>
+
+{!INCLUDE($SControl.aptsInclude)}
+{!INCLUDE($SControl.aptsIncludeActions)}
+
+<script language="javascript" type="text/javascript"> 
+
+var gObjectId = gContractId;
+var gObjectType = "Clause";
+var gUserId = "{!User.Id}";
+var gRecordIds = {!GETRECORDIDS($ObjectType.Agreement_Clause__c)};
+var gDebugApprovals = false;
+
+var gProcessInstanceId = "";
+var gProcessInstanceObj = "ProcessInstance";
+var gProcessInstanceHistoryObj = "ProcessInstanceHistory";
+var gProcessInstanceStepObj = "ProcessInstanceStep";
+var gProcessInstanceWorkitemObj = "ProcessInstanceWorkitem";
+
+var gProcessRequests = new Array();
+var nProcessRequests = 0;
+
+var gAgreementClauseTable = "Apttus__Agreement_Clause__c";
+var gAgreementClauseTablePK = "Name";
+var gAgreementClauseTableFK = "Apttus__Agreement__c";
+
+var cERROR_SUBMIT_FOR_CLAUSE_APPROVAL = "ERROR submitting for clause approval:";
+var cERROR_CREATE_APPROVAL_STEP = "ERROR creating approval step:";
+var cERROR_UPDATE_APPROVAL_STATUS = "ERROR updating approval status:";
+
+function initPage() {
+	window.setTimeout("submitForClauseApproval();",gTimeout);
+}
+
+function submitForClauseApproval() {
+	try {
+		gObjectId = gContractId;
+		gObjectIdURL = gContractIdURL;
+		
+		gDebugApprovals = false;
+		if (gDebugApprovals) { writeDebugLn("<p>submitForClauseApproval"); }
+
+		/*
+		var ids = new Array();
+		var nids = 0;
+				
+		if (gRecordIds[0]==null) { 
+		    alert("Please select at least one clause");
+		} else { 
+		    for (var n in gRecordIds) {
+		        var id = gRecordIds[n];
+		        writeDebugLn("<br>id="+id);
+		        ids[nids++] = id;
+		    }
+		}
+		
+		//writeDebugLn("<br>nids="+nids+"<br>ids="+ids);
+		writeDebugLn("<br>nids="+nids);
+		*/
+
+		var fieldList = getFieldList(gAgreementClauseTable);
+		var q = "select "+fieldList+" from "+gAgreementClauseTable+" "+
+				"where "+gAgreementClauseTableFK+"='"+gObjectId+"' "+
+				"order by "+gAgreementClauseTablePK;
+
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+    	
+    	if (gDebugApprovals) {
+    		//writeDebugLn("<br>q="+q);
+    		//writeDebugLn("<br>result="+result);
+    	}
+	
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			var clauseId = record.Id;
+	    	if (gDebugApprovals) {
+	    		writeDebugLn("<p>record="+record);
+	    	}
+
+			addApprovalRequest(clauseId);
+		}
+		
+		if (gProcessRequests.length>0) {
+			processApprovalRequests();
+
+			updateApprovalStatus();
+			createActivityLogEntry();
+			
+		} else {
+			alert("No clauses to approve.");
+		}
+	}
+	catch(ex) {
+		erroralert(cERROR_SUBMIT_FOR_CLAUSE_APPROVAL,ex);
+	}
+	finally {
+		if (!gDebugApprovals) {
+			navigateTo(gObjectIdURL);
+		}
+	}
+}
+
+function addApprovalRequest(id) {
+	if (gDebugApprovals) { writeDebugLn("<p>addApprovalRequest"); }
+
+    var request = new sforce.ProcessSubmitRequest();
+    request.objectId = id;
+    
+    gProcessRequests[nProcessRequests++] = request;
+    if (gDebugApprovals) {
+    	writeDebugLn("<br>request="+request);
+    	writeDebugLn("<br>nProcessRequests="+nProcessRequests);
+    }
+}
+
+function processApprovalRequests() {
+ 	if (gDebugApprovals) {
+ 		writeDebugLn("<p>processApprovalRequests");
+ 		writeDebugLn("<br>nProcessRequests="+nProcessRequests);
+ 		writeDebugLn("<br>gProcessRequests="+gProcessRequests);
+ 	}
+    try {
+        var results = sforce.connection.process(gProcessRequests);
+		var result = null;
+		var ok = true;
+		
+        for (var i=0; i<results.length; i++) {
+            result = results[i];
+		 	if (gDebugApprovals) { writeDebugLn("<br>result="+result); }
+			if (!result.getBoolean("success")) {
+                ok = false;
+                
+	 			erroralert(cERROR_SUBMIT_FOR_CLAUSE_APPROVAL,result);		
+	       		if (gDebugApprovals) { writeDebugLn("<br>result="+result); }
+            }
+        }
+        
+		if (ok) {
+       		alert("Agreement clauses have been submitted for approval."+
+       			"\nYou will be notified when clause approvals are complete.");
+       		if (gDebugApprovals) {
+				writeDebugLn("<br>Agreement clauses have been submitted for approval."+
+					"<br>You will be notified when clause approvals are complete.");
+       		}
+		}
+    }
+    catch(ex) {
+        alert(ex.message);
+    }
+}
+
+function updateApprovalStatus() {
+	try {
+		if (gDebugApprovals) { writeDebugLn("<p>updateApprovalStatus"); }
+		var sObj = new sforce.SObject(gAgreementObjName);
+		
+		sObj.Id = gObjectId;
+		sObj.Apttus__Approval_Status__c = "In Approval";
+	
+		var result = sforce.connection.update([sObj]);
+		if (gDebugApprovals) { writeDebugLn("<br>result[0]="+result[0]); }
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_UPDATE_APPROVAL_STATUS,result[0]);
+		}
+	}
+	catch(ex) {
+	}
+}
+
+function submitForApproval(id) {
+	if (gDebugApprovals) writeDebugLn("<p>submitForApproval");
+	
+	var userinfo = sforce.connection.getUserInfo();
+	var userId = userinfo.userId;
+   	
+   	var userIds = new Array(1);
+	userIds[0] = gUserId;
+	
+	processApproval(id,userIds);
+}
+
+function processApproval(id,approverIds) {
+	if (gDebugApprovals) {
+		writeDebugLn("<p>processApproval");
+		writeDebugLn("<br>id="+id+"<br>approverIds="+approverIds);
+	}
+    
+    //submit request
+    var request = new sforce.ProcessSubmitRequest();
+    request.objectId = id;
+    request.nextApproverIds = approverIds;
+    request.comment = "";
+    if (gDebugApprovals) writeDebugLn("<br>request="+request);
+ 
+    //workitem request
+    //var request = new sforce.ProcessWorkItemRequest();
+    //request.action = gApproveAction;
+    //request.nextOwnerId = approverIds;
+    //request.comment = "Test Process WorkItem Request";
+    //request.workitemId = id;
+
+    try {
+    	var requests = new Array(1);
+		requests[0] = request;
+ 
+        var results = sforce.connection.process(requests);
+        for (var i=0; i<results.length; i++) {
+            var result = results[i];   
+			if (result.getBoolean("success")) {
+               	alert("Agreement clauses have been submitted for approval."+
+               		"\nYou will be notified when approvals are complete.");
+                
+                if (gDebugApprovals) {
+                	writeDebugLn("<br>Agreement clauses have been submitted for approval."+
+                		"<br>You will be notified when approvals are complete.");
+                }
+    		} else {
+    			erroralert(cERROR_SUBMIT_FOR_CLAUSE_APPROVAL,result);
+            }
+        }
+    }
+    catch(ex) {
+        alert(ex.message);
+    }
+}
+
+function testProcessInstanceMethods() {
+	if (gDebugApprovals) writeDebugLn("<p>testProcessInstanceMethods");
+	try {
+		getProcessInstance();
+		getProcessInstanceHistory();
+		getProcessInstanceSteps();
+		getProcessInstanceWorkitems();
+		
+		//steps cannot be created from the api
+		//createProcessInstanceStep();
+
+		navigateTo(gObjectIdURL);
+	}
+	catch(ex) {
+		erroralert(cERROR_SUBMIT_FOR_CLAUSE_APPROVAL,ex);
+		navigateTo(gObjectIdURL);
+	}	
+}
+
+function getProcessInstance() {
+	if (gDebugApprovals) writeDebugLn("<p>getProcessInstance");
+	
+	var fieldList = getFieldList(gProcessInstanceObj);
+	var q = "select "+fieldList+" from "+gProcessInstanceObj+" "+
+			"where TargetObjectId='"+gObjectId+"'";
+	
+	var result = sforce.connection.query(q);
+	var records = result.getArray("records");
+
+   	if (gDebugApprovals) {
+   		writeDebugLn("<br>q="+q);
+   		writeDebugLn("<br>result="+result);
+   	}
+
+	for (var i=0; i<records.length; i++) {
+		var record = records[i];
+		if (gDebugApprovals) writeDebugLn("<br>record="+record);
+		
+		gProcessInstanceId = record.Id;
+	}
+}
+
+function getProcessInstanceHistory() {
+	if (gDebugApprovals) writeDebugLn("<p>getProcessInstanceHistory");
+    var dso = sforce.connection.describeSObject(gProcessInstanceHistoryObj);
+    if (gDebugApprovals) {
+    	writeDebugLn("<br>dso.createable="+dso.createable+"<br>dso.queryable="+dso.queryable+"<br>dso="+dso);
+    }
+    for (var i=0; i<dso.fields.length; i++) {
+        var fld = dso.fields[i];
+        if (gDebugApprovals) writeDebugLn("<br>dso.field="+fld);
+    }
+
+	/*
+	//query is not supported
+	var fieldList = getFieldList(gProcessInstanceHistoryObj);
+	var q = "select "+fieldList+" from "+gProcessInstanceHistoryObj;
+		q += " where ProcessInstanceId='"+gProcessInstanceId+"'";
+	var result = sforce.connection.query(q);
+	var records = result.getArray("records");
+
+	for (var i=0; i<records.length; i++) {
+		var record = records[i];
+		if (gDebugApprovals) writeDebugLn("<br>ProcessInstanceHistory="+record);
+	}
+	*/
+}
+
+function createProcessInstanceStep() {
+	if (gDebugApprovals) writeDebugLn("<p>createProcessInstanceStep");
+	var sObj = new sforce.SObject(gProcessInstanceStepObj);
+	
+	sObj.ActorId = "{!User.Id}";;
+	sObj.Comments = "test";
+	sObj.OriginalActorId = "{!User.Id}";
+	sObj.ProcessInstanceId = gProcessInstanceId;
+	sObj.StepStatus = "Pending";
+
+	var result = sforce.connection.create([sObj]);
+	if (gDebugApprovals) writeDebugLn("<br>result[0]="+result[0]);
+	if (!result[0].getBoolean("success")) {
+		erroralert(cERROR_CREATE_APPROVAL_STEP,result[0]);
+	}
+}
+
+function getProcessInstanceSteps() {
+	if (gDebugApprovals) writeDebugLn("<p>getProcessInstanceSteps");
+	var fieldList = getFieldList(gProcessInstanceStepObj);
+	var query = true;
+	
+	if (query) {
+		var q = "select "+fieldList+" from "+gProcessInstanceStepObj+" "+
+				"where ProcessInstanceId='"+gProcessInstanceId+"'";
+
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+	
+	   	if (gDebugApprovals) {
+	   		writeDebugLn("<br>q="+q);
+	   		writeDebugLn("<br>result="+result);
+	   	}
+
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			if (gDebugApprovals) writeDebugLn("<br>record="+record);
+		}
+	} else {
+		var ids = new Array(1);
+		ids[0] = gProcessInstanceId;
+		
+		var result = sforce.connection.retrieve(fieldList,gProcessInstanceStepObj,ids);
+		if (gDebugApprovals) writeDebugLn("<br>result[0]="+result[0]);
+		if (result[0]==null) {
+			erroralert(cERROR_SUBMIT_FOR_CLAUSE_APPROVAL,result);
+			return;
+		}
+	}
+}
+
+function getProcessInstanceWorkitems() {
+	if (gDebugApprovals) writeDebugLn("<p>getProcessInstanceWorkitems");
+	var fieldList = getFieldList(gProcessInstanceWorkitemObj);
+	var query = true;
+	
+	if (query) {
+		var q = "select "+fieldList+" from "+gProcessInstanceWorkitemObj+" "+
+				"where ProcessInstanceId='"+gProcessInstanceId+"'";
+			
+		var result = sforce.connection.query(q);
+		var records = result.getArray("records");
+	
+	   	if (gDebugApprovals) {
+	   		writeDebugLn("<br>q="+q);
+	   		writeDebugLn("<br>result="+result);
+	   	}
+
+		for (var i=0; i<records.length; i++) {
+			var record = records[i];
+			if (gDebugApprovals) writeDebugLn("<br>record="+record);
+		}
+	} else {
+		var ids = new Array(1);
+		ids[0] = gProcessInstanceId;
+		
+		var result = sforce.connection.retrieve(fieldList,gProcessInstanceWorkitemObj,ids);
+		if (gDebugApprovals) writeDebugLn("<br>result[0]="+result[0]);
+		if (result[0]==null) {
+			erroralert(cERROR_SUBMIT_FOR_CLAUSE_APPROVAL,result);
+			return;
+		}
+	}
+}
+
+function createActivityLogEntry() {
+	if (gDebugApprovals) writeDebugLn("<p>createActivityLogEntry");
+	try {		
+		var task = new sforce.SObject("Task");
+		
+		task.ActivityDate = new Date();
+		task.Description = "Submitted Agreement {!APTS_Agreement__c.FF_Agreement_Number__c} for Clause Approval.";
+		task.OwnerId = "{!User.Id}";
+		task.Priority = "Normal";
+		task.Status = "Completed";
+		task.Subject = "Submitted for Clause Approval";
+		task.WhatId = gObjectId;
+		
+		var result = sforce.connection.create([task]);
+		if (gDebugApprovals) writeDebugLn("<br>result[0]="+result[0]);
+		if (!result[0].getBoolean("success")) {
+			erroralert(cERROR_CREATE_ACTIVITY_LOG,result[0]);
+		}
+	}
+	catch(ex) {
+		alert("x1");
+		erroralert(cERROR_CREATE_ACTIVITY_LOG,ex);
+		navigateTo(gObjectIdURL);
+	}
+}
+</script>
+</head>
+
+<body onload="initPage()" class="home  editPage">
+
+<div id="divMain"><h1>Please wait...</h1></div>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<apex:page standardController="Lead" extensions="StrikeIronInter.LeadEditExtensionController" showHeader="true" >
+  <apex:stylesheet value="{!$Resource.StrikeIronInter__styles}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__jQuery}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__json2}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__common}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__correctionDlg}"/>
+  <script type="text/javascript">
+    var j$ = jQuery.noConflict();
+    var buttonClicked;
+    var permissionError = <apex:outputText >{!permissionError}</apex:outputText>;
+    var changableObjects = [
+      {
+        "type": "email",
+        "cssclass": "leadEmail",
+        "fieldname": "Email", 
+        "changed": <apex:outputText >{!needValidateEmail}</apex:outputText>,
+        "imgcomp" : "emailComponent",
+        "needDeleteResult" : "needDeleteEmailRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": 'leadPhone',
+        "fieldname": "Phone", 
+        "changed": <apex:outputText >{!needValidatePhone}</apex:outputText>,
+        "imgcomp" : "phoneComponent",
+        "needDeleteResult" : "needDeletePhoneRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": 'leadMobile',
+        "fieldname": "MobilePhone", 
+        "changed": <apex:outputText >{!needValidateMobile}</apex:outputText>,
+        "imgcomp" : "mobileComponent",
+        "needDeleteResult" : "needDeleteMobileRes"
+      },
+      {
+        "type": "phone",
+        "cssclass": 'leadFax',
+        "fieldname": "Fax", 
+        "changed": <apex:outputText >{!needValidateFax}</apex:outputText>,
+        "imgcomp" : "faxComponent",
+        "needDeleteResult" : "needDeleteFaxRes"
+      },
+      {
+        "type": "address",
+        "cssclass": 'leadAddress',
+        "fieldname": "Street", 
+        "changed": <apex:outputText >{!needValidateAddress}</apex:outputText>,
+        "cityclass" : 'leadCity',
+        "stateclass" : 'leadState',
+        "zipclass" : 'leadZip',
+        "countryclass" : 'leadCountry',
+        "imgcomp" : "addressComponent",
+        "needDeleteResult" : "needDeleteAddressRes"
+      } 
+    ];
+    
+    function changed(ident, fieldName, label){
+      if(!permissionError){
+        fieldChanged(changableObjects, ident, fieldName, label, 
+          true, '{!URLFOR($Resource.Images, 'question.png')}');
+      }
+    }
+    
+    function saveClicked(b) {
+      if (!buttonClicked) {
+        buttonClicked = b;
+      }
+      var params = [];
+      fillParams(params, changableObjects, '{!lead.id}', '{!JSENCODE(lead.name)}', 'Lead', 
+        '{!$Component.leadEditForm}:');
+      if (params.length > 0 && !permissionError) {
+        sendAjax(params, '{!$Component.leadEditForm}:', 
+          '<apex:outputText >{!SiServerUrl}</apex:outputText>', 
+          '<apex:outputText >{!$Api.Session_ID}</apex:outputText>',  
+          '<apex:outputText >{!$Api.Partner_Server_URL_180}</apex:outputText>', 
+          'outPopUp', true, changableObjects, 
+          '{!JSENCODE($User.FirstName)}' + ' ' + '{!JSENCODE($User.LastName)}');
+      } else {
+        onResponse(buttonClicked);
+      }
+      return false;
+    }
+    
+    j$(window).ready(function() {
+      readyPage(changableObjects, 'outPopUp', permissionError);
+      checkIfErrorExists(changableObjects);
+    });
+  </script>
+  <apex:form id="leadEditForm">
+    <c:ModalDialog title="Please confirm correction"></c:ModalDialog>
+    <apex:actionFunction name="overridedSave" action="{!save}" />
+    <apex:actionFunction name="overridedSaveNew" action="{!savenew}" />
+    <apex:sectionHeader title="Lead Edit" subtitle="{!lead.salutation} {!lead.name}" help="https://help.salesforce.com"/> 
+    
+    <apex:inputHidden id="EmailVerResult" value="{!emailVerResult}" />
+    <apex:inputHidden id="PhoneVerResult" value="{!phoneVerResult}" />
+    <apex:inputHidden id="MobilePhoneVerResult" value="{!mobileVerResult}" />
+    <apex:inputHidden id="FaxVerResult" value="{!faxVerResult}" />
+    <apex:inputHidden id="StreetVerResult" value="{!addressVerResult}" />
+
+    <apex:inputHidden id="needDeleteEmailRes" value="{!needDeleteEmailRes}" />
+    <apex:inputHidden id="needDeletePhoneRes" value="{!needDeletePhoneRes}" />
+    <apex:inputHidden id="needDeleteMobileRes" value="{!needDeleteMobileRes}" />
+    <apex:inputHidden id="needDeleteFaxRes" value="{!needDeleteFaxRes}" />
+    <apex:inputHidden id="needDeleteAddressRes" value="{!needDeleteAddressRes}" />
+
+    <apex:pageBlock title="Lead Edit" mode="edit" id="leadPageBlock">
+      <apex:pageMessages />
+      <apex:pageBlockButtons location="top">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+          <apex:commandButton value="Save" onclick="return saveClicked('save')" />
+        </span>
+        <apex:commandButton value="Save & New" rendered="{!createIsPermitted}" onclick="return saveClicked('savenew')" />
+        <apex:commandButton value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Lead Information">
+        <apex:outputText label="Lead Owner" value="{!lead.Owner.name}"/>
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="Phone"/>
+          <apex:outputpanel >
+            <apex:inputField taborderhint="9" styleClass="leadPhone" value="{!lead.phone}" 
+              onchange="changed('phoneComponent', 'Phone', 'Phone')" /> 
+            &nbsp;
+            <c:TooltipComponent imageName="{!phoneImage}" tableFields="{!phoneTableFields}" 
+              identifier="phoneComponent" fieldName="Phone" label="Phone"/>
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="First Name"/>
+          <apex:outputpanel >
+            <apex:inputField taborderhint="1" value="{!lead.Salutation}" />
+            &nbsp;
+            <apex:inputField taborderhint="2" value="{!lead.FirstName}" styleClass="leadFirstName" />
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="Mobile"/>
+          <apex:outputpanel >
+            <apex:inputField taborderhint="10" styleClass="leadMobile" value="{!lead.mobilephone}" 
+              onchange="changed('mobileComponent', 'MobilePhone', 'Mobile')" /> 
+            &nbsp;
+            <c:TooltipComponent imageName="{!mobileImage}" tableFields="{!mobileTableFields}" 
+              identifier="mobileComponent" fieldName="MobilePhone" label="Mobile"/>
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:inputField taborderhint="3" value="{!lead.lastName}"/>
+        <apex:pageBlockSectionItem id="faxBlock">
+          <apex:outputlabel value="Fax"/>
+          <apex:outputpanel >
+            <apex:inputField taborderhint="11" styleClass="leadFax" value="{!lead.fax}" 
+              onchange="changed('faxComponent', 'Fax', 'Fax')" /> 
+            &nbsp;
+            <c:TooltipComponent imageName="{!faxImage}" tableFields="{!faxTableFields}" 
+              identifier="faxComponent" fieldName="Fax" label="Fax" />
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:inputField taborderhint="4" value="{!lead.company}" />
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="Email"/>
+          <apex:outputpanel >
+            <apex:inputField taborderhint="12" styleClass="leadEmail" value="{!lead.email}" 
+              onchange="changed('emailComponent', 'Email', 'Email')" />
+            &nbsp;
+            <c:TooltipComponent imageName="{!emailImage}" tableFields="{!emailTableFields}" 
+              identifier="emailComponent" fieldName="Email" label="Email" />
+          </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:inputField taborderhint="5" value="{!lead.title}" />
+        <apex:inputField taborderhint="13" value="{!lead.website}" />
+        <apex:inputField taborderhint="6" value="{!lead.leadsource}" />
+        <apex:inputField taborderhint="14" value="{!lead.status}" />
+        <apex:inputField taborderhint="7" value="{!lead.industry}" />
+        <apex:inputField taborderhint="15" value="{!lead.rating}" />
+        <apex:inputField taborderhint="8" value="{!lead.annualrevenue}" />
+        <apex:inputField taborderhint="16" value="{!lead.numberofemployees}" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Address Information" columns="1">
+        <apex:pageBlockSectionItem >
+          <apex:outputlabel value="Street"/>
+            <apex:outputpanel >
+              <apex:inputTextarea tabindex="170" rows="2" cols="27" styleClass="leadAddress" 
+                value="{!lead.street}" onchange="changed('addressComponent', 'Street', 'Address')" />
+              &nbsp;
+              <c:TooltipComponent imageName="{!addressImage}" tableFields="{!addressTableFields}" 
+                identifier="addressComponent" fieldName="Street" label="Address"/>
+            </apex:outputpanel>
+        </apex:pageBlockSectionItem>
+        <apex:inputField taborderhint="18" value="{!lead.city}" styleClass="leadCity" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="19" value="{!lead.state}" styleClass="leadState" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="20" value="{!lead.postalCode}" styleClass="leadZip" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+        <apex:inputField taborderhint="21" value="{!lead.country}" styleClass="leadCountry" 
+          onchange="changed('addressComponent', 'Street', 'Address')" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Additional Information" >
+        <apex:repeat value="{!SobjectFields}" var="f">
+          <apex:inputField value="{!Lead[f]}"/>
+        </apex:repeat>
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Description Information" >
+        <apex:inputTextarea tabindex="270" rows="6" cols="75" value="{!lead.description}" />
+      </apex:pageBlockSection>
+      <apex:pageBlockButtons location="bottom">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+          <apex:commandButton tabindex="280" value="Save" onclick="return saveClicked('save')" />
+        </span>
+        <apex:commandButton tabindex="290" rendered="{!createIsPermitted}" value="Save & New" onclick="return saveClicked('savenew')" />
+        <apex:commandButton tabindex="300" value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

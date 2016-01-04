@@ -1,0 +1,174 @@
+<apex:page standardController="Account" extensions="StrikeIronInter.AccountNewExtensionController" showHeader="true" >
+  <apex:stylesheet value="{!$Resource.StrikeIronInter__styles}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__jQuery}"/>
+    <apex:includeScript value="{!$Resource.StrikeIronInter__json2}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__common}"/>
+  <apex:includeScript value="{!$Resource.StrikeIronInter__correctionDlg}"/>
+  <script type="text/javascript">
+    var j$ = jQuery.noConflict();
+    var buttonClicked;
+    var permissionError = <apex:outputText >{!permissionError}</apex:outputText> ;
+    var changableObjects = [
+      {
+        "type": "phone",
+        "cssclass": "accountPhone",
+        "fieldname": "Phone", 
+        "changed": false
+      },
+      {
+        "type": "phone",
+        "cssclass": "accountFax",
+        "fieldname": "Fax", 
+        "changed": false
+      },
+      {
+        "type": "address",
+        "cssclass": "accBilStreet",
+        "fieldname": "BillingStreet", 
+        "changed": false,
+        "cityclass" : "accBilCity",
+        "stateclass" : "accBilState",
+        "zipclass" : "accBilPostalCode",
+        "countryclass" : "accBilCountry"
+      },
+      {
+        "type": "address",
+        "cssclass": 'accShStreet',
+        "fieldname": "ShippingStreet", 
+        "changed": false,
+        "cityclass" : 'accShCity',
+        "stateclass" : 'accShState',
+        "zipclass" : 'accShPostalCode',
+        "countryclass" : 'accShCountry'
+      }
+    ];
+  
+  function changed(ident, fieldName, label){
+    if(!permissionError){
+      fieldChanged(changableObjects, ident, fieldName, label, 
+        false, '{!URLFOR($Resource.Images, 'question.png')}');
+    }
+  }
+  
+  function saveClicked(b) {
+    if (!buttonClicked) {
+      buttonClicked = b;
+    }
+    var params = [];
+    fillParams(params, changableObjects, '{!account.id}', '{!JSENCODE(account.name)}', 'Account', 
+      '<apex:outputText >{!$Component.accountNewForm}</apex:outputText>:');
+    if (params.length > 0 && !permissionError) {
+      sendAjax(params, '{!$Component.accountNewForm}:', 
+        '<apex:outputText >{!SiServerUrl}</apex:outputText>',  
+        '<apex:outputText >{!$Api.Session_ID}</apex:outputText>', 
+        '<apex:outputText >{!$Api.Partner_Server_URL_180}</apex:outputText>', 
+        'outPopUp', false, changableObjects, 
+        '{!JSENCODE($User.FirstName)}' + ' ' +'{!JSENCODE($User.LastName)}');
+    } else {
+      onResponse(buttonClicked);
+    }
+      return false;
+    }
+  
+  j$(window).ready(function() {
+    j$('.outPopUp').each(function() {j$(this).hide()});
+    checkIfErrorExists(changableObjects);
+  });
+  
+  function copyAddress() {
+    j$('.accShStreet').val(j$('.accBilStreet').val());
+    j$('.accShCity').val(j$('.accBilCity').val());
+    j$('.accShState').val(j$('.accBilState').val());
+    j$('.accShPostalCode').val(j$('.accBilPostalCode').val());
+    j$('.accShCountry').val(j$('.accBilCountry').val());
+    changed('shippAddressComponent', 'ShippingStreet', 'Shipping Address');
+  };
+  </script>
+  <apex:form id="accountNewForm">
+    <c:ModalDialog title="Please confirm correction"></c:ModalDialog>
+    <apex:sectionHeader title="Account Edit" subtitle="{!Account.Name}" help="https://help.salesforce.com" /> 
+    <apex:actionFunction name="overridedSave" action="{!save}" />
+    <apex:actionFunction name="overridedSaveNew" action="{!savenew}" />
+    
+    <apex:inputHidden id="PhoneVerResult" value="{!phoneVerResult}" />
+    <apex:inputHidden id="FaxVerResult" value="{!faxVerResult}" />
+    <apex:inputHidden id="ShippingStreetVerResult" value="{!shAddressVerResult}" />
+    <apex:inputHidden id="BillingStreetVerResult" value="{!bilAddressVerResult}" />
+    
+    <apex:pageBlock title="Account Edit" mode="edit">
+      <apex:pageMessages />
+      <apex:pageBlockButtons location="top">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+          <apex:commandButton value="Save" onclick="return saveClicked('save')" action="{!save}"/>
+        </span>
+        <apex:commandButton value="Save & New" onclick="return saveClicked('savenew')" action="{!savenew}"/>
+        <apex:commandButton value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Account Information" >
+        <apex:outputText label="Account Owner" value="{!owner.Name}"/>
+        <apex:inputField taborderhint="8" value="{!account.Rating}" />
+        <apex:inputField taborderhint="1" value="{!account.Name}" />
+        <apex:inputField taborderhint="9" styleClass="accountPhone" value="{!account.phone}" onchange="changed('phoneComponent', 'Phone', 'Phone')" /> 
+        <apex:inputField taborderhint="2" value="{!account.ParentId}"/>
+        <apex:inputField taborderhint="10" styleClass="accountFax" value="{!account.Fax}" onchange="changed('faxComponent', 'Fax', 'Fax')" /> 
+        <apex:inputField taborderhint="3" value="{!account.AccountNumber}" />
+        <apex:inputField taborderhint="11" value="{!account.Website}" />
+        <apex:inputField taborderhint="4" value="{!account.Site}" />
+        <apex:inputField taborderhint="12" value="{!account.TickerSymbol}" />
+        <apex:inputField taborderhint="5" value="{!account.Type}" />
+        <apex:inputField taborderhint="13" value="{!account.Ownership}" />
+        <apex:inputField taborderhint="6" value="{!account.Industry}" />
+        <apex:inputField taborderhint="14" value="{!account.NumberOfEmployees}" />
+        <apex:inputField taborderhint="7" value="{!account.AnnualRevenue}" />
+        <apex:inputField taborderhint="15" value="{!account.Sic}" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection id="pgBlockSectionAddressInfo" collapsible="false" showHeader="true" title="Address Information" columns="2" >
+        <apex:facet name="header">
+          <span class="pbSubExtra">
+            <span class="bodySmall">
+              <a href="javascript:void(0)" onclick="copyAddress();">Copy Billing Address to Shipping Address</a>
+            </span>
+          </span>
+          <h3>Address Information<span class="titleSeparatingColon">:</span></h3>
+        </apex:facet>
+        <apex:inputTextarea tabindex="160" rows="2" cols="27" styleClass="accBilStreet" value="{!account.BillingStreet}" 
+          onchange="changed('billAddressComponent', 'BillingStreet', 'Billing Address')" />
+        <apex:inputTextarea tabindex="210" rows="2" cols="27" styleClass="accShStreet" value="{!account.ShippingStreet}" 
+          onchange="changed('shippAddressComponent', 'ShippingStreet', 'Shipping Address')" />
+        <apex:inputField taborderhint="17" styleClass="accBilCity" value="{!account.BillingCity}" 
+          onchange="changed('billAddressComponent', 'BillingStreet', 'Billing Address')" />
+        <apex:inputField taborderhint="22" styleClass="accShCity" value="{!account.ShippingCity}" 
+          onchange="changed('shippAddressComponent', 'ShippingStreet', 'Shipping Address')"/>
+        <apex:inputField taborderhint="18" styleClass="accBilState" value="{!account.BillingState}" 
+          onchange="changed('billAddressComponent', 'BillingStreet', 'Billing Address')" />
+        <apex:inputField taborderhint="23" styleClass="accShState" value="{!account.ShippingState}" 
+          onchange="changed('shippAddressComponent', 'ShippingStreet', 'Shipping Address')" />
+        <apex:inputField taborderhint="19" styleClass="accBilPostalCode" value="{!account.BillingPostalCode}" 
+          onchange="changed('billAddressComponent', 'BillingStreet', 'Billing Address')" />
+        <apex:inputField taborderhint="24" styleClass="accShPostalCode" value="{!account.ShippingPostalCode}" 
+          onchange="changed('shippAddressComponent', 'ShippingStreet', 'Shipping Address')" />
+        <apex:inputField taborderhint="20" styleClass="accBilCountry" value="{!account.BillingCountry}" 
+          onchange="changed('billAddressComponent', 'BillingStreet', 'Billing Address')" />
+        <apex:inputField taborderhint="25" styleClass="accShCountry" value="{!account.ShippingCountry}" 
+          onchange="changed('shippAddressComponent', 'ShippingStreet', 'Shipping Address')" />
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Additional Information" >
+        <apex:repeat value="{!SobjectFields}" var="f">
+          <apex:inputField value="{!Account[f]}"/>
+        </apex:repeat>
+      </apex:pageBlockSection>
+      <apex:pageBlockSection collapsible="false" showHeader="true" title="Description Information" >
+        <apex:inputTextarea tabindex="330" rows="6" cols="75" value="{!account.description}" />
+      </apex:pageBlockSection>
+      <apex:pageBlockButtons location="bottom">
+        <span>
+          <span class="outPopUp"><image src="{!$Resource.AjaxLoader}" align="center"/></span>
+          <apex:commandButton tabindex="340" value="Save" onclick="return saveClicked('save')" action="{!save}"/>
+        </span>
+        <apex:commandButton tabindex="350" value="Save & New" onclick="return saveClicked('savenew')" action="{!savenew}"/>
+        <apex:commandButton tabindex="360" value="Cancel" action="{!cancel}"/>
+      </apex:pageBlockButtons>
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

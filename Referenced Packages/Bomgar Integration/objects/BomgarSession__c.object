@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Bomgar Session Details</description>
+    <enableActivities>false</enableActivities>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Appliance__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Appliance</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Chat_Transcript_Download_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Chat Transcript Download URL</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Chat Transcript Download URL</inlineHelpText>
+        <label>Chat Transcript Download URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Chat_Transcript_View_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Chat Transcript View URL</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Chat Transcript View URL</inlineHelpText>
+        <label>Chat Transcript View URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Duration__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Session Duration</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Session Duration</inlineHelpText>
+        <label>Duration</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Session End Time</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Session End Time</inlineHelpText>
+        <label>End Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>External_Key__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar External Key</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar External Key</inlineHelpText>
+        <label>External Key</label>
+        <length>1024</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>File_Delete_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Files Deleted</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Files Deleted</inlineHelpText>
+        <label>Files Deleted</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>File_Move_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar File Move Count</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar File Move Count</inlineHelpText>
+        <label>Files Moved</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>File_Transfer_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar File Transfer Count</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar File Transfer Count</inlineHelpText>
+        <label>Files Transferred</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Jumpoint_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Jumpoint ID</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Jumpoint ID</inlineHelpText>
+        <label>Jumpoint ID</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Jumpoint__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Jumpoint</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Jumpoint</inlineHelpText>
+        <label>Jumpoint</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LSEQ__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Session Numeric Identifier</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Session Numeric Identifier</inlineHelpText>
+        <label>LSEQ</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LSID__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <deprecated>false</deprecated>
+        <description>Bomgar Unique Session ID</description>
+        <externalId>true</externalId>
+        <inlineHelpText>Bomgar Unique Session ID</inlineHelpText>
+        <label>LSID</label>
+        <length>80</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Customer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Primary Customer</label>
+        <referenceTo>Customer__c</referenceTo>
+        <relationshipLabel>Bomgar Sessions</relationshipLabel>
+        <relationshipName>Bomgar_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Primary_Representative__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Primary Representative</label>
+        <referenceTo>Representative__c</referenceTo>
+        <relationshipLabel>Bomgar Sessions</relationshipLabel>
+        <relationshipName>Bomgar_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Primary_Team__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Primary Team</label>
+        <referenceTo>Team__c</referenceTo>
+        <relationshipLabel>Bomgar Sessions</relationshipLabel>
+        <relationshipName>Bomgar_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Public_Site_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Public Site ID</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Public Site ID</inlineHelpText>
+        <label>Public Site ID</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Public_Site__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Public Site</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Public Site</inlineHelpText>
+        <label>Public Site</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Recording_Download_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Recording Download URL</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Recording Download URL</inlineHelpText>
+        <label>Recording Download URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Recording_View_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Recording View URL</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Recording View URL</inlineHelpText>
+        <label>Recording View URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Session_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Session Type</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Session Type</inlineHelpText>
+        <label>Session Type</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Start_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Bomgar Session Start Time</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Bomgar Session Start Time</inlineHelpText>
+        <label>Start Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <label>Bomgar Session</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Bomgar Sessions</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>
